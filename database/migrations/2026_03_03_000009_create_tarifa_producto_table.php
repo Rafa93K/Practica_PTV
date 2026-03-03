@@ -11,11 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('contract_plan', function (Blueprint $table) {
-            $table->foreignId('contract_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('plan_id')->constrained()->cascadeOnDelete();
-            $table->date('start_date'); //Fecha de inicio
-            $table->timestamps();
+        Schema::create('tarifa_producto', function (Blueprint $table) {
+            $table->foreignId('tarifa_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('producto_id')->constrained()->cascadeOnDelete();
         });
     }
 
@@ -24,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('contract_plan');
+        Schema::dropIfExists('tarifa_producto');
     }
 };
