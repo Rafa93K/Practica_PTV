@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Plan extends Model
 {
-    protected $fillable = ['name', 'type', 'price', 'description']; //Datos que se guardan en la bd
+    protected $fillable = ['name', 'type', 'price', 'description']; //Datos que se guardan en la bd.
 
     //Un plan puede tener muchos productos
     public function products(): BelongsToMany {
