@@ -11,14 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('clients', function (Blueprint $table) {
+        Schema::create('trabajadores', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('surname');
+            $table->string('nombre');
+            $table->string('apellido');
             $table->string('dni',20)->unique();
-            $table->string('phone', 20);
+            $table->string('telefono', 20);
             $table->string('email')->unique();
-            $table->string('password');
+            $table->string('contraseña');
+            $table->enum('rol', ['manager', 'marketing', 'jefe_tecnico', 'tecnico'])->default('tecnico');
             $table->timestamps();
         });
     }
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('clients');
+        Schema::dropIfExists('trabajadores');
     }
 };
