@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('tarifas', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->unsignedInteger('amount'); //La cantidad nunca puede ser menor que 0
-            $table->decimal('price', 8, 2); //8 numeros de largo y 2 de decimas
+            $table->string('nombre');
+            $table->enum('tipo', ['internet', 'movil', 'tv']); //Solo puede elegir uno de los 3 tipos
+            $table->decimal('precio', 8, 2); //8 numeros de largo y 2 de decimas
+            $table->text('descripcion');
             $table->timestamps();
         });
     }
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('tarifas');
     }
 };
