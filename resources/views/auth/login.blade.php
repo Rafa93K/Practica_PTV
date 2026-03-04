@@ -6,8 +6,11 @@
         <title>Acceso {{ ucfirst($tipo) }}</title>
         <script src="https://cdn.tailwindcss.com"></script>
     </head>
-    <body class="bg-indigo-200 flex items-center justify-center min-h-screen p-4">
-        <div class="bg-white p-8 md:p-10 rounded-3xl shadow-2xl w-full max-w-md border border-white/50 backdrop-blur-sm">
+    
+    <body class="bg-indigo-200 flex flex-col min-h-screen">
+        
+          <main class="flex-1 flex items-center justify-center p-4">
+            <div class="bg-white p-8 md:p-10 rounded-3xl shadow-2xl w-full max-w-md border border-white/50 backdrop-blur-sm">
             <!-- Encabezado -->
             <div class="text-center mb-10">
                 <h2 class="text-3xl font-bold text-gray-800 tracking-tight">Acceso {{ ucfirst($tipo) }}</h2>
@@ -83,5 +86,7 @@
                 </a>
             </div>
         </div>
+        </main>
     </body>
+    
 </html>
