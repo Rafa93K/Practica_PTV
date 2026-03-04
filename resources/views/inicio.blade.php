@@ -7,17 +7,8 @@
     </head>
     <body class="bg-gray-100 flex flex-col min-h-screen">
 
-        <!-- HEADER -->
-        <header class="bg-blue-900 text-white shadow-lg">
-            <div class="container mx-auto px-6 py-5 flex justify-between items-center">
-                <h1 class="text-2xl font-bold tracking-wide">
-                    Telcomanager
-                </h1>
-                <span class="text-sm opacity-80">
-                    Soluciones de Gestión Empresarial
-                </span>
-            </div>
-        </header>
+    <!-- HEADER -->
+   @include('layouts.header')
 
         <!-- HERO SECTION -->
         <main class="flex-1 flex items-center justify-center">
@@ -40,20 +31,16 @@
                         Área Cliente
                     </a>
 
-                    {{-- Al pulsar el boton le pasamos a la vista login que eres un trabajador --}}
-                    <a href="{{ route('login', 'trabajador') }}"
-                    class="bg-blue-800 hover:bg-blue-900 text-white font-semibold px-8 py-4 rounded-lg shadow-lg transition transform hover:scale-105">
-                        Área Trabajador
-                    </a>
-                </div>
-            </div>
-        </main>
+                <a href="#"
+                   class="bg-blue-800 hover:bg-blue-900 text-white font-semibold px-8 py-4 rounded-lg shadow-lg transition transform hover:scale-105">
+                    Área Trabajador
+                </a>
 
-        <!-- FOOTER -->
-        <footer class="bg-gray-900 text-gray-400 text-center py-6">
-            <p class="text-sm">
-                &copy; {{ date('Y') }} Telcomanager. Inspirado en entornos corporativos de telecomunicaciones.
-            </p>
-        </footer>
-    </body>
+            </div>
+
+        </div>
+    </main>
+    <!-- FOOTER llamo aqui al footer de la carperta layouts-->
+    @include('layouts.footer')
+</body>
 </html>
