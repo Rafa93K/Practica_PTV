@@ -16,6 +16,7 @@
             <span class="text-sm opacity-80">
                 Soluciones de Gestión Empresarial
             </span>
+            
         </div>
     </header>
 
@@ -49,13 +50,7 @@
 
         </div>
     </main>
-
-    <!-- FOOTER -->
-    <footer class="bg-gray-900 text-gray-400 text-center py-6">
-        <p class="text-sm">
-            © {{ date('Y') }} Telcomanager. Inspirado en entornos corporativos de telecomunicaciones.
-        </p>
-    </footer>
-
+    <!-- FOOTER llamo aqui al footer de la carperta layouts-->
+    @include('layouts.footer')
 </body>
 </html>
