@@ -43,7 +43,11 @@ class AuthController extends Controller {
         //Verificar si existe y si la contraseña es correcta
         if ($user && Hash::check($request->password, $user->contraseña)) {
             //Guardar algo en sesión para "simular" el login por ahora
-            session(['user_id' => $user->id, 'user_type' => $tipo]);
+            session([
+                'user_id' => $user->id, 
+                'user_type' => $tipo,
+                'user_name' => $user->nombre
+                ]);
 
             //Redirigir al inicio correspondiente
             return redirect()->route($tipo . '.inicio');
