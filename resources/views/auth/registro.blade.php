@@ -6,7 +6,7 @@
         <title>Registro de Cliente</title>
         <script src="https://cdn.tailwindcss.com"></script>
     </head>
-    <body class="bg-gradient-to-br from-slate-100 via-indigo-50 to-blue-100 flex items-center justify-center min-h-screen p-4">
+    <body class="bg-indigo-200 flex items-center justify-center min-h-screen p-4">
         <div class="bg-white p-8 md:p-10 rounded-3xl shadow-2xl w-full max-w-xl border border-white/50 backdrop-blur-sm">
             <!-- Encabezado -->
             <div class="text-center mb-10">
@@ -17,10 +17,12 @@
             <form method="POST" action="#" class="space-y-8">
                 @csrf
 
-                <!-- SECCIÓN 1: INFORMACIÓN PERSONAL -->
+                <!-- INFORMACIÓN PERSONAL -->
                 <div class="space-y-4">
                     <div class="flex items-center space-x-2 border-b border-indigo-100 pb-2">
-                        <span class="text-indigo-600 font-bold text-sm uppercase tracking-wider">01. Datos Personales</span>
+                        <span class="text-indigo-600 font-bold text-sm uppercase tracking-wider">
+                            Datos Personales
+                        </span>
                     </div>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -43,10 +45,12 @@
                     </div>
                 </div>
 
-                <!-- SECCIÓN 2: CONTACTO Y SEGURIDAD -->
+                <!-- CONTACTO Y SEGURIDAD -->
                 <div class="space-y-4">
                     <div class="flex items-center space-x-2 border-b border-indigo-100 pb-2">
-                        <span class="text-indigo-600 font-bold text-sm uppercase tracking-wider">02. Contacto y Acceso</span>
+                        <span class="text-indigo-600 font-bold text-sm uppercase tracking-wider">
+                            Contacto y Acceso
+                        </span>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -66,7 +70,9 @@
                         <label class="text-sm font-semibold text-gray-700 ml-1">Contraseña</label>
                         <input type="password" required name="password" placeholder="••••••••••••"
                             class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all placeholder:text-gray-300">
-                        <p class="text-[11px] text-gray-400 mt-1 ml-1 font-light italic">* Mínimo 8 caracteres, incluye una mayúscula y un número.</p>
+                        <p class="text-[11px] text-gray-400 mt-1 ml-1 font-light italic">
+                            * Mínimo 8 caracteres, incluye una mayúscula y un número.
+                        </p>
                     </div>
                 </div>
 
@@ -86,6 +92,12 @@
                         Inicia sesión aquí
                     </a>
                 </p>
+            </div>
+
+            <div class="pt-8 border-t border-gray-100 text-center">
+                <a href="/" class="text-indigo-600 font-bold hover:text-indigo-800 transition-colors underline underline-offset-4 decoration-indigo-200">
+                    Volver al inicio
+                </a>
             </div>
         </div>
     </body>

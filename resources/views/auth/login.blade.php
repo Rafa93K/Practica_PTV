@@ -2,41 +2,73 @@
 <html lang="es">
     <head>
         <meta charset="UTF-8">
-        <title>Login</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Acceso {{ ucfirst($tipo) }} | PTV Telecom</title>
         <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+        <style>
+            body { font-family: 'Outfit', sans-serif; }
+        </style>
     </head>
-    <body class="bg-indigo-200 flex items-center justify-center min-h-screen">
-        <div class="bg-white p-8 rounded-lg shadow-lg w-96">
-            <h2 class="text-2xl font-bold mb-6 text-center">
-                Login {{ ucfirst($tipo) }}
-            </h2>
+    <body class="bg-indigo-200 flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white p-8 md:p-10 rounded-3xl shadow-2xl w-full max-w-md border border-white/50 backdrop-blur-sm">
+            <!-- Encabezado -->
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-gray-800 tracking-tight">Acceso {{ ucfirst($tipo) }}</h2>
+                <p class="text-gray-500 mt-2">Bienvenido de nuevo, por favor identifícate</p>
+            </div>
 
-            <form method="POST" action="#">
+            <form method="POST" action="#" class="space-y-6">
                 @csrf
 
-                <div class="mb-4">
-                    <label class="block mb-1">Email</label>
-                    <input type="email" class="w-full border rounded px-3 py-2">
+                <!-- SECCIÓN: CREDENCIALES -->
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-2 border-b border-indigo-100 pb-2">
+                        <span class="text-indigo-600 font-bold text-sm uppercase tracking-wider">Identificación</span>
+                    </div>
+                    
+                    <div class="space-y-1">
+                        <label class="text-sm font-semibold text-gray-700 ml-1">Correo Electrónico</label>
+                        <input type="email" required name="email" placeholder="usuario@ejemplo.com"
+                            class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all placeholder:text-gray-300">
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="text-sm font-semibold text-gray-700 ml-1">Contraseña</label>
+                        <input type="password" required name="password" placeholder="••••••••••••"
+                            class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all placeholder:text-gray-300">
+                    </div>
                 </div>
 
-                <div class="mb-6">
-                    <label class="block mb-1">Contraseña</label>
-                    <input type="password" class="w-full border rounded px-3 py-2">
+                <!-- Botón de Acción -->
+                <div class="pt-2">
+                    <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-2xl shadow-xl shadow-indigo-100 transform hover:-translate-y-1 transition-all active:scale-95 duration-200">
+                        Entrar al panel
+                    </button>
                 </div>
-
-                <button class="w-full bg-blue-800 text-white py-2 rounded hover:bg-blue-900">
-                    Iniciar sesión
-                </button>
             </form>
 
-            {{-- SOLO SI ES CLIENTE --}}
-            @if($tipo === 'cliente')
-                <div class="mt-4 text-center">
-                    <a href="{{ route('registro') }}" class="text-blue-600 hover:underline">
-                        ¿No tienes cuenta? Regístrate
-                    </a>
-                </div>
-            @endif
+            <!-- Pie de página -->
+            <div class="mt-8 pt-6 border-t border-gray-100 text-center">
+                @if($tipo === 'cliente')
+                    <p class="text-gray-600 text-sm">
+                        ¿Aún no tienes cuenta? 
+                        <a href="{{ route('registro') }}" class="text-indigo-600 font-bold hover:text-indigo-800 transition-colors underline underline-offset-4 decoration-indigo-200">
+                            Regístrate aquí
+                        </a>
+                    </p>
+                @else
+                    <p class="text-gray-500 text-xs italic">
+                        Área restringida para personal autorizado.
+                    </p>
+                @endif
+            </div>
+
+            <div class="pt-8 border-t border-gray-100 text-center">
+                <a href="/" class="text-indigo-600 font-bold hover:text-indigo-800 transition-colors underline underline-offset-4 decoration-indigo-200">
+                    Volver al inicio
+                </a>
+            </div>
         </div>
     </body>
 </html>
