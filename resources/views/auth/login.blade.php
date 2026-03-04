@@ -14,13 +14,25 @@
                 <p class="text-gray-500 mt-2">Completa los campos para iniciar sesión</p>
             </div>
 
+            {{-- En caso de que en la sesion tenga 'success' --}}
             @if(session('success'))
                 <div class="mb-6 p-4 bg-green-50 border-l-4 border-green-500 text-green-700 rounded-r-xl animate-fade-in">
                     <p class="text-sm font-medium">{{ session('success') }}</p>
                 </div>
             @endif
 
-            <form method="POST" action="#" class="space-y-6">
+            {{-- En caso de haber errores lo muestro --}}
+            @if ($errors->any())
+                <div class="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-r-xl">
+                    <ul class="list-disc list-inside text-sm">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <form method="POST" action="{{ route('login.submit', $tipo) }}" class="space-y-6">
                 @csrf
 
                 <div class="space-y-4">

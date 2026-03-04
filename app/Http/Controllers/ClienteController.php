@@ -8,8 +8,7 @@ use Illuminate\Support\Facades\Hash;
 
 class ClienteController extends Controller
 {
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         //Validar los datos que vienen del formulario registro.blade.php
         $request->validate([
             'nombre' => 'required|string|max:255',
