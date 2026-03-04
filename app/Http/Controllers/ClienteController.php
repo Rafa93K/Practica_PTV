@@ -8,16 +8,31 @@ use Illuminate\Support\Facades\Hash;
 
 class ClienteController extends Controller
 {
-    public function store(Request $request) {
-        //Validar los datos que vienen del formulario registro.blade.php
-        $request->validate([
+    private array $rules=[
             'nombre' => 'required|string|max:255',
             'apellidos' => 'required|string|max:255',
             'dni' => 'required|string|max:9|unique:clientes,dni',
             'email' => 'required|string|email|max:255|unique:clientes,email',
             'telefono' => 'required|string|max:9',
             'password' => 'required|string|min:8',
-        ]);
+        ];
+
+    private $errors=[
+        'nombre.required' => 'El nombre es obligatorio.',
+        'apellidos.required' => 'Los apellidos son obligatorios.',
+        'dni.required' => 'El DNI es obligatorio.',
+        'dni.unique' => 'El DNI ya está registrado.',
+        'email.required' => 'El correo electrónico es obligatorio.',
+        'email.email' => 'El correo electrónico no es válido.',
+        'email.unique' => 'El correo electrónico ya está registrado.',
+        'telefono.required' => 'El teléfono es obligatorio.',
+        'password.required' => 'La contraseña es obligatoria.',
+        'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
+    ];
+
+    public function store(Request $request) {
+        //Validar los datos que vienen del formulario registro.blade.php
+        $request->validate($this->rules,$this->errors);
 
         //Crear el cliente en la base de datos
         Cliente::create([
