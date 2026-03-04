@@ -3,19 +3,15 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Acceso {{ ucfirst($tipo) }} | PTV Telecom</title>
+        <title>Acceso {{ ucfirst($tipo) }}</title>
         <script src="https://cdn.tailwindcss.com"></script>
-        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
-        <style>
-            body { font-family: 'Outfit', sans-serif; }
-        </style>
     </head>
     <body class="bg-indigo-200 flex items-center justify-center min-h-screen p-4">
         <div class="bg-white p-8 md:p-10 rounded-3xl shadow-2xl w-full max-w-md border border-white/50 backdrop-blur-sm">
             <!-- Encabezado -->
             <div class="text-center mb-10">
                 <h2 class="text-3xl font-bold text-gray-800 tracking-tight">Acceso {{ ucfirst($tipo) }}</h2>
-                <p class="text-gray-500 mt-2">Bienvenido de nuevo, por favor identifícate</p>
+                <p class="text-gray-500 mt-2">Completa los campos para iniciar sesión</p>
             </div>
 
             <form method="POST" action="#" class="space-y-6">
