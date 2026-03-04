@@ -11,7 +11,7 @@
             <!-- Encabezado -->
             <div class="text-center mb-10">
                 <h2 class="text-3xl font-bold text-gray-800 tracking-tight">Acceso {{ ucfirst($tipo) }}</h2>
-                <p class="text-gray-500 mt-2">Completa los campos para iniciar sesión</p>
+                <p class="text-gray-500 mt-2">Completa los campos para iniciar sesion</p>
             </div>
 
             <form method="POST" action="#" class="space-y-6">
