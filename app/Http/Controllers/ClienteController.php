@@ -6,16 +6,34 @@ use App\Models\Cliente;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
-class ClienteController extends Controller
-{
+class ClienteController extends Controller {
+    public function index() {
+        //Obtener el ID del cliente de la sesión
+        $clienteId = session('user_id');
+        $userType = session('user_type');
+
+        if (!$clienteId || $userType !== 'cliente') {
+            return redirect()->route('login', 'cliente')->withErrors(['email' => 'Debes iniciar sesion como cliente']);
+        }
+
+        //Buscar al cliente con sus relaciones: contratos -> tarifas, y facturas
+        $cliente = Cliente::with(['contratos.tarifas', 'facturas'])->find($clienteId);
+
+        if (!$cliente) {
+            return redirect()->route('login', 'cliente')->withErrors(['email' => 'Cliente no encontrado']);
+        }
+
+        return view('cliente.panelCliente', compact('cliente'));
+    }
+
     private array $rules=[
-            'nombre' => 'required|string|max:255',
-            'apellidos' => 'required|string|max:255',
-            'dni' => 'required|string|max:9|unique:clientes,dni',
-            'email' => 'required|string|email|max:255|unique:clientes,email',
-            'telefono' => 'required|string|max:9',
-            'password' => 'required|string|min:8',
-        ];
+        'nombre' => 'required|string|max:255',
+        'apellidos' => 'required|string|max:255',
+        'dni' => 'required|string|max:9|unique:clientes,dni',
+        'email' => 'required|string|email|max:255|unique:clientes,email',
+        'telefono' => 'required|string|max:9',
+        'password' => 'required|string|min:8',
+    ];
 
     private $errors=[
         'nombre.required' => 'El nombre es obligatorio.',

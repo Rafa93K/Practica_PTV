@@ -16,5 +16,5 @@ Route::get('/registro', [AuthController::class, 'showRegister'])->name('registro
 Route::post('/registro', [ClienteController::class, 'store'])->name('register.submit'); //Ruta para procesar el formulario de registro
 
 //Rutas una vez logueado
-Route::get('/cliente/inicio', function() { return view('cliente.inicio'); })->name('cliente.inicio');
+Route::get('/cliente/inicio', [ClienteController::class, 'index'])->name('cliente.inicio');
 Route::get('/trabajador/inicio', function() { return view('trabajador.inicio'); })->name('trabajador.inicio');
