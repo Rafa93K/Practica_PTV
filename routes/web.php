@@ -5,7 +5,7 @@ use App\Http\Controllers\AuthController;
 
 Route::get('/', function () {
     return view('inicio');
-});
+})->name('inicio');
 
 //Mostrar login segun tipo
 Route::get('/login/{tipo}', [AuthController::class, 'showLogin'])->name('login');
