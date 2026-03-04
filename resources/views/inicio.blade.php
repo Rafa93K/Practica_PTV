@@ -31,13 +31,12 @@
                         Área Cliente
                     </a>
 
-                <a href="#"
-                   class="bg-blue-800 hover:bg-blue-900 text-white font-semibold px-8 py-4 rounded-lg shadow-lg transition transform hover:scale-105">
-                    Área Trabajador
-                </a>
-
+                    {{-- Al pulsar el boton le pasamos a la vista login que eres un trabajador --}}
+                    <a href="{{ route('login', 'trabajador') }}"
+                    class="bg-blue-800 hover:bg-blue-900 text-white font-semibold px-8 py-4 rounded-lg shadow-lg transition transform hover:scale-105">
+                        Área Trabajador
+                    </a>
             </div>
-
         </div>
     </main>
     <!-- FOOTER llamo aqui al footer de la carperta layouts-->

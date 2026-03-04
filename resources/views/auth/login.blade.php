@@ -14,10 +14,15 @@
                 <p class="text-gray-500 mt-2">Completa los campos para iniciar sesión</p>
             </div>
 
+            @if(session('success'))
+                <div class="mb-6 p-4 bg-green-50 border-l-4 border-green-500 text-green-700 rounded-r-xl animate-fade-in">
+                    <p class="text-sm font-medium">{{ session('success') }}</p>
+                </div>
+            @endif
+
             <form method="POST" action="#" class="space-y-6">
                 @csrf
 
-                <!-- SECCIÓN: CREDENCIALES -->
                 <div class="space-y-4">
                     <div class="flex items-center space-x-2 border-b border-indigo-100 pb-2">
                         <span class="text-indigo-600 font-bold text-sm uppercase tracking-wider">Identificación</span>
@@ -36,7 +41,7 @@
                     </div>
                 </div>
 
-                <!-- Botón de Acción -->
+                <!-- Iniciar sesion -->
                 <div class="pt-2">
                     <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-2xl shadow-xl shadow-indigo-100 transform hover:-translate-y-1 transition-all active:scale-95 duration-200">
                         Entrar al panel
@@ -44,16 +49,16 @@
                 </div>
             </form>
 
-            <!-- Pie de página -->
+            <!-- Pie -->
             <div class="mt-8 pt-6 border-t border-gray-100 text-center">
-                @if($tipo === 'cliente')
+                @if($tipo === 'cliente') {{-- Si eres cliente muestra el enlace para el registro --}}
                     <p class="text-gray-600 text-sm">
                         ¿Aún no tienes cuenta? 
                         <a href="{{ route('registro') }}" class="text-indigo-600 font-bold hover:text-indigo-800 transition-colors underline underline-offset-4 decoration-indigo-200">
                             Regístrate aquí
                         </a>
                     </p>
-                @else
+                 @else {{-- En caso contrario, no lo mostramos --}}
                     <p class="text-gray-500 text-xs italic">
                         Área restringida para personal autorizado.
                     </p>

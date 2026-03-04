@@ -14,10 +14,21 @@
                 <p class="text-gray-500 mt-2">Completa tus datos para empezar</p>
             </div>
 
-            <form method="POST" action="#" class="space-y-8">
+            {{-- En caso de error se muestran los errores --}}
+            @if ($errors->any())
+                <div class="mb-8 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-r-xl">
+                    <ul class="list-disc list-inside text-sm">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <form method="POST" action="{{ route('register.submit') }}" class="space-y-8">
                 @csrf
 
-                <!-- INFORMACIÓN PERSONAL -->
+                <!-- INFORMACION PERSONAL -->
                 <div class="space-y-4">
                     <div class="flex items-center space-x-2 border-b border-indigo-100 pb-2">
                         <span class="text-indigo-600 font-bold text-sm uppercase tracking-wider">
@@ -28,12 +39,12 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="space-y-1">
                             <label class="text-sm font-semibold text-gray-700 ml-1">Nombre</label>
-                            <input type="text" required name="nombre" placeholder="Ej: Juan"
+                            <input type="text" required name="nombre" placeholder="Ej: Alonso"
                                 class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all placeholder:text-gray-300">
                         </div>
                         <div class="space-y-1">
                             <label class="text-sm font-semibold text-gray-700 ml-1">Apellidos</label>
-                            <input type="text" required name="apellidos" placeholder="Ej: García López"
+                            <input type="text" required name="apellidos" placeholder="Ej: Coronado Alcalde"
                                 class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all placeholder:text-gray-300">
                         </div>
                     </div>
@@ -76,7 +87,7 @@
                     </div>
                 </div>
 
-                <!-- Botón de Acción -->
+                <!-- Crear cuenta -->
                 <div class="pt-4">
                     <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-2xl shadow-xl shadow-indigo-100 transform hover:-translate-y-1 transition-all active:scale-95 duration-200">
                         Crear mi cuenta
@@ -84,7 +95,7 @@
                 </div>
             </form>
 
-            <!-- Pie de página -->
+            <!-- Pie -->
             <div class="mt-8 pt-8 border-t border-gray-100 text-center">
                 <p class="text-gray-600 text-sm">
                     ¿Ya eres cliente? 
