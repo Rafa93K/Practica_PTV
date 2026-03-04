@@ -8,17 +8,7 @@
     <body class="bg-gray-100 flex flex-col min-h-screen">
 
     <!-- HEADER -->
-    <header class="bg-blue-900 text-white shadow-lg">
-        <div class="container mx-auto px-6 py-5 flex justify-between items-center">
-            <h1 class="text-2xl font-bold tracking-wide">
-                Telcomanager
-            </h1>
-            <span class="text-sm opacity-80">
-                Soluciones de Gestión Empresarial
-            </span>
-            
-        </div>
-    </header>
+   @include('layouts.header')
 
         <!-- HERO SECTION -->
         <main class="flex-1 flex items-center justify-center">
