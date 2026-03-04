@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Factura extends Model
 {
@@ -12,13 +12,11 @@ class Factura extends Model
         'fecha_inicio',      
     ];
 
-    public function cliente()
-    {
+    public function cliente() {
         return $this->belongsTo(Cliente::class, 'cliente_id');
     }
 
-    public function contracto():HasMany
-    {
-        return $this->hasMany(Contrato::class, 'contracto_id');
+    public function contrato(): BelongsTo {
+        return $this->belongsTo(Contrato::class, 'contrato_id');
     }
 }

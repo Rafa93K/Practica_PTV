@@ -17,4 +17,14 @@ class Cliente extends Model
     {
         return $this->hasMany(Incidencia::class, 'cliente_id');
     }
+
+    public function contratos(): HasMany
+    {
+        return $this->hasMany(Contrato::class, 'cliente_id');
+    }
+
+    public function facturas(): HasMany
+    {
+        return $this->hasMany(Factura::class, 'cliente_id');
+    }
 }
