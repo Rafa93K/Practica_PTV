@@ -22,6 +22,7 @@ class AuthController extends Controller {
         return view('auth.registro');
     }
 
+
     public function login(Request $request, $tipo) {
         //Validar los datos
         $request->validate([
@@ -46,13 +47,17 @@ class AuthController extends Controller {
             session([
                 'user_id' => $user->id, 
                 'user_type' => $tipo,
-                'user_name' => $user->nombre
+                'user_name' => $user->nombre,
+                'user_role' => $user->rol
                 ]);
 
             //Redirigir al inicio correspondiente
-            return redirect()->route($tipo . '.inicio');
+            if ($tipo === 'cliente') {
+                return redirect()->route('cliente.panelCliente');
+            }else{
+                return redirect()->route($user->rol . '.inicio');
+            }
         }
-
         //Si fallan las credenciales
         return back()->withErrors(['email' => 'El correo o la contraseña son incorrectos.'])->withInput();
     }
