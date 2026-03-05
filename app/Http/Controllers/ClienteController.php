@@ -3,22 +3,38 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cliente;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+use App\Models\Factura;
+use App\Models\Incidencia;
+use App\Services\ClienteService;
+
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Http\Requests\DynamicRequestValidator;
 
 class ClienteController extends Controller {
-    public function index() {
-        //Obtener el ID del cliente de la sesión
-        $clienteId = session('user_id');
-        $userType = session('user_type');
+    private ClienteService $clienteService;
 
-        if (!$clienteId || $userType !== 'cliente') {
-            return redirect()->route('login', 'cliente')->withErrors(['email' => 'Debes iniciar sesion como cliente']);
-        }
+    /**
+     * @param ClienteService $clienteService
+     * @author Alonso Coronado Alcalde
+     * @description Inyecta el servicio de cliente.
+     */
+    public function __construct(ClienteService $clienteService) {
+        $this->clienteService = $clienteService;
+    }
+
+    /**
+     * @return \Illuminate\Contracts\View\View
+     * @throws \Illuminate\Validation\ValidationException
+     * @author Alonso Coronado Alcalde
+     * @description Carga el panel del cliente con sus contratos y facturas.
+     */
+    public function cargarPanelCliente() {
+        $clienteId = $this->clienteService->comprobarUsuario();
 
         //Buscar al cliente con sus relaciones: contratos -> tarifas, y facturas
         $cliente = Cliente::with(['contratos.tarifas', 'facturas'])->find($clienteId);
 
+        //Si no existe el cliente lo devolvemos
         if (!$cliente) {
             return redirect()->route('login', 'cliente')->withErrors(['email' => 'Cliente no encontrado']);
         }
@@ -26,75 +42,130 @@ class ClienteController extends Controller {
         return view('cliente.panelCliente', compact('cliente'));
     }
 
-    private array $rules=[
-        'nombre' => 'required|string|max:255',
-        'apellidos' => 'required|string|max:255',
-        'dni' => 'required|string|max:9|unique:clientes,dni',
-        'email' => 'required|string|email|max:255|unique:clientes,email',
-        'telefono' => 'required|string|max:9',
-        'password' => 'required|string|min:8',
-    ];
+    /**
+     * @param DynamicRequestValidator $request
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Validation\ValidationException
+     * @author Alonso Coronado Alcalde
+     * @description Guarda el cliente en la base de datos.
+     */
+    public function guardarClienteBD(DynamicRequestValidator $request) {
+        $cliente = $this->clienteService->crearCliente($request);
 
-    private $errors=[
-        'nombre.required' => 'El nombre es obligatorio.',
-        'apellidos.required' => 'Los apellidos son obligatorios.',
-        'dni.required' => 'El DNI es obligatorio.',
-        'dni.unique' => 'El DNI ya está registrado.',
-        'email.required' => 'El correo electrónico es obligatorio.',
-        'email.email' => 'El correo electrónico no es válido.',
-        'email.unique' => 'El correo electrónico ya está registrado.',
-        'telefono.required' => 'El teléfono es obligatorio.',
-        'password.required' => 'La contraseña es obligatoria.',
-        'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
-    ];
-
-    public function store(Request $request) {
-        //Validar los datos que vienen del formulario registro.blade.php
-        $request->validate($this->rules,$this->errors);
-
-        //Crear el cliente en la base de datos
-        Cliente::create([
-            'nombre' => $request->nombre,
-            'apellido' => $request->apellidos,
-            'dni' => $request->dni,
-            'email' => $request->email,
-            'telefono' => $request->telefono,
-            'contraseña' => $request->password,
-        ]);
+        //En caso de que no se cree el cliente, devolvemos error
+        if (!$cliente) {
+            return redirect()->route('login', 'cliente')->withErrors(['email' => 'Error al crear el cliente']);
+        }
 
         //Redirigir con mensaje de exito
         return redirect()->route('login', 'cliente')->with('success', '¡Registro completado! Ya puedes iniciar sesión.');
     }
 
     /**
-     * Display the specified resource.
+     * @return \Illuminate\Contracts\View\View
+     * @throws \Illuminate\Validation\ValidationException
+     * @author Alonso Coronado Alcalde
+     * @description Muestra el formulario para editar el perfil del cliente.
      */
-    public function show(string $id)
-    {
-        // Por ahora vacío para futuras implementaciones
+    public function mostrarFormularioEditar() {
+        $clienteId = $this->clienteService->comprobarUsuario();
+        $cliente = Cliente::find($clienteId);
+
+        if (!$cliente) {
+            return redirect()->route('login', 'cliente')->withErrors(['email' => 'Cliente no encontrado']);
+        }
+
+        return view('cliente.editarPerfil', compact('cliente'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * @param DynamicRequestValidator $request
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Validation\ValidationException
+     * @author Alonso Coronado Alcalde
+     * @description Actualiza el correo electrónico y el teléfono del cliente.
      */
-    public function edit(string $id)
-    {
-        // Por ahora vacío para futuras implementaciones
+    public function actualizarClienteBD(DynamicRequestValidator $request) {
+        $clienteId = $this->clienteService->comprobarUsuario();
+        $cliente = Cliente::find($clienteId);
+
+        //En caso de que no se encuentre el cliente, devolvemos error
+        if (!$cliente) {
+            return redirect()->route('login', 'cliente')->withErrors(['email' => 'Cliente no encontrado']);
+        }
+
+        $cliente = $this->clienteService->actualizarCliente($request);
+
+        //En caso de que no se actualice el cliente, devolvemos error
+        if (!$cliente) {
+            return redirect()->route('cliente.editar')->withErrors(['email' => 'Error al actualizar el perfil']);
+        }
+
+        //Redirigir con mensaje de exito
+        return redirect()->route('cliente.editar')->with('success', '¡Perfil actualizado correctamente!');
     }
 
     /**
-     * Update the specified resource in storage.
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Validation\ValidationException
+     * @author Alonso Coronado Alcalde
+     * @description Genera la factura en formato PDF.
      */
-    public function update(Request $request, string $id)
-    {
-        // Por ahora vacío para futuras implementaciones
+    public function generarFactura($id) {
+        $clienteId = $this->clienteService->comprobarUsuario();
+        $factura = Factura::find($id); //Busca la factura por ID
+        $cliente = Cliente::find($clienteId); //Busca el cliente por ID
+
+        if (!$cliente) {
+            return redirect()->route('login', 'cliente')->withErrors(['email' => 'Cliente no encontrado']);
+        }
+
+        //Cargar la vista de la factura con los datos del cliente y la factura
+        $pdf = PDF::loadView('pdf.factura', compact('cliente', 'factura'));
+        return $pdf->stream('factura.pdf'); //Muestra la factura en el navegador
     }
 
     /**
-     * Remove the specified resource from storage.
+     * @return \Illuminate\Contracts\View\View
+     * @throws \Illuminate\Validation\ValidationException
+     * @author Alonso Coronado Alcalde
+     * @description Muestra el formulario para realizar una nueva incidencia.
      */
-    public function destroy(string $id)
-    {
-        // Por ahora vacío para futuras implementaciones
+    public function mostrarFormularioIncidencia() {
+        $clienteId = $this->clienteService->comprobarUsuario();
+        $cliente = Cliente::find($clienteId);
+
+        if (!$cliente) {
+            return redirect()->route('login', 'cliente')->withErrors(['email' => 'Cliente no encontrado']);
+        }
+
+        return view('cliente.crearIncidencia', compact('cliente'));
+    }
+
+    /**
+     * @param DynamicRequestValidator $request
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Validation\ValidationException
+     * @author Alonso Coronado Alcalde
+     * @description Guarda una nueva incidencia en la base de datos.
+     */
+    public function guardarIncidenciaBD(DynamicRequestValidator $request) {
+        $clienteId = $this->clienteService->comprobarUsuario();
+        $cliente = Cliente::find($clienteId);
+
+        if (!$cliente) {
+            return redirect()->route('login', 'cliente')->withErrors(['email' => 'Cliente no encontrado']);
+        }
+
+        $incidencia = new Incidencia();
+        $incidencia->cliente_id = $cliente->id;
+        $incidencia->descripcion = $request->descripcion;
+        $incidencia->estado = 'abierto';
+        $incidencia->fecha = now();
+        $incidencia->save();
+
+
+        return redirect()->route('cliente.incidencia.create')->with('success', '¡Incidencia enviada correctamente! Un técnico revisará su caso.');
     }
 }

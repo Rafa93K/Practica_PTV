@@ -2,13 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Services\AuthService;
+use App\Http\Requests\DynamicRequestValidator;
 use App\Models\Cliente;
 use App\Models\Trabajadore;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\Request;
 
 class AuthController extends Controller {
-    public function showLogin($tipo) {
+    private AuthService $authService;
+
+    public function __construct(AuthService $authService) {
+        $this->authService = $authService;
+    }
+    
+    public function mostrarLogin($tipo) {
         //Validar que solo existan cliente o trabajador
         if (!in_array($tipo, ['cliente', 'trabajador'])) {
             abort(404); //Error 404
@@ -18,7 +26,7 @@ class AuthController extends Controller {
         return view('auth.login', compact('tipo'));
     }
 
-    public function showRegister() {
+    public function mostrarRegistro() {
         return view('auth.registro');
     }
 
@@ -60,5 +68,9 @@ class AuthController extends Controller {
         }
         //Si fallan las credenciales
         return back()->withErrors(['email' => 'El correo o la contraseña son incorrectos.'])->withInput();
+    }
+
+    public function iniciarSesion(DynamicRequestValidator $request, $tipo) {
+        return $this->authService->login($request, $tipo);
     }
 }
