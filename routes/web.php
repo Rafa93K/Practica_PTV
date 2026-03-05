@@ -17,4 +17,6 @@ Route::post('/registro', [ClienteController::class, 'store'])->name('register.su
 
 //Rutas una vez logueado
 Route::get('/cliente/inicio', [ClienteController::class, 'index'])->name('cliente.inicio');
+Route::get('/cliente/editar', [ClienteController::class, 'edit'])->name('cliente.editar'); //Ruta para mostrar el formulario de editar perfil
+Route::put('/cliente/editar', [ClienteController::class, 'update'])->name('cliente.update'); //Ruta para procesar la actualizacion del perfil
 Route::get('/trabajador/inicio', function() { return view('trabajador.inicio'); })->name('trabajador.inicio');

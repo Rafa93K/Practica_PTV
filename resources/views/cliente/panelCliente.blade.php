@@ -7,22 +7,19 @@
         <script src="https://cdn.tailwindcss.com"></script>
     </head>
     <body class="bg-gray-50 flex flex-col min-h-screen">
-        <!-- HEADER -->
-        @include('layouts.header')
+        @include('layouts.header') {{-- Importacion del componente header --}}
 
-        <!-- CONTENIDO PRINCIPAL -->
         <main class="flex-1 container mx-auto px-4 py-8">
             <header class="mb-8">
-                <h2 class="text-3xl font-extrabold text-blue-900">Bienvenido de nuevo, {{ $cliente->nombre }}</h2>
+                <h2 class="text-3xl font-extrabold text-blue-900">Bienvenido de nuevo, {{ $cliente->nombre }}</h2> {{-- Leemos el nombre del cliente que ha iniciado sesion --}}
             </header>
             <div class="flex flex-col lg:flex-row gap-8">
-                
                 <!-- PERFIL Y DATOS -->
                 <div class="flex-1 flex flex-col gap-6">
                     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 transition-all hover:shadow-md">
                         <div class="flex items-center gap-4 mb-6">
                             <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-2xl font-bold">
-                                {{ substr($cliente->nombre, 0, 1) }}
+                                {{ substr($cliente->nombre, 0, 1) }} {{-- Coje la primera letra del nombre y se crea una foto de perfil --}}
                             </div>
                             <div>
                                 <h3 class="text-xl font-bold text-gray-800">Mi Perfil</h3>
@@ -49,9 +46,9 @@
                             </div>
                         </div>
 
-                        <button class="mt-8 w-full py-3 bg-blue-50 text-blue-600 font-semibold rounded-xl hover:bg-blue-100 transition-colors">
+                        <a href="{{ route('cliente.editar') }}" class="mt-8 w-full py-3 bg-blue-50 text-blue-600 font-semibold rounded-xl hover:bg-blue-100 transition-colors block text-center">
                             Editar Perfil
-                        </button>
+                        </a>
                     </div>
                 </div>
 
@@ -59,13 +56,11 @@
                 <div class="flex-1 flex flex-col gap-6">
                     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 transition-all hover:shadow-md">
                         <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-                            <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
                             Tus Servicios Activos
                         </h3>
 
                         <div class="space-y-4">
+                            {{-- Cojemos las facturas que tiene el cliente a través de sus contratos activos --}}
                             @forelse($cliente->contratos as $contrato)
                                 @foreach($contrato->tarifas as $tarifa)
                                     <div class="p-4 bg-green-50 rounded-xl border border-green-100 flex justify-between items-center">
@@ -75,12 +70,18 @@
                                         </div>
                                         <div class="text-right">
                                             <span class="text-xl font-bold text-green-900">{{ number_format($tarifa->precio, 2) }}€<span class="text-xs">/mes</span></span>
+                                            {{--
+                                                En caso que el contrato no se haya aprobado por un trabajador de marketing
+                                                aparecerá un texto en pendiente para hacer saber al usuario que no está activo
+                                                su tarifa
+                                            --}}
                                             @if(!$contrato->aprobado)
                                                 <p class="text-[10px] text-orange-600 font-bold uppercase">Pendiente</p>
                                             @endif
                                         </div>
                                     </div>
                                 @endforeach
+                                {{-- En caso de no tener ningun servicio todavía --}}
                             @empty
                                 <div class="text-center py-8">
                                     <p class="text-gray-400">No tienes servicios contratados todavía.</p>
@@ -99,25 +100,27 @@
                     <!-- Facturación -->
                     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 transition-all hover:shadow-md">
                         <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                            <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                            </svg>
                             Últimas Facturas
                         </h3>
                         
                         <div class="divide-y divide-gray-50">
-                            @forelse($cliente->facturas->sortByDesc('fecha_inicio')->take(5) as $factura)
+                            {{-- Por cada factura que tenga el cliente lo vamos mostrando, estando ordenadas en orden descendiente --}}
+                            @forelse($cliente->facturas->sortByDesc('fecha_inicio') as $factura)
                                 <div class="py-3 flex justify-between items-center">
                                     <span class="text-sm font-medium text-gray-600">{{ \Carbon\Carbon::parse($factura->fecha_inicio)->translatedFormat('F Y') }}</span>
                                     <div class="flex items-center gap-3">
                                         <span class="text-sm font-bold text-gray-800">{{ number_format($factura->precio, 2) }} €</span>
+
+                                        {{-- Botón de descargar --}}
                                         <a href="#" class="text-blue-500 hover:text-blue-700">
+                                            {{-- Icono del botón de descargar --}}
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                                             </svg>
                                         </a>
                                     </div>
                                 </div>
+                                {{-- En caso de no tener ninguna factura --}}
                             @empty
                                 <div class="text-center py-4">
                                     <p class="text-gray-400 text-sm">No tienes facturas disponibles.</p>
@@ -130,7 +133,10 @@
                     <div class="bg-blue-900 rounded-2xl shadow-lg p-6 text-white">
                         <h3 class="text-xl font-bold mb-4">¿Algún problema?</h3>
                         <p class="text-blue-200 text-sm mb-6">Si tienes alguna duda o incidencia con tus servicios, nuestro equipo técnico está disponible 24/7.</p>
+                        
+                        {{-- Botón para abrir el panel de incidencias --}}
                         <button class="w-full py-3 bg-white text-blue-900 font-bold rounded-xl shadow-lg hover:bg-gray-100 transition-all flex items-center justify-center gap-2">
+                            {{-- Icono del botón de crear incidencias --}}
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path>
                             </svg>
@@ -141,7 +147,6 @@
             </div>
         </main>
 
-        <!-- FOOTER -->
-        @include('layouts.footer')
+        @include('layouts.footer') {{-- Importacion del componente footer --}}
     </body>
 </html>

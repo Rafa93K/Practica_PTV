@@ -75,19 +75,61 @@ class ClienteController extends Controller {
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Muestra el formulario para editar el perfil del cliente.
      */
-    public function edit(string $id)
+    public function edit()
     {
-        // Por ahora vacío para futuras implementaciones
+        $clienteId = session('user_id');
+        $userType = session('user_type');
+
+        if (!$clienteId || $userType !== 'cliente') {
+            return redirect()->route('login', 'cliente')->withErrors(['email' => 'Debes iniciar sesion como cliente']);
+        }
+
+        $cliente = Cliente::find($clienteId);
+
+        if (!$cliente) {
+            return redirect()->route('login', 'cliente')->withErrors(['email' => 'Cliente no encontrado']);
+        }
+
+        return view('cliente.editarPerfil', compact('cliente'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Actualiza el correo electrónico y el teléfono del cliente.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request)
     {
-        // Por ahora vacío para futuras implementaciones
+        $clienteId = session('user_id');
+        $userType = session('user_type');
+
+        if (!$clienteId || $userType !== 'cliente') {
+            return redirect()->route('login', 'cliente')->withErrors(['email' => 'Debes iniciar sesion como cliente']);
+        }
+
+        $cliente = Cliente::find($clienteId);
+
+        if (!$cliente) {
+            return redirect()->route('login', 'cliente')->withErrors(['email' => 'Cliente no encontrado']);
+        }
+
+        // Validar solo los campos editables
+        $request->validate([
+            'email' => 'required|string|email|max:255|unique:clientes,email,' . $cliente->id,
+            'telefono' => 'required|string|max:9',
+        ], [
+            'email.required' => 'El correo electrónico es obligatorio.',
+            'email.email' => 'El correo electrónico no es válido.',
+            'email.unique' => 'El correo electrónico ya está registrado por otro usuario.',
+            'telefono.required' => 'El teléfono es obligatorio.',
+        ]);
+
+        // Actualizar solo email y teléfono
+        $cliente->email = $request->email;
+        $cliente->telefono = $request->telefono;
+        $cliente->save();
+
+        return redirect()->route('cliente.editar')->with('success', '¡Perfil actualizado correctamente!');
     }
 
     /**
