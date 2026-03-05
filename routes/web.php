@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\TrabajadorController;
 
 
 Route::get('/', function () {
@@ -25,4 +26,10 @@ Route::get('/marketing/inicio', function () {   return view('marketing.inicio');
 
 Route::get('/jefe_tecnico/inicio', function () {return view('jefe_tecnico.inicio');})->middleware(['checklogin','role:jefe_tecnico'])->name('jefe_tecnico.inicio');
 
-Route::get('/tecnico/inicio', function () { return view('tecnico.inicio');})->middleware(['checklogin','role:tecnico'])->name('tecnico.inicio');
+Route::get('/tecnico/inicio', function () { return view('tecnico.inicio');})->middleware(['checklogin','role:tecnico'])->name('tecnico.inicio'); 
+
+
+
+//Ruta para el manager
+Route::get('/manager/crear-trabajador',[TrabajadorController::class,'crearTrabajador'])->middleware(['checklogin','role:manager'])->name('manager.crearTrabajador');
+Route::post('/manager/crear-trabajador', [TrabajadorController::class, 'trabajadorSubmit'])->middleware(['checklogin','role:manager'])->name('manager.trabajadorSubmit');

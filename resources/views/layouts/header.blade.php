@@ -5,10 +5,8 @@
             <h1 class="text-2xl font-bold tracking-wide">Telcomanager</h1>
         </a>
         <span class="text-sm opacity-80">
-            <p class="font-bold text-cyan-300">Bienvenido! {{session('user_name')}}</p>
+            <p class="font-bold text-cyan-300">@if (session('user_name'))Bienvenido/a! {{session('user_name')}}@endif </p>
             Soluciones de Gestión Empresarial
-            
         </span>
-
     </div>
 </header>
