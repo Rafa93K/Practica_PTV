@@ -6,6 +6,12 @@ use App\Models\Cliente;
 use Illuminate\Support\Facades\Hash;
 
 class ClienteService {
+    /**
+     * @return int
+     * @throws \Illuminate\Validation\ValidationException
+     * @author Alonso Coronado Alcalde
+     * @description Comprueba que el usuario que intenta acceder es un cliente.
+     */
     public function comprobarUsuario() {
         //Comprueba que el usuario que intenta acceder es un cliente
         $clienteId = session('user_id');
@@ -19,6 +25,13 @@ class ClienteService {
         return $clienteId; //Devolvemos el ID del cliente
     }
 
+    /**
+     * @param Request $request
+     * @return \App\Models\Cliente
+     * @throws \Illuminate\Validation\ValidationException
+     * @author Alonso Coronado Alcalde
+     * @description Crea un nuevo cliente.
+     */
     public function crearCliente(Request $request) {
         //Crear el cliente
         $cliente = Cliente::create([
@@ -32,6 +45,13 @@ class ClienteService {
         return $cliente; //Devolvemos el cliente creado
     }
 
+    /**
+     * @param Request $request
+     * @return \App\Models\Cliente
+     * @throws \Illuminate\Validation\ValidationException
+     * @author Alonso Coronado Alcalde
+     * @description Actualiza el correo electrónico y el teléfono del cliente.
+     */
     public function actualizarCliente(Request $request) {
         $clienteId = $this->comprobarUsuario();
         $cliente = Cliente::find($clienteId);

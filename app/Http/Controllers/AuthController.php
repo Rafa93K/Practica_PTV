@@ -2,11 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Cliente;
-use App\Models\Trabajadore;
 use App\Services\AuthService;
-use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\DynamicRequestValidator;
 
 class AuthController extends Controller {
     private AuthService $authService;
@@ -29,17 +26,7 @@ class AuthController extends Controller {
         return view('auth.registro');
     }
 
-    public function iniciarSesion(Request $request, $tipo) {
-        //Validar los datos
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ], [
-            'email.required' => 'El correo electrónico es obligatorio.',
-            'email.email' => 'Introduce un correo electrónico válido.',
-            'password.required' => 'La contraseña es obligatoria.',
-        ]);
-
+    public function iniciarSesion(DynamicRequestValidator $request, $tipo) {
         return $this->authService->login($request, $tipo);
     }
 }

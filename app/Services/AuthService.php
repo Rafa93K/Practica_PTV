@@ -7,6 +7,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class AuthService {
+    /**
+     * @param Request $request
+     * @param string $tipo
+     * @return \Illuminate\Http\RedirectResponse
+     * @author Alonso Coronado Alcalde
+     * @description Inicia sesión en el sistema.
+     */
     public function login(Request $request, $tipo) {
         //Buscar el usuario segun el tipo
         if ($tipo === 'cliente') {

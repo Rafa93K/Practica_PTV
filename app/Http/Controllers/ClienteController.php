@@ -3,16 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cliente;
+use App\Models\Factura;
 use App\Services\ClienteService;
-use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Http\Requests\DynamicRequestValidator;
 
 class ClienteController extends Controller {
     private ClienteService $clienteService;
 
+    /**
+     * @param ClienteService $clienteService
+     * @author Alonso Coronado Alcalde
+     * @description Inyecta el servicio de cliente.
+     */
     public function __construct(ClienteService $clienteService) {
         $this->clienteService = $clienteService;
     }
 
+    /**
+     * @return \Illuminate\Contracts\View\View
+     * @throws \Illuminate\Validation\ValidationException
+     * @author Alonso Coronado Alcalde
+     * @description Carga el panel del cliente con sus contratos y facturas.
+     */
     public function cargarPanelCliente() {
         $clienteId = $this->clienteService->comprobarUsuario();
 
@@ -27,34 +40,14 @@ class ClienteController extends Controller {
         return view('cliente.panelCliente', compact('cliente'));
     }
 
-    //Reglas para validar el formulario de registro
-    private array $rules=[
-        'nombre' => 'required|string|max:255',
-        'apellidos' => 'required|string|max:255',
-        'dni' => 'required|string|max:9|unique:clientes,dni',
-        'email' => 'required|string|email|max:255|unique:clientes,email',
-        'telefono' => 'required|string|max:9',
-        'password' => 'required|string|min:8',
-    ];
-
-    //Mensajes de error para el formulario de registro
-    private $errors=[
-        'nombre.required' => 'El nombre es obligatorio.',
-        'apellidos.required' => 'Los apellidos son obligatorios.',
-        'dni.required' => 'El DNI es obligatorio.',
-        'dni.unique' => 'El DNI ya está registrado.',
-        'email.required' => 'El correo electrónico es obligatorio.',
-        'email.email' => 'El correo electrónico no es válido.',
-        'email.unique' => 'El correo electrónico ya está registrado.',
-        'telefono.required' => 'El teléfono es obligatorio.',
-        'password.required' => 'La contraseña es obligatoria.',
-        'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
-    ];
-
-    public function guardarClienteBD(Request $request) {
-        //Validar los datos que vienen del formulario registro.blade.php
-        $request->validate($this->rules,$this->errors);
-
+    /**
+     * @param DynamicRequestValidator $request
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Validation\ValidationException
+     * @author Alonso Coronado Alcalde
+     * @description Guarda el cliente en la base de datos.
+     */
+    public function guardarClienteBD(DynamicRequestValidator $request) {
         $cliente = $this->clienteService->crearCliente($request);
 
         //En caso de que no se cree el cliente, devolvemos error
@@ -67,12 +60,13 @@ class ClienteController extends Controller {
     }
 
     /**
-     * Muestra el formulario para editar el perfil del cliente.
+     * @return \Illuminate\Contracts\View\View
+     * @throws \Illuminate\Validation\ValidationException
+     * @author Alonso Coronado Alcalde
+     * @description Muestra el formulario para editar el perfil del cliente.
      */
-    public function mostrarFormularioEditar()
-    {
+    public function mostrarFormularioEditar() {
         $clienteId = $this->clienteService->comprobarUsuario();
-
         $cliente = Cliente::find($clienteId);
 
         if (!$cliente) {
@@ -83,29 +77,20 @@ class ClienteController extends Controller {
     }
 
     /**
-     * Actualiza el correo electrónico y el teléfono del cliente.
+     * @param DynamicRequestValidator $request
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Validation\ValidationException
+     * @author Alonso Coronado Alcalde
+     * @description Actualiza el correo electrónico y el teléfono del cliente.
      */
-    public function actualizarClienteBD(Request $request)
-    {
+    public function actualizarClienteBD(DynamicRequestValidator $request) {
         $clienteId = $this->clienteService->comprobarUsuario();
-
         $cliente = Cliente::find($clienteId);
 
         //En caso de que no se encuentre el cliente, devolvemos error
         if (!$cliente) {
             return redirect()->route('login', 'cliente')->withErrors(['email' => 'Cliente no encontrado']);
         }
-
-        //Validar solo los campos editables
-        $request->validate([
-            'email' => 'required|string|email|max:255|unique:clientes,email,' . $cliente->id,
-            'telefono' => 'required|string|max:9',
-        ], [
-            'email.required' => 'El correo electrónico es obligatorio.',
-            'email.email' => 'El correo electrónico no es válido.',
-            'email.unique' => 'El correo electrónico ya está registrado por otro usuario.',
-            'telefono.required' => 'El teléfono es obligatorio.',
-        ]);
 
         $cliente = $this->clienteService->actualizarCliente($request);
 
@@ -116,5 +101,26 @@ class ClienteController extends Controller {
 
         //Redirigir con mensaje de exito
         return redirect()->route('cliente.editar')->with('success', '¡Perfil actualizado correctamente!');
+    }
+
+    /**
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Validation\ValidationException
+     * @author Alonso Coronado Alcalde
+     * @description Genera la factura en formato PDF.
+     */
+    public function generarFactura($id) {
+        $clienteId = $this->clienteService->comprobarUsuario();
+        $factura = Factura::find($id); //Busca la factura por ID
+        $cliente = Cliente::find($clienteId); //Busca el cliente por ID
+
+        if (!$cliente) {
+            return redirect()->route('login', 'cliente')->withErrors(['email' => 'Cliente no encontrado']);
+        }
+
+        //Cargar la vista de la factura con los datos del cliente y la factura
+        $pdf = PDF::loadView('pdf.factura', compact('cliente', 'factura'));
+        return $pdf->stream('factura.pdf'); //Muestra la factura en el navegador
     }
 }
