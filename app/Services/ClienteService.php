@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Services;
-use Illuminate\Http\Request;
+use App\Http\Requests\DynamicRequestValidator;
 use App\Models\Cliente;
 use Illuminate\Support\Facades\Hash;
 
@@ -29,17 +29,18 @@ class ClienteService {
      * @param Request $request
      * @return \App\Models\Cliente
      * @throws \Illuminate\Validation\ValidationException
-     * @author Alonso Coronado Alcalde
+     * @autho0r Alonso Coronado Alcalde
      * @description Crea un nuevo cliente.
      */
-    public function crearCliente(Request $request) {
+    public function crearCliente(DynamicRequestValidator $request) {
         //Crear el cliente
         $cliente = Cliente::create([
             'nombre' => $request->nombre,
-            'apellidos' => $request->apellidos,
+            'apellido' => $request->apellido,
+            'dni' => $request->dni,
             'email' => $request->email,
             'telefono' => $request->telefono,
-            'password' => Hash::make($request->password),
+            'contraseña' => Hash::make($request->password),
         ]);
 
         return $cliente; //Devolvemos el cliente creado
@@ -52,7 +53,7 @@ class ClienteService {
      * @author Alonso Coronado Alcalde
      * @description Actualiza el correo electrónico y el teléfono del cliente.
      */
-    public function actualizarCliente(Request $request) {
+    public function actualizarCliente(DynamicRequestValidator $request) {
         $clienteId = $this->comprobarUsuario();
         $cliente = Cliente::find($clienteId);
         

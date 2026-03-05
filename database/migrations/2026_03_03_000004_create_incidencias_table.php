@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('incidencias', function (Blueprint $table) {
             $table->id();
             $table->foreignId('cliente_id')->constrained('clientes')->onDelete('cascade');
-            $table->foreignId('trabajador_id')->constrained('trabajadores')->onDelete('cascade');
+            $table->foreignId('trabajador_id')->nullable()->constrained('trabajadores')->onDelete('cascade');
             $table->text('descripcion');
             $table->enum('estado', ['abierto', 'en_progreso', 'cerrado'])->default('abierto');
             $table->date('fecha');

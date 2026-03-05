@@ -38,7 +38,7 @@ class DynamicRequestValidator extends FormRequest
             case 'register.submit':
                 return [
                     'nombre' => 'required|string|max:255',
-                    'apellidos' => 'required|string|max:255',
+                    'apellido' => 'required|string|max:255',
                     'dni' => 'required|string|max:9|unique:clientes,dni',
                     'email' => 'required|string|email|max:255|unique:clientes,email',
                     'telefono' => 'required|string|max:9',
@@ -46,7 +46,6 @@ class DynamicRequestValidator extends FormRequest
                 ];
             break;
 
-            // Ruta: PUT /cliente/editar -> name('cliente.update')
             case 'cliente.update':
                 $clienteId = session('user_id');
                 return [
@@ -54,6 +53,14 @@ class DynamicRequestValidator extends FormRequest
                     'telefono' => 'required|string|max:9',
                 ];
             break;
+
+            // Ruta: POST /cliente/incidencia -> name('cliente.incidencia.store')
+            case 'cliente.incidencia.store':
+                return [
+                    'descripcion' => 'required|string|min:10',
+                ];
+            break;
+
 
             default:
                 return [];
@@ -76,7 +83,7 @@ class DynamicRequestValidator extends FormRequest
             
             //Registro
             'nombre.required' => 'El nombre es obligatorio.',
-            'apellidos.required' => 'Los apellidos son obligatorios.',
+            'apellido.required' => 'Los apellidos son obligatorios.',
             'dni.required' => 'El DNI es obligatorio.',
             'dni.unique' => 'El DNI ya está registrado.',
             'telefono.required' => 'El teléfono es obligatorio.',

@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Cliente;
 use App\Models\Factura;
+use App\Models\Incidencia;
 use App\Services\ClienteService;
+
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Requests\DynamicRequestValidator;
 
@@ -122,5 +124,48 @@ class ClienteController extends Controller {
         //Cargar la vista de la factura con los datos del cliente y la factura
         $pdf = PDF::loadView('pdf.factura', compact('cliente', 'factura'));
         return $pdf->stream('factura.pdf'); //Muestra la factura en el navegador
+    }
+
+    /**
+     * @return \Illuminate\Contracts\View\View
+     * @throws \Illuminate\Validation\ValidationException
+     * @author Alonso Coronado Alcalde
+     * @description Muestra el formulario para realizar una nueva incidencia.
+     */
+    public function mostrarFormularioIncidencia() {
+        $clienteId = $this->clienteService->comprobarUsuario();
+        $cliente = Cliente::find($clienteId);
+
+        if (!$cliente) {
+            return redirect()->route('login', 'cliente')->withErrors(['email' => 'Cliente no encontrado']);
+        }
+
+        return view('cliente.crearIncidencia', compact('cliente'));
+    }
+
+    /**
+     * @param DynamicRequestValidator $request
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Validation\ValidationException
+     * @author Alonso Coronado Alcalde
+     * @description Guarda una nueva incidencia en la base de datos.
+     */
+    public function guardarIncidenciaBD(DynamicRequestValidator $request) {
+        $clienteId = $this->clienteService->comprobarUsuario();
+        $cliente = Cliente::find($clienteId);
+
+        if (!$cliente) {
+            return redirect()->route('login', 'cliente')->withErrors(['email' => 'Cliente no encontrado']);
+        }
+
+        $incidencia = new Incidencia();
+        $incidencia->cliente_id = $cliente->id;
+        $incidencia->descripcion = $request->descripcion;
+        $incidencia->estado = 'abierto';
+        $incidencia->fecha = now();
+        $incidencia->save();
+
+
+        return redirect()->route('cliente.incidencia.create')->with('success', '¡Incidencia enviada correctamente! Un técnico revisará su caso.');
     }
 }

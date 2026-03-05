@@ -178,9 +178,7 @@ class DatabaseSeeder extends Seeder
             // Cada tarifa tiene al menos 1 producto aleatorio
             DB::table('tarifa_producto')->insert([
                 'tarifa_id' => $tarifaId,
-                'producto_id' => $productosIds[rand(0, 9)],
-                'created_at' => now(),
-                'updated_at' => now()
+                'producto_id' => $productosIds[rand(0, 9)]
             ]);
         }
     }//php artisan db:seed --class=DatabaseSeeder

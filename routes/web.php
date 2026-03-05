@@ -20,6 +20,9 @@ Route::get('/cliente/inicio', [ClienteController::class, 'cargarPanelCliente'])-
 Route::get('/cliente/editar', [ClienteController::class, 'mostrarFormularioEditar'])->name('cliente.editar'); //Ruta para mostrar el formulario de editar perfil
 Route::put('/cliente/editar', [ClienteController::class, 'actualizarClienteBD'])->name('cliente.update'); //Ruta para procesar la actualizacion del perfil
 Route::get('/cliente/generarFactura/{id}', [ClienteController::class, 'generarFactura'])->name('cliente.generarFactura'); //Ruta para generar la factura
+Route::get('/cliente/incidencia', [ClienteController::class, 'mostrarFormularioIncidencia'])->name('cliente.incidencia.create'); //Ruta para mostrar el formulario de incidencia
+Route::post('/cliente/incidencia', [ClienteController::class, 'guardarIncidenciaBD'])->name('cliente.incidencia.store'); //Ruta para procesar la incidencia
+
 
 //Rutas una vez logueado del trabajador
 Route::get('/trabajador/inicio', function() { return view('trabajador.inicio'); })->name('trabajador.inicio');

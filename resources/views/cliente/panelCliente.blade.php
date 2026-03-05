@@ -134,14 +134,15 @@
                         <h3 class="text-xl font-bold mb-4">¿Algún problema?</h3>
                         <p class="text-blue-200 text-sm mb-6">Si tienes alguna duda o incidencia con tus servicios, nuestro equipo técnico está disponible 24/7.</p>
                         
-                        {{-- Botón para abrir el panel de incidencias --}}
-                        <button class="w-full py-3 bg-white text-blue-900 font-bold rounded-xl shadow-lg hover:bg-gray-100 transition-all flex items-center justify-center gap-2">
+                        {{-- Botón para abrir el formulario de incidencias --}}
+                        <a href="{{ route('cliente.incidencia.create') }}" class="w-full py-3 bg-white text-blue-900 font-bold rounded-xl shadow-lg hover:bg-gray-100 transition-all flex items-center justify-center gap-2">
                             {{-- Icono del botón de crear incidencias --}}
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path>
                             </svg>
                             Abrir Ticket Soporte
-                        </button>
+                        </a>
+
                     </div>
                 </div>
             </div>

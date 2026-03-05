@@ -44,7 +44,7 @@
                         </div>
                         <div class="space-y-1">
                             <label class="text-sm font-semibold text-gray-700 ml-1">Apellidos</label>
-                            <input type="text" required name="apellidos" placeholder="Ej: Coronado Alcalde"
+                            <input type="text" required name="apellido" placeholder="Ej: Coronado Alcalde"
                                 class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all placeholder:text-gray-300">
                         </div>
                     </div>
