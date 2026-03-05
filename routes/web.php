@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\TrabajadorController;
+use App\Http\Controllers\ProductoController;
 
 
 Route::get('/', function () {
@@ -30,6 +31,10 @@ Route::get('/tecnico/inicio', function () { return view('tecnico.inicio');})->mi
 
 
 
-//Ruta para el manager
+//RUTAS MANAGER
+//creacion de trabajador
 Route::get('/manager/crear-trabajador',[TrabajadorController::class,'crearTrabajador'])->middleware(['checklogin','role:manager'])->name('manager.crearTrabajador');
 Route::post('/manager/crear-trabajador', [TrabajadorController::class, 'trabajadorSubmit'])->middleware(['checklogin','role:manager'])->name('manager.trabajadorSubmit');
+//Creación de producto
+Route::get('/manager/productos',[ProductoController::class,'mostrarProducto'])->middleware(['checklogin','role:manager'])->name('mostrarProducto');
+Route::post('/manager/productos',[ProductoController::class,'guardarProducto'])->middleware(['checklogin','role:manager'])->name('productoSubmit');

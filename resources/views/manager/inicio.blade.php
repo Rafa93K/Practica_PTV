@@ -15,7 +15,7 @@
             class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-blue-900  transition">
             Crear Usuarios
             </a>
-            <a href="#" 
+            <a href="{{route('mostrarProducto')}}" 
             class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-blue-900 transition">
             Crear Productos
             </a>
