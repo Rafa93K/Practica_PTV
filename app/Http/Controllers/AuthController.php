@@ -31,46 +31,8 @@ class AuthController extends Controller {
     }
 
 
-    public function login(Request $request, $tipo) {
-        //Validar los datos
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ], [
-            'email.required' => 'El correo electrónico es obligatorio.',
-            'email.email' => 'Introduce un correo electrónico válido.',
-            'password.required' => 'La contraseña es obligatoria.',
-        ]);
-
-        //Buscar el usuario segun el tipo
-        if ($tipo === 'cliente') {
-            $user = Cliente::where('email', $request->email)->first();
-        } else {
-            $user = Trabajadore::where('email', $request->email)->first();
-        }
-
-        //Verificar si existe y si la contraseña es correcta
-        if ($user && Hash::check($request->password, $user->contraseña)) {
-            //Guardar algo en sesión para "simular" el login por ahora
-            session([
-                'user_id' => $user->id, 
-                'user_type' => $tipo,
-                'user_name' => $user->nombre,
-                'user_role' => $user->rol
-                ]);
-
-            //Redirigir al inicio correspondiente
-            if ($tipo === 'cliente') {
-                return redirect()->route('cliente.panelCliente');
-            }else{
-                return redirect()->route($user->rol . '.inicio');
-            }
-        }
-        //Si fallan las credenciales
-        return back()->withErrors(['email' => 'El correo o la contraseña son incorrectos.'])->withInput();
-    }
-
     public function iniciarSesion(DynamicRequestValidator $request, $tipo) {
         return $this->authService->login($request, $tipo);
     }
+
 }

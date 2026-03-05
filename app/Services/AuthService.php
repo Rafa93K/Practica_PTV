@@ -17,11 +17,26 @@ class AuthService {
 
         //Verificar si existe y si la contraseña es correcta
         if ($user && Hash::check($request->password, $user->contraseña)) {
-            session(['user_id' => $user->id, 'user_type' => $tipo]);
+            session([
+                'user_id' => $user->id, 
+                'user_type' => $tipo,
+                'user_name' => $user->nombre,
+                'user_role' => $user->rol ?? null
+            ]);
 
             //Redirigir al inicio correspondiente
-            return redirect()->route($tipo . '.inicio');
+            if ($tipo === 'cliente') {
+                return redirect()->route('cliente.inicio');
+            }
+
+            // Si es trabajador, redirigir según su rol
+            if ($user->rol) {
+                return redirect()->route($user->rol . '.inicio');
+            }
+
+            return redirect()->route('inicio');
         }
+
 
         //Si fallan las credenciales
         return back()->withErrors(['email' => 'El correo o la contraseña son incorrectos.'])->withInput();
