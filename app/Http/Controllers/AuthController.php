@@ -5,10 +5,17 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Cliente;
 use App\Models\Trabajadore;
+use App\Services\AuthService;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller {
-    public function showLogin($tipo) {
+    private AuthService $authService;
+
+    public function __construct(AuthService $authService) {
+        $this->authService = $authService;
+    }
+    
+    public function mostrarLogin($tipo) {
         //Validar que solo existan cliente o trabajador
         if (!in_array($tipo, ['cliente', 'trabajador'])) {
             abort(404); //Error 404
@@ -18,11 +25,11 @@ class AuthController extends Controller {
         return view('auth.login', compact('tipo'));
     }
 
-    public function showRegister() {
+    public function mostrarRegistro() {
         return view('auth.registro');
     }
 
-    public function login(Request $request, $tipo) {
+    public function iniciarSesion(Request $request, $tipo) {
         //Validar los datos
         $request->validate([
             'email' => 'required|email',
@@ -33,23 +40,6 @@ class AuthController extends Controller {
             'password.required' => 'La contraseña es obligatoria.',
         ]);
 
-        //Buscar el usuario segun el tipo
-        if ($tipo === 'cliente') {
-            $user = Cliente::where('email', $request->email)->first();
-        } else {
-            $user = Trabajadore::where('email', $request->email)->first();
-        }
-
-        //Verificar si existe y si la contraseña es correcta
-        if ($user && Hash::check($request->password, $user->contraseña)) {
-            //Guardar algo en sesión para "simular" el login por ahora
-            session(['user_id' => $user->id, 'user_type' => $tipo]);
-
-            //Redirigir al inicio correspondiente
-            return redirect()->route($tipo . '.inicio');
-        }
-
-        //Si fallan las credenciales
-        return back()->withErrors(['email' => 'El correo o la contraseña son incorrectos.'])->withInput();
+        return $this->authService->login($request, $tipo);
     }
 }

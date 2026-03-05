@@ -3,22 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cliente;
+use App\Services\ClienteService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 
 class ClienteController extends Controller {
-    public function index() {
-        //Obtener el ID del cliente de la sesión
-        $clienteId = session('user_id');
-        $userType = session('user_type');
+    private ClienteService $clienteService;
 
-        if (!$clienteId || $userType !== 'cliente') {
-            return redirect()->route('login', 'cliente')->withErrors(['email' => 'Debes iniciar sesion como cliente']);
-        }
+    public function __construct(ClienteService $clienteService) {
+        $this->clienteService = $clienteService;
+    }
+
+    public function cargarPanelCliente() {
+        $clienteId = $this->clienteService->comprobarUsuario();
 
         //Buscar al cliente con sus relaciones: contratos -> tarifas, y facturas
         $cliente = Cliente::with(['contratos.tarifas', 'facturas'])->find($clienteId);
 
+        //Si no existe el cliente lo devolvemos
         if (!$cliente) {
             return redirect()->route('login', 'cliente')->withErrors(['email' => 'Cliente no encontrado']);
         }
@@ -26,6 +27,7 @@ class ClienteController extends Controller {
         return view('cliente.panelCliente', compact('cliente'));
     }
 
+    //Reglas para validar el formulario de registro
     private array $rules=[
         'nombre' => 'required|string|max:255',
         'apellidos' => 'required|string|max:255',
@@ -35,6 +37,7 @@ class ClienteController extends Controller {
         'password' => 'required|string|min:8',
     ];
 
+    //Mensajes de error para el formulario de registro
     private $errors=[
         'nombre.required' => 'El nombre es obligatorio.',
         'apellidos.required' => 'Los apellidos son obligatorios.',
@@ -48,43 +51,27 @@ class ClienteController extends Controller {
         'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
     ];
 
-    public function store(Request $request) {
+    public function guardarClienteBD(Request $request) {
         //Validar los datos que vienen del formulario registro.blade.php
         $request->validate($this->rules,$this->errors);
 
-        //Crear el cliente en la base de datos
-        Cliente::create([
-            'nombre' => $request->nombre,
-            'apellido' => $request->apellidos,
-            'dni' => $request->dni,
-            'email' => $request->email,
-            'telefono' => $request->telefono,
-            'contraseña' => $request->password,
-        ]);
+        $cliente = $this->clienteService->crearCliente($request);
+
+        //En caso de que no se cree el cliente, devolvemos error
+        if (!$cliente) {
+            return redirect()->route('login', 'cliente')->withErrors(['email' => 'Error al crear el cliente']);
+        }
 
         //Redirigir con mensaje de exito
         return redirect()->route('login', 'cliente')->with('success', '¡Registro completado! Ya puedes iniciar sesión.');
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        // Por ahora vacío para futuras implementaciones
-    }
-
-    /**
      * Muestra el formulario para editar el perfil del cliente.
      */
-    public function edit()
+    public function mostrarFormularioEditar()
     {
-        $clienteId = session('user_id');
-        $userType = session('user_type');
-
-        if (!$clienteId || $userType !== 'cliente') {
-            return redirect()->route('login', 'cliente')->withErrors(['email' => 'Debes iniciar sesion como cliente']);
-        }
+        $clienteId = $this->clienteService->comprobarUsuario();
 
         $cliente = Cliente::find($clienteId);
 
@@ -98,22 +85,18 @@ class ClienteController extends Controller {
     /**
      * Actualiza el correo electrónico y el teléfono del cliente.
      */
-    public function update(Request $request)
+    public function actualizarClienteBD(Request $request)
     {
-        $clienteId = session('user_id');
-        $userType = session('user_type');
-
-        if (!$clienteId || $userType !== 'cliente') {
-            return redirect()->route('login', 'cliente')->withErrors(['email' => 'Debes iniciar sesion como cliente']);
-        }
+        $clienteId = $this->clienteService->comprobarUsuario();
 
         $cliente = Cliente::find($clienteId);
 
+        //En caso de que no se encuentre el cliente, devolvemos error
         if (!$cliente) {
             return redirect()->route('login', 'cliente')->withErrors(['email' => 'Cliente no encontrado']);
         }
 
-        // Validar solo los campos editables
+        //Validar solo los campos editables
         $request->validate([
             'email' => 'required|string|email|max:255|unique:clientes,email,' . $cliente->id,
             'telefono' => 'required|string|max:9',
@@ -124,19 +107,14 @@ class ClienteController extends Controller {
             'telefono.required' => 'El teléfono es obligatorio.',
         ]);
 
-        // Actualizar solo email y teléfono
-        $cliente->email = $request->email;
-        $cliente->telefono = $request->telefono;
-        $cliente->save();
+        $cliente = $this->clienteService->actualizarCliente($request);
 
+        //En caso de que no se actualice el cliente, devolvemos error
+        if (!$cliente) {
+            return redirect()->route('cliente.editar')->withErrors(['email' => 'Error al actualizar el perfil']);
+        }
+
+        //Redirigir con mensaje de exito
         return redirect()->route('cliente.editar')->with('success', '¡Perfil actualizado correctamente!');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        // Por ahora vacío para futuras implementaciones
     }
 }

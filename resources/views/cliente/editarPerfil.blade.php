@@ -5,59 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Editar Perfil</title>
         <script src="https://cdn.tailwindcss.com"></script>
-        <style>
-            /* Animación de entrada del formulario */
-            @keyframes fadeInUp {
-                from {
-                    opacity: 0;
-                    transform: translateY(20px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-
-            .animate-fade-in-up {
-                animation: fadeInUp 0.5s ease-out;
-            }
-
-            /* Estilos para los campos bloqueados */
-            .field-locked {
-                background-color: #f3f4f6;
-                color: #6b7280;
-                cursor: not-allowed;
-                border: 1px solid #e5e7eb;
-            }
-
-            .field-locked:focus {
-                outline: none;
-                box-shadow: none;
-            }
-
-            /* Estilos para los campos editables */
-            .field-editable {
-                background-color: #ffffff;
-                border: 2px solid #dbeafe;
-                transition: all 0.3s ease;
-            }
-
-            .field-editable:focus {
-                border-color: #3b82f6;
-                box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
-                outline: none;
-            }
-
-            /* Icono de candado */
-            .lock-icon {
-                color: #9ca3af;
-            }
-
-            /* Icono de editar */
-            .edit-icon {
-                color: #3b82f6;
-            }
-        </style>
+        <link rel="stylesheet" href="{{ asset('css/editarPerfil.css') }}">
     </head>
     <body class="bg-gray-50 flex flex-col min-h-screen">
         @include('layouts.header')
