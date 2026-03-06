@@ -6,6 +6,7 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\TrabajadorController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ManagerController;
+use App\Http\Controllers\TarifaController;
 
 
 Route::get('/', function () { return view('inicio');})->name('inicio');
@@ -44,3 +45,6 @@ Route::post('/manager/productos',[ProductoController::class,'guardarProducto'])-
 
 //muestra de datos estadísticos para el manager
 Route::get('/manager/inicio', [ManagerController::class,'index'])->middleware(['checklogin','role:manager'])->name('manager.inicio');
+
+//ruta para ver tarifas desde el manager
+Route::get('/manager/tarifas', [TarifaController::class,'mostrarTarifas'])->middleware(['checklogin','role:manager'])->name('manager.tarifas');
