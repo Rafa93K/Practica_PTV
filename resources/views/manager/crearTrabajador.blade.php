@@ -39,19 +39,19 @@
                     <div class="space-y-1">
                         <label class="text-sm font-semibold text-gray-700 ml-1">Nombre</label>
                         <input type="text" required name="nombre" placeholder="Ej: Alonso"
-                            class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all placeholder:text-gray-300">
+                            class="w-full border border-gray-400 rounded-xl px-4 py-3 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all placeholder:text-gray-400">
                     </div>
                     <div class="space-y-1">
                         <label class="text-sm font-semibold text-gray-700 ml-1">Apellidos</label>
                         <input type="text" required name="apellido" placeholder="Ej: Coronado Alcalde"
-                            class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all placeholder:text-gray-300">
+                            class="w-full border border-gray-400 rounded-xl px-4 py-3 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all placeholder:text-gray-400">
                     </div>
                 </div>
 
                 <div class="space-y-1">
                     <label class="text-sm font-semibold text-gray-700 ml-1">DNI / NIE</label>
                     <input type="text" required name="dni" placeholder="12345678X" maxlength="9"
-                        class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all placeholder:text-gray-300 uppercase">
+                        class="w-full border border-gray-400 rounded-xl px-4 py-3 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all placeholder:text-gray-400 uppercase">
                 </div>
             </div>
 
@@ -65,20 +65,20 @@
                     <div class="space-y-1">
                         <label class="text-sm font-semibold text-gray-700 ml-1">Email</label>
                         <input type="email" required name="email" placeholder="usuario@ejemplo.com"
-                            class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all placeholder:text-gray-300">
+                            class="w-full border border-gray-400 rounded-xl px-4 py-3 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all placeholder:text-gray-400">
                     </div>
                     <div class="space-y-1">
                         <label class="text-sm font-semibold text-gray-700 ml-1">Teléfono</label>
                         <input type="tel" required name="telefono" placeholder="600 000 000" maxlength="9"
-                            class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all placeholder:text-gray-300">
+                            class="w-full border border-gray-400 rounded-xl px-4 py-3 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all placeholder:text-gray-400">
                     </div>
                 </div>
 
                 <div class="space-y-1">
                     <label class="text-sm font-semibold text-gray-700 ml-1">Contraseña</label>
                     <input type="password" required name="contraseña" placeholder="••••••••"
-                        class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all placeholder:text-gray-300">
-                    <p class="text-[11px] text-gray-400 mt-1 ml-1 font-light italic">
+                        class="w-full border border-gray-400 rounded-xl px-4 py-3 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all placeholder:text-gray-400">
+                    <p class="text-[11px] text-gray-500 mt-1 ml-1 font-light italic">
                         * Mínimo 8 caracteres, incluye una mayúscula y un número.
                     </p>
                 </div>
@@ -86,7 +86,7 @@
                 <div class="space-y-1">
                     <label class="text-sm font-semibold text-gray-700 ml-1">Rol</label>
                     <select name="rol" required
-                        class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all">
+                        class="w-full border border-gray-400 rounded-xl px-4 py-3 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all">
                         <option value="">-- Selecciona un rol --</option>
                         <option value="manager">Manager</option>
                         <option value="marketing">Marketing</option>

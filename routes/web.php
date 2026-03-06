@@ -35,7 +35,7 @@ Route::delete('/cliente/cancelar-servicio/{contrato_id}/{tarifa_id}', [ClienteCo
 
 //RUTAS POR ROL DE TRABAJADOR
 Route::get('/manager/inicio', function () { return view('manager.inicio');})->middleware(['checklogin','role:manager'])->name('manager.inicio');
-Route::get('/marketing/inicio', function () {   return view('marketing.inicio');})->middleware(['checklogin','role:marketing'])->name('marketing.inicio');
+Route::get('/marketing/inicio', function () { return view('marketing.inicio');})->middleware(['checklogin','role:marketing'])->name('marketing.inicio');
 Route::get('/jefe_tecnico/inicio', function () {return view('jefe_tecnico.inicio');})->middleware(['checklogin','role:jefe_tecnico'])->name('jefe_tecnico.inicio');
 Route::get('/tecnico/inicio', function () { return view('tecnico.inicio');})->middleware(['checklogin','role:tecnico'])->name('tecnico.inicio'); 
 
@@ -52,4 +52,5 @@ Route::post('/manager/productos',[ProductoController::class,'guardarProducto'])-
 Route::get('/manager/inicio', [ManagerController::class,'index'])->middleware(['checklogin','role:manager'])->name('manager.inicio');
 
 //ruta para ver tarifas desde el manager
-Route::get('/manager/tarifas', [TarifaController::class,'mostrarTarifas'])->middleware(['checklogin','role:manager'])->name('manager.tarifas');
+Route::get('/manager/tarifas', [TarifaController::class,'mostrarTarifas'])->middleware(['checklogin','role:manager'])->name('mostrarTarifas');
+Route::post('/manager/tarifas',[TarifaController::class,'guardarTarifa'])->middleware(['checklogin','role:manager'])->name('tarifaSubmit');
