@@ -78,14 +78,19 @@ class ClienteService {
         $clienteId = $this->comprobarUsuario();
         $cliente = Cliente::find($clienteId);
 
-        $sql = "
-            INSERT INTO contratos (cliente_id, provincia, ciudad, calle, numero, puerta, codigo_postal, aprobado)
-            VALUES ('$clienteId', '$request->provincia', '$request->ciudad', '$request->calle', '$request->numero', '$request->puerta', '$request->codigo_postal', false)
-        ";
-        DB::statement($sql);
+        $contrato = Contrato::create([
+            'cliente_id' => $clienteId,
+            'provincia' => $request->provincia,
+            'ciudad' => $request->ciudad,
+            'calle' => $request->calle,
+            'numero' => $request->numero,
+            'puerta' => $request->puerta,
+            'codigo_postal' => $request->codigo_postal,
+            'aprobado' => false,
+        ]);
         
         //Contratar la tarifa
-        $cliente->tarifas()->attach($request->tarifa_id, [
+        $contrato->tarifas()->attach($request->tarifa_id, [
             'fecha_inicio' => now()
         ]);
 

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Cliente;
 use App\Models\Factura;
-use App\Models\Incidencia;
 use App\Models\Tarifa;
 use App\Services\ClienteService;
 use Illuminate\Support\Facades\DB;

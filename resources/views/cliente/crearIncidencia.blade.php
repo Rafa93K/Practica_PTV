@@ -29,7 +29,7 @@
 
                 {{-- Mensajes de éxito --}}
                 @if(session('success'))
-                    <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl flex items-center gap-3">
+                    <div id="success-alert" class="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl flex items-center gap-3">
                         <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
@@ -59,8 +59,8 @@
 
                     {{-- Avatar y nombre --}}
                     <div class="flex items-center gap-4 mb-8 pb-6 border-b border-gray-100">
-                        <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-2xl font-bold">
-                            {{ substr($cliente->nombre, 0, 1) }}
+                        <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-2xl font-bold uppercase">
+                            {{ substr($cliente->nombre, 0, 1) }}{{ substr($cliente->apellido, 0, 1) }}
                         </div>
                         <div>
                             <h3 class="text-xl font-bold text-gray-800">{{ $cliente->nombre }} {{ $cliente->apellido }}</h3>
@@ -175,5 +175,17 @@
         </main>
 
         @include('layouts.footer')
+
+        <script>
+            // Timeout para el mensaje de éxito
+            setTimeout(function() {
+                const alert = document.getElementById('success-alert');
+                if (alert) {
+                    alert.style.transition = 'opacity 0.5s ease';
+                    alert.style.opacity = '0';
+                    setTimeout(() => alert.remove(), 500);
+                }
+            }, 3000);
+        </script>
     </body>
 </html>
