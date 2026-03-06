@@ -13,6 +13,16 @@
             <header class="mb-8">
                 <h2 class="text-3xl font-extrabold text-blue-900">Bienvenido de nuevo, {{ $cliente->nombre }}</h2> {{-- Leemos el nombre del cliente que ha iniciado sesion --}}
             </header>
+
+            {{-- Mensajes de éxito --}}
+            @if(session('success'))
+                <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl flex items-center gap-3 animate-fade-in-up">
+                    <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="text-green-700 font-medium text-sm">{{ session('success') }}</span>
+                </div>
+            @endif
             <div class="flex flex-col lg:flex-row gap-8">
                 <!-- PERFIL Y DATOS -->
                 <div class="flex-1 flex flex-col gap-6">
@@ -59,25 +69,46 @@
                             Tus Servicios Activos
                         </h3>
 
-                        <div class="space-y-4">
+                        <div class="space-y-4 overflow-y-scroll h-[320px] pr-2"> {{-- Aumentado un poco el alto para el menu --}}
                             {{-- Cojemos las facturas que tiene el cliente a través de sus contratos activos --}}
                             @forelse($cliente->contratos as $contrato)
                                 @foreach($contrato->tarifas as $tarifa)
-                                    <div class="p-4 bg-green-50 rounded-xl border border-green-100 flex justify-between items-center">
-                                        <div>
-                                            <h4 class="font-bold text-green-900 text-sm">{{ $tarifa->nombre }}</h4>
-                                            <p class="text-xs text-green-700 italic">{{ $tarifa->tipo }}</p>
+                                    <div class="relative group">
+                                        <div 
+                                            onclick="toggleServiceMenu('menu-{{ $contrato->id }}-{{ $tarifa->id }}')" 
+                                            class="p-4 bg-green-50 rounded-xl border border-green-100 flex justify-between items-center cursor-pointer hover:bg-green-100 transition-all hover:shadow-sm"
+                                        >
+                                            <div>
+                                                <h4 class="font-bold text-green-900 text-sm">{{ $tarifa->nombre }}</h4>
+                                                <p class="text-xs text-green-700 italic">{{ $tarifa->tipo }}</p>
+                                            </div>
+                                            <div class="text-right flex items-center gap-3">
+                                                <div>
+                                                    <span class="text-xl font-bold text-green-900">{{ number_format($tarifa->precio, 2) }}€<span class="text-xs">/mes</span></span>
+                                                    @if(!$contrato->aprobado)
+                                                        <p class="text-[10px] text-orange-600 font-bold uppercase">Pendiente</p>
+                                                    @endif
+                                                </div>
+                                                <svg class="w-4 h-4 text-green-600 transform group-hover:translate-y-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                                </svg>
+                                            </div>
                                         </div>
-                                        <div class="text-right">
-                                            <span class="text-xl font-bold text-green-900">{{ number_format($tarifa->precio, 2) }}€<span class="text-xs">/mes</span></span>
-                                            {{--
-                                                En caso que el contrato no se haya aprobado por un trabajador de marketing
-                                                aparecerá un texto en pendiente para hacer saber al usuario que no está activo
-                                                su tarifa
-                                            --}}
-                                            @if(!$contrato->aprobado)
-                                                <p class="text-[10px] text-orange-600 font-bold uppercase">Pendiente</p>
-                                            @endif
+
+                                        {{-- Menu Desplegable --}}
+                                        <div id="menu-{{ $contrato->id }}-{{ $tarifa->id }}" class="hidden absolute left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden animate-fade-in-up">
+                                            <div class="flex flex-col">
+                                                <a href="{{ route('cliente.cambiarServicio', [$tarifa->id, $contrato->id]) }}" class="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                                                    Cambiar servicio
+                                                </a>
+                                                <form action="{{ route('cliente.cancelarServicio', [$contrato->id, $tarifa->id]) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas cancelar este servicio? Esta acción no se puede deshacer.')">
+                                                    @csrf
+                                                    @method('DELETE') {{-- Metodo para borrar el servicio --}}
+                                                    <button type="submit" class="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors">
+                                                        Cancelar servicio
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </div>
                                     </div>
                                 @endforeach
@@ -89,7 +120,7 @@
                             @endforelse
                         </div>
 
-                        <a href="#" class="mt-8 block text-center py-3 border-2 border-dashed border-gray-200 text-gray-400 font-medium rounded-xl hover:border-blue-300 hover:text-blue-500 transition-all">
+                        <a href="{{ route('cliente.tarifas') }}" class="mt-8 block text-center py-3 border-2 border-dashed border-gray-200 text-gray-400 font-medium rounded-xl hover:border-blue-300 hover:text-blue-500 transition-all">
                             + Contratar nuevo servicio
                         </a>
                     </div>
@@ -103,7 +134,7 @@
                             Últimas Facturas
                         </h3>
                         
-                        <div class="divide-y divide-gray-50">
+                        <div class="divide-y divide-gray-50 overflow-y-scroll h-[150px]">
                             {{-- Por cada factura que tenga el cliente lo vamos mostrando, estando ordenadas en orden descendiente --}}
                             @forelse($cliente->facturas->sortByDesc('fecha_inicio') as $factura)
                                 <div class="py-3 flex justify-between items-center">
@@ -112,7 +143,7 @@
                                         <span class="text-sm font-bold text-gray-800">{{ number_format($factura->precio, 2) }} €</span>
 
                                         {{-- Botón de descargar --}}
-                                        <a href="{{ route('cliente.generarFactura', $factura->id) }}" class="text-blue-500 hover:text-blue-700">
+                                        <a href="{{ route('cliente.generarFactura', $factura->id) }}" target="_blank" class="text-blue-500 hover:text-blue-700">
                                             {{-- Icono del botón de descargar --}}
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
@@ -149,5 +180,39 @@
         </main>
 
         @include('layouts.footer') {{-- Importacion del componente footer --}}
+
+        <script>
+            function toggleServiceMenu(id) {
+                const menu = document.getElementById(id);
+                const allMenus = document.querySelectorAll('[id^="menu-"]');
+                
+                // Cerrar otros menús abiertos
+                allMenus.forEach(m => {
+                    if (m.id !== id) m.classList.add('hidden');
+                });
+                
+                // Alternar el menú actual
+                menu.classList.toggle('hidden');
+            }
+
+            // Cerrar menú si se hace clic fuera
+            document.addEventListener('click', function(event) {
+                const isClickInside = event.target.closest('.relative.group');
+                if (!isClickInside) {
+                    const allMenus = document.querySelectorAll('[id^="menu-"]');
+                    allMenus.forEach(m => m.classList.add('hidden'));
+                }
+            });
+        </script>
+
+        <style>
+            .animate-fade-in-up {
+                animation: fadeInUp 0.3s ease-out;
+            }
+            @keyframes fadeInUp {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+        </style>
     </body>
 </html>

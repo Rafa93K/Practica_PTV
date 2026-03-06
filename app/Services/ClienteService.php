@@ -3,7 +3,9 @@
 namespace App\Services;
 use App\Http\Requests\DynamicRequestValidator;
 use App\Models\Cliente;
+use App\Models\Contrato;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class ClienteService {
     /**
@@ -63,5 +65,68 @@ class ClienteService {
         $cliente->save();
 
         return $cliente; //Devolvemos el cliente actualizado
+    }
+
+    /**
+     * @param Request $request
+     * @return \App\Models\Cliente
+     * @throws \Illuminate\Validation\ValidationException
+     * @author Alonso Coronado Alcalde
+     * @description Contrata una nueva tarifa para el cliente.
+     */
+    public function contratarTarifa(DynamicRequestValidator $request) {
+        $clienteId = $this->comprobarUsuario();
+        $cliente = Cliente::find($clienteId);
+
+        $sql = "
+            INSERT INTO contratos (cliente_id, provincia, ciudad, calle, numero, puerta, codigo_postal, aprobado)
+            VALUES ('$clienteId', '$request->provincia', '$request->ciudad', '$request->calle', '$request->numero', '$request->puerta', '$request->codigo_postal', false)
+        ";
+        DB::statement($sql);
+        
+        //Contratar la tarifa
+        $cliente->tarifas()->attach($request->tarifa_id, [
+            'fecha_inicio' => now()
+        ]);
+
+        return $cliente; //Devolvemos el cliente actualizado
+    }
+
+    /**
+     * @param int $contratoId
+     * @param int $tarifaId
+     * @return bool
+     * @description Cancela un servicio eliminando la relación entre el contrato y la tarifa.
+     */
+    public function cancelarServicio($contratoId, $tarifaId) {
+        $contrato = Contrato::find($contratoId);
+        if (!$contrato) return false;
+
+        // Desvincular la tarifa del contrato
+        $contrato->tarifas()->detach($tarifaId);
+
+        // Si el contrato se queda sin tarifas, se podría eliminar el contrato, 
+        // pero por ahora solo borramos la relación como se pidió.
+        return true;
+    }
+
+    /**
+     * @param int $contratoId
+     * @param int $tarifaActualId
+     * @param int $nuevaTarifaId
+     * @return bool
+     * @description Cambia una tarifa por otra en un contrato existente.
+     */
+    public function cambiarServicio($contratoId, $tarifaActualId, $nuevaTarifaId) {
+        $contrato = Contrato::find($contratoId);
+        if (!$contrato) return false;
+
+        // Desvincular la antigua y vincular la nueva
+        $contrato->tarifas()->detach($tarifaActualId);
+        $contrato->tarifas()->attach($nuevaTarifaId, [
+            'fecha_inicio' => now()
+        ]);
+
+        return true;
     }
 }
