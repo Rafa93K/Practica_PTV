@@ -6,8 +6,8 @@ use App\Models\Cliente;
 use App\Models\Factura;
 use App\Models\Incidencia;
 use App\Models\Tarifa;
-use App\Models\Contrato;
 use App\Services\ClienteService;
+use Illuminate\Support\Facades\DB;
 
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Requests\DynamicRequestValidator;
@@ -160,13 +160,11 @@ class ClienteController extends Controller {
             return redirect()->route('login', 'cliente')->withErrors(['email' => 'Cliente no encontrado']);
         }
 
-        $incidencia = new Incidencia();
-        $incidencia->cliente_id = $cliente->id;
-        $incidencia->descripcion = $request->descripcion;
-        $incidencia->estado = 'abierto';
-        $incidencia->fecha = now();
-        $incidencia->save();
-
+        $sql = "
+            INSERT INTO incidencias (cliente_id, descripcion, estado, fecha)
+            VALUES ('$cliente->id', '$request->descripcion', 'abierto', NOW())
+        ";
+        DB::statement($sql);
 
         return redirect()->route('cliente.incidencia.create')->with('success', '¡Incidencia enviada correctamente! Un técnico revisará su caso.');
     }
@@ -222,24 +220,76 @@ class ClienteController extends Controller {
      * @description Guarda un nuevo contrato en la base de datos.
      */
     public function guardarContratoBD(DynamicRequestValidator $request) {
-        $clienteId = $this->clienteService->comprobarUsuario();
-        
-        $contrato = new Contrato();
-        $contrato->cliente_id = $clienteId;
-        $contrato->provincia = $request->provincia;
-        $contrato->ciudad = $request->ciudad;
-        $contrato->calle = $request->calle;
-        $contrato->numero = $request->numero;
-        $contrato->puerta = $request->puerta;
-        $contrato->codigo_postal = $request->codigo_postal;
-        $contrato->aprobado = false; // El contrato se crea como pendiente de aprobación
-        $contrato->save();
+        $cliente = $this->clienteService->contratarTarifa($request);
 
-        // Vincular la tarifa al contrato (relación muchos a muchos) con la fecha de hoy
-        $contrato->tarifas()->attach($request->tarifa_id, [
-            'fecha_inicio' => now()
-        ]);
+        //En caso de que no se actualice el cliente, devolvemos error
+        if (!$cliente) {
+            return redirect()->route('cliente.contratarTarifa', $request->tarifa_id)->withErrors(['email' => 'Error al contratar la tarifa']);
+        }
 
         return redirect()->route('cliente.inicio')->with('success', '¡Solicitud de contratación enviada correctamente! Un agente revisará los datos.');
+    }
+
+    /**
+     * @param int $tarifa_id
+     * @param int $contrato_id
+     * @return \Illuminate\Contracts\View\View
+     * @author Alonso Coronado Alcalde
+     * @description Muestra las tarifas del mismo tipo para realizar un cambio.
+     */
+    public function mostrarCambioServicio($tarifa_id, $contrato_id) {
+        $clienteId = $this->clienteService->comprobarUsuario();
+        $cliente = Cliente::find($clienteId);
+
+        $tarifaActual = Tarifa::find($tarifa_id);
+        if (!$tarifaActual) {
+            return redirect()->route('cliente.inicio')->withErrors(['error' => 'Tarifa no encontrada']);
+        }
+
+        //Obtener tarifas del mismo tipo excepto la actual
+        $sql = "
+            SELECT * 
+            FROM tarifas 
+            WHERE tipo = '$tarifaActual->tipo' 
+            AND id != '$tarifa_id'
+        ";
+        $tarifas = DB::select($sql);
+
+        return view('cliente.cambiarTarifa', compact('cliente', 'tarifas', 'tarifaActual', 'contrato_id'));
+    }
+
+    /**
+     * @param DynamicRequestValidator $request
+     * @return \Illuminate\Http\RedirectResponse
+     * @author Alonso Coronado Alcalde
+     * @description Procesa el cambio de una tarifa por otra.
+     */
+    public function procesarCambioServicio(DynamicRequestValidator $request) {
+        //Llama al servicio para cambiar el servicio
+        $resultado = $this->clienteService->cambiarServicio($request->contrato_id, $request->tarifa_actual_id, $request->nueva_tarifa_id);
+
+        if (!$resultado) {
+            return redirect()->route('cliente.inicio')->withErrors(['error' => 'Error al cambiar el servicio']);
+        }
+
+        return redirect()->route('cliente.inicio')->with('success', '¡Servicio cambiado correctamente!');
+    }
+
+    /**
+     * @param int $contrato_id
+     * @param int $tarifa_id
+     * @return \Illuminate\Http\RedirectResponse
+     * @author Alonso Coronado Alcalde
+     * @description Cancela un servicio específico.
+     */
+    public function cancelarServicio($contrato_id, $tarifa_id) {
+        //Llama al servicio para cancelar el servicio
+        $resultado = $this->clienteService->cancelarServicio($contrato_id, $tarifa_id);
+
+        if (!$resultado) {
+            return redirect()->route('cliente.inicio')->withErrors(['error' => 'Error al cancelar el servicio']);
+        }
+
+        return redirect()->route('cliente.inicio')->with('success', '¡Servicio cancelado correctamente!');
     }
 }

@@ -28,6 +28,9 @@ Route::post('/cliente/incidencia', [ClienteController::class, 'guardarIncidencia
 Route::get('/cliente/tarifas', [ClienteController::class, 'verTarifas'])->name('cliente.tarifas'); //Ruta para ver las tarifas disponibles
 Route::get('/cliente/contratarTarifa/{id}', [ClienteController::class, 'contratarTarifa'])->name('cliente.contratarTarifa'); //Ruta para contratar tarifa
 Route::post('/cliente/contratarTarifa', [ClienteController::class, 'guardarContratoBD'])->name('cliente.contratarTarifa.store'); //Ruta para procesar la contratacion
+Route::get('/cliente/cambiar-servicio/{tarifa_id}/{contrato_id}', [ClienteController::class, 'mostrarCambioServicio'])->name('cliente.cambiarServicio'); //Ruta para mostrar tarifas del mismo tipo
+Route::post('/cliente/procesar-cambio', [ClienteController::class, 'procesarCambioServicio'])->name('cliente.procesarCambio'); //Ruta para procesar el cambio de tarifa
+Route::delete('/cliente/cancelar-servicio/{contrato_id}/{tarifa_id}', [ClienteController::class, 'cancelarServicio'])->name('cliente.cancelarServicio'); //Ruta para cancelar un servicio
 
 
 //RUTAS POR ROL DE TRABAJADOR
@@ -35,7 +38,6 @@ Route::get('/manager/inicio', function () { return view('manager.inicio');})->mi
 Route::get('/marketing/inicio', function () {   return view('marketing.inicio');})->middleware(['checklogin','role:marketing'])->name('marketing.inicio');
 Route::get('/jefe_tecnico/inicio', function () {return view('jefe_tecnico.inicio');})->middleware(['checklogin','role:jefe_tecnico'])->name('jefe_tecnico.inicio');
 Route::get('/tecnico/inicio', function () { return view('tecnico.inicio');})->middleware(['checklogin','role:tecnico'])->name('tecnico.inicio'); 
-
 
 
 //RUTAS MANAGER

@@ -69,25 +69,46 @@
                             Tus Servicios Activos
                         </h3>
 
-                        <div class="space-y-4 overflow-y-scroll h-[275px]">
+                        <div class="space-y-4 overflow-y-scroll h-[320px] pr-2"> {{-- Aumentado un poco el alto para el menu --}}
                             {{-- Cojemos las facturas que tiene el cliente a través de sus contratos activos --}}
                             @forelse($cliente->contratos as $contrato)
                                 @foreach($contrato->tarifas as $tarifa)
-                                    <div class="p-4 bg-green-50 rounded-xl border border-green-100 flex justify-between items-center">
-                                        <div>
-                                            <h4 class="font-bold text-green-900 text-sm">{{ $tarifa->nombre }}</h4>
-                                            <p class="text-xs text-green-700 italic">{{ $tarifa->tipo }}</p>
+                                    <div class="relative group">
+                                        <div 
+                                            onclick="toggleServiceMenu('menu-{{ $contrato->id }}-{{ $tarifa->id }}')" 
+                                            class="p-4 bg-green-50 rounded-xl border border-green-100 flex justify-between items-center cursor-pointer hover:bg-green-100 transition-all hover:shadow-sm"
+                                        >
+                                            <div>
+                                                <h4 class="font-bold text-green-900 text-sm">{{ $tarifa->nombre }}</h4>
+                                                <p class="text-xs text-green-700 italic">{{ $tarifa->tipo }}</p>
+                                            </div>
+                                            <div class="text-right flex items-center gap-3">
+                                                <div>
+                                                    <span class="text-xl font-bold text-green-900">{{ number_format($tarifa->precio, 2) }}€<span class="text-xs">/mes</span></span>
+                                                    @if(!$contrato->aprobado)
+                                                        <p class="text-[10px] text-orange-600 font-bold uppercase">Pendiente</p>
+                                                    @endif
+                                                </div>
+                                                <svg class="w-4 h-4 text-green-600 transform group-hover:translate-y-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                                </svg>
+                                            </div>
                                         </div>
-                                        <div class="text-right">
-                                            <span class="text-xl font-bold text-green-900">{{ number_format($tarifa->precio, 2) }}€<span class="text-xs">/mes</span></span>
-                                            {{--
-                                                En caso que el contrato no se haya aprobado por un trabajador de marketing
-                                                aparecerá un texto en pendiente para hacer saber al usuario que no está activo
-                                                su tarifa
-                                            --}}
-                                            @if(!$contrato->aprobado)
-                                                <p class="text-[10px] text-orange-600 font-bold uppercase">Pendiente</p>
-                                            @endif
+
+                                        {{-- Menu Desplegable --}}
+                                        <div id="menu-{{ $contrato->id }}-{{ $tarifa->id }}" class="hidden absolute left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden animate-fade-in-up">
+                                            <div class="flex flex-col">
+                                                <a href="{{ route('cliente.cambiarServicio', [$tarifa->id, $contrato->id]) }}" class="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                                                    Cambiar servicio
+                                                </a>
+                                                <form action="{{ route('cliente.cancelarServicio', [$contrato->id, $tarifa->id]) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas cancelar este servicio? Esta acción no se puede deshacer.')">
+                                                    @csrf
+                                                    @method('DELETE') {{-- Metodo para borrar el servicio --}}
+                                                    <button type="submit" class="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors">
+                                                        Cancelar servicio
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </div>
                                     </div>
                                 @endforeach
@@ -159,5 +180,39 @@
         </main>
 
         @include('layouts.footer') {{-- Importacion del componente footer --}}
+
+        <script>
+            function toggleServiceMenu(id) {
+                const menu = document.getElementById(id);
+                const allMenus = document.querySelectorAll('[id^="menu-"]');
+                
+                // Cerrar otros menús abiertos
+                allMenus.forEach(m => {
+                    if (m.id !== id) m.classList.add('hidden');
+                });
+                
+                // Alternar el menú actual
+                menu.classList.toggle('hidden');
+            }
+
+            // Cerrar menú si se hace clic fuera
+            document.addEventListener('click', function(event) {
+                const isClickInside = event.target.closest('.relative.group');
+                if (!isClickInside) {
+                    const allMenus = document.querySelectorAll('[id^="menu-"]');
+                    allMenus.forEach(m => m.classList.add('hidden'));
+                }
+            });
+        </script>
+
+        <style>
+            .animate-fade-in-up {
+                animation: fadeInUp 0.3s ease-out;
+            }
+            @keyframes fadeInUp {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+        </style>
     </body>
 </html>
