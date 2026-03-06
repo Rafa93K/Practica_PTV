@@ -89,7 +89,7 @@
                             @endforelse
                         </div>
 
-                        <a href="#" class="mt-8 block text-center py-3 border-2 border-dashed border-gray-200 text-gray-400 font-medium rounded-xl hover:border-blue-300 hover:text-blue-500 transition-all">
+                        <a href="{{ route('cliente.tarifas') }}" class="mt-8 block text-center py-3 border-2 border-dashed border-gray-200 text-gray-400 font-medium rounded-xl hover:border-blue-300 hover:text-blue-500 transition-all">
                             + Contratar nuevo servicio
                         </a>
                     </div>
@@ -112,7 +112,7 @@
                                         <span class="text-sm font-bold text-gray-800">{{ number_format($factura->precio, 2) }} €</span>
 
                                         {{-- Botón de descargar --}}
-                                        <a href="{{ route('cliente.generarFactura', $factura->id) }}" class="text-blue-500 hover:text-blue-700">
+                                        <a href="{{ route('cliente.generarFactura', $factura->id) }}" target="_blank" class="text-blue-500 hover:text-blue-700">
                                             {{-- Icono del botón de descargar --}}
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cliente;
 use App\Models\Factura;
 use App\Models\Incidencia;
+use App\Models\Tarifa;
 use App\Services\ClienteService;
 
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -167,5 +168,48 @@ class ClienteController extends Controller {
 
 
         return redirect()->route('cliente.incidencia.create')->with('success', '¡Incidencia enviada correctamente! Un técnico revisará su caso.');
+    }
+
+    /**
+     * @return \Illuminate\Contracts\View\View
+     * @throws \Illuminate\Validation\ValidationException
+     * @author Alonso Coronado Alcalde
+     * @description Muestra todas las tarifas disponibles para contratar.
+     */
+    public function verTarifas() {
+        $clienteId = $this->clienteService->comprobarUsuario();
+        $cliente = Cliente::find($clienteId);
+
+        if (!$cliente) {
+            return redirect()->route('login', 'cliente')->withErrors(['email' => 'Cliente no encontrado']);
+        }
+
+        $tarifas = Tarifa::all();
+
+        return view('cliente.verTarifas', compact('cliente', 'tarifas'));
+    }
+
+    /**
+     * @param int $id
+     * @return \Illuminate\Contracts\View\View
+     * @throws \Illuminate\Validation\ValidationException
+     * @author Alonso Coronado Alcalde
+     * @description Muestra el formulario para contratar una tarifa.
+     */
+    public function contratarTarifa($id) {
+        $clienteId = $this->clienteService->comprobarUsuario();
+        $cliente = Cliente::find($clienteId);
+
+        if (!$cliente) {
+            return redirect()->route('login', 'cliente')->withErrors(['email' => 'Cliente no encontrado']);
+        }
+
+        $tarifa = Tarifa::find($id);
+
+        if (!$tarifa) {
+            return redirect()->route('cliente.tarifas')->withErrors(['email' => 'Tarifa no encontrada']);
+        }
+
+        return view('cliente.contratarTarifa', compact('cliente', 'tarifa'));
     }
 }

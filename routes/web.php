@@ -25,6 +25,8 @@ Route::put('/cliente/editar', [ClienteController::class, 'actualizarClienteBD'])
 Route::get('/cliente/generarFactura/{id}', [ClienteController::class, 'generarFactura'])->name('cliente.generarFactura'); //Ruta para generar la factura
 Route::get('/cliente/incidencia', [ClienteController::class, 'mostrarFormularioIncidencia'])->name('cliente.incidencia.create'); //Ruta para mostrar el formulario de incidencia
 Route::post('/cliente/incidencia', [ClienteController::class, 'guardarIncidenciaBD'])->name('cliente.incidencia.store'); //Ruta para procesar la incidencia
+Route::get('/cliente/tarifas', [ClienteController::class, 'verTarifas'])->name('cliente.tarifas'); //Ruta para ver las tarifas disponibles
+Route::get('/cliente/contratarTarifa/{id}', [ClienteController::class, 'contratarTarifa'])->name('cliente.contratarTarifa'); //Ruta para contratar tarifa
 
 
 //RUTAS POR ROL DE TRABAJADOR
