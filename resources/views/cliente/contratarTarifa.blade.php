@@ -64,8 +64,11 @@
 
                     {{-- Formulario --}}
                     {{-- Nota: El action debe apuntar a la ruta de guardar contrato, la crearé si no existe o dejaré el placeholder --}}
-                    <form action="#" method="POST">
+                    <form action="{{ route('cliente.contratarTarifa.store') }}" method="POST">
                         @csrf
+                        {{-- ID del cliente --}}
+                        <input type="hidden" name="cliente_id" value="{{ $cliente->id }}">
+                        {{-- ID de la tarifa seleccionada --}}
                         <input type="hidden" name="tarifa_id" value="{{ $tarifa->id }}">
 
                         <div class="space-y-6">

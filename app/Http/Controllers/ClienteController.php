@@ -6,6 +6,7 @@ use App\Models\Cliente;
 use App\Models\Factura;
 use App\Models\Incidencia;
 use App\Models\Tarifa;
+use App\Models\Contrato;
 use App\Services\ClienteService;
 
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -211,5 +212,34 @@ class ClienteController extends Controller {
         }
 
         return view('cliente.contratarTarifa', compact('cliente', 'tarifa'));
+    }
+
+    /**
+     * @param DynamicRequestValidator $request
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Validation\ValidationException
+     * @author Alonso Coronado Alcalde
+     * @description Guarda un nuevo contrato en la base de datos.
+     */
+    public function guardarContratoBD(DynamicRequestValidator $request) {
+        $clienteId = $this->clienteService->comprobarUsuario();
+        
+        $contrato = new Contrato();
+        $contrato->cliente_id = $clienteId;
+        $contrato->provincia = $request->provincia;
+        $contrato->ciudad = $request->ciudad;
+        $contrato->calle = $request->calle;
+        $contrato->numero = $request->numero;
+        $contrato->puerta = $request->puerta;
+        $contrato->codigo_postal = $request->codigo_postal;
+        $contrato->aprobado = false; // El contrato se crea como pendiente de aprobación
+        $contrato->save();
+
+        // Vincular la tarifa al contrato (relación muchos a muchos) con la fecha de hoy
+        $contrato->tarifas()->attach($request->tarifa_id, [
+            'fecha_inicio' => now()
+        ]);
+
+        return redirect()->route('cliente.inicio')->with('success', '¡Solicitud de contratación enviada correctamente! Un agente revisará los datos.');
     }
 }
