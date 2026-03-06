@@ -5,11 +5,10 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\TrabajadorController;
 use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\ManagerController;
 
 
-Route::get('/', function () {
-    return view('inicio');
-})->name('inicio');
+Route::get('/', function () { return view('inicio');})->name('inicio');
 
 
 Route::get('/login/{tipo}', [AuthController::class, 'mostrarLogin'])->name('login'); //Ruta para mostrar login segun el tipo
@@ -36,9 +35,12 @@ Route::get('/tecnico/inicio', function () { return view('tecnico.inicio');})->mi
 
 
 //RUTAS MANAGER
-//creacion de trabajador
+//creacion de trabajador desde manager vista
 Route::get('/manager/crear-trabajador',[TrabajadorController::class,'crearTrabajador'])->middleware(['checklogin','role:manager'])->name('manager.crearTrabajador');
 Route::post('/manager/crear-trabajador', [TrabajadorController::class, 'trabajadorSubmit'])->middleware(['checklogin','role:manager'])->name('manager.trabajadorSubmit');
-//Creación de producto
+//Creación de producto desde manager vista
 Route::get('/manager/productos',[ProductoController::class,'mostrarProducto'])->middleware(['checklogin','role:manager'])->name('mostrarProducto');
 Route::post('/manager/productos',[ProductoController::class,'guardarProducto'])->middleware(['checklogin','role:manager'])->name('productoSubmit');
+
+//muestra de datos estadísticos para el manager
+Route::get('/manager/inicio', [ManagerController::class,'index'])->middleware(['checklogin','role:manager'])->name('manager.inicio');

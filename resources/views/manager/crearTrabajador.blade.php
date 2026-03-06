@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-indigo-200 flex items-center justify-center min-h-screen p-4">
+    
     <div class="bg-white p-8 md:p-10 rounded-3xl shadow-2xl w-full max-w-xl border border-white/50 backdrop-blur-sm">
         <!-- Encabezado -->
         <div class="text-center mb-10">
