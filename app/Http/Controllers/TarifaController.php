@@ -26,6 +26,13 @@ class TarifaController extends Controller
 
 
 
+    /**
+        * @param  Request $request
+        * @return \Illuminate\View\View
+        * @throws 
+        * @author Rafael Osuna
+        * @description  Muestra la vista de tarifas con la lista de tarifas obtenida de la base de datos.
+        */
     public function mostrarTarifas()
     {
         $tarifas=Tarifa::all();
@@ -33,6 +40,13 @@ class TarifaController extends Controller
     }
 
 
+    /**
+        * @param  Request $request
+        * @return \Illuminate\Http\RedirectResponse
+        * @throws  
+        * @author Rafael Osuna
+        * @description Valida los datos del formulario y guarda una nueva tarifa en la base de datos, luego redirige a la vista de tarifas con un mensaje de éxito.
+        */
     public function guardarTarifa(Request $request) 
     {
         //valida datos

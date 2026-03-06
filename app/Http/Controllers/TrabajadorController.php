@@ -32,12 +32,27 @@ class TrabajadorController extends Controller
         'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
         'rol.required' => 'El rol es obligatorio.',
     ];
+
+    /**
+        * @param Request $request
+        * @return \Illuminate\View\View
+        * @throws 
+        * @author Rafael Osuna
+        * @description  Muestra la vista para crear un nuevo trabajador, solo accesible para el manager.
+        */
     public function crearTrabajador()
     {
         return view('manager.crearTrabajador');
     }
 
-     // Procesa el formulario y guarda el trabajador
+    
+    /**
+        * @param  Request $request
+        * @return \Illuminate\Http\RedirectResponse
+        * @throws  
+        * @author Rafael Osuna
+        * @description Valida los datos del formulario y guarda un nuevo trabajador en la base de datos, luego redirige a la vista del manager con un mensaje de éxito.
+        */
     public function trabajadorSubmit(Request $request)
     {
         // Validar datos

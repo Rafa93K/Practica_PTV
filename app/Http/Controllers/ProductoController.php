@@ -21,7 +21,13 @@ class ProductoController extends Controller
         'precio.required' => 'El precio es obligatorio.',
         'precio.numeric' => 'El precio debe ser numérico.',
     ];
-    //me muestra la vista con los productos
+    /**
+        * @param  Request $request
+        * @return \Illuminate\View\View
+        * @throws  
+        * @author Rafael Osuna
+        * @description  Muestra la vista de productos con la lista de productos obtenida de la base de datos.
+        */
     public function mostrarProducto()
     {
         $productos=Producto::all();
@@ -29,6 +35,13 @@ class ProductoController extends Controller
         return view('producto.inicio',compact('productos'));
     }
 
+    /**
+        * @param  Request $request
+        * @return \Illuminate\Http\RedirectResponse
+        * @throws  
+        * @author Rafael Osuna
+        * @description Valida los datos del formulario y guarda un nuevo producto en la base de datos, luego redirige a la vista de productos con un mensaje de éxito.
+        */
     public function guardarProducto(Request $request) 
     {
         //valida datos
