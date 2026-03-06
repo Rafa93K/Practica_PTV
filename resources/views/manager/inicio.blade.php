@@ -20,7 +20,7 @@
             class="bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
             Crear Productos
             </a>
-            <a href="#" 
+            <a href="{{route('mostrarTarifas')}}" 
             class="bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700  transition">
             Crear Tarifas
             </a>

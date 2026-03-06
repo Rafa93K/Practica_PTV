@@ -31,7 +31,7 @@
         @endif
 
         <!-- LISTADO DE PRODUCTOS -->
-        <div class="bg-white p-6 rounded-xl shadow-md">
+        <div class="bg-emerald-50 p-6 rounded-xl shadow-md">
             <h2 class="text-xl font-bold mb-4">Productos existentes</h2>
             <table class="w-full text-left border-collapse">
                 <thead>
@@ -43,7 +43,7 @@
                 </thead>
                 <tbody>
                     @foreach($productos as $producto)
-                        <tr class="border-b hover:bg-gray-50">
+                        <tr class="border-b hover:bg-emerald-100">
                             <td class="py-2 px-4">{{ $producto->nombre }}</td>
                             <td class="py-2 px-4">{{ $producto->cantidad }}</td>
                             <td class="py-2 px-4">{{ number_format($producto->precio, 2) }}</td>
@@ -54,7 +54,7 @@
         </div>
 
         <!-- FORMULARIO PARA CREAR PRODUCTO -->
-        <div class="bg-white p-6 rounded-xl shadow-md">
+        <div class="bg-emerald-50 p-6 rounded-xl shadow-md">
             <h2 class="text-xl font-bold mb-4">Crear nuevo producto</h2>
             <form method="POST" action="{{ route('productoSubmit') }}" class="space-y-4">
                 @csrf
