@@ -26,7 +26,6 @@ return new class extends Migration
             $table->unsignedInteger('numero');
             $table->string('puerta')->nullable(); //Puede ser nulo en caso de ser una sola casa, no un piso
             $table->string('codigo_postal');
-            $table->boolean('aprobado')->default(false); //Valor por defecto false
             $table->timestamps();
         });
     }

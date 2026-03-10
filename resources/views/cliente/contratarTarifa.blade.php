@@ -177,7 +177,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                     <p class="text-sm text-blue-700">
-                        Al confirmar, un agente de marketing revisará tu solicitud para activar el servicio. Se te notificará por correo electrónico una vez aprobado.
+                        Al confirmar, el servicio se activará de forma inmediata en tu cuenta y podrás gestionarlo desde tu panel personal.
                     </p>
                 </div>
             </div>

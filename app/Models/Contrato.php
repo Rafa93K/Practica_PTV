@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Contrato extends Model
 {
-    protected $fillable = ['cliente_id', 'trabajador_id', 'ciudad', 'provincia', 'calle', 'numero', 'puerta', 'codigo_postal', 'aprobado']; //Datos que se guardan en la bd
+    protected $fillable = ['cliente_id', 'trabajador_id', 'ciudad', 'provincia', 'calle', 'numero', 'puerta', 'codigo_postal']; //Datos que se guardan en la bd
 
     //Un contrato pertenece a un cliente
     public function cliente(): BelongsTo {

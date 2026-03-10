@@ -86,7 +86,6 @@ class ClienteService {
             'numero' => $request->numero,
             'puerta' => $request->puerta,
             'codigo_postal' => $request->codigo_postal,
-            'aprobado' => false,
         ]);
         
         //Contratar la tarifa

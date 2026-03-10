@@ -85,9 +85,6 @@
                                             <div class="text-right flex items-center gap-3">
                                                 <div>
                                                     <span class="text-xl font-bold text-green-900">{{ number_format($tarifa->precio, 2) }}€<span class="text-xs">/mes</span></span>
-                                                    @if(!$contrato->aprobado)
-                                                        <p class="text-[10px] text-orange-600 font-bold uppercase">Pendiente</p>
-                                                    @endif
                                                 </div>
                                                 <svg class="w-4 h-4 text-green-600 transform group-hover:translate-y-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -143,10 +140,10 @@
                                         <span class="text-sm font-bold text-gray-800">{{ number_format($factura->precio, 2) }} €</span>
 
                                         {{-- Botón de descargar --}} {{-- Target="_blank" lo abre en una ventana nueva --}}
-                                        <a href="{{ route('cliente.generarFactura', $factura->id) }}" target="_blank" class="text-blue-500 hover:text-blue-700">
-                                            {{-- Icono del botón de descargar --}}
+                                        <a href="{{ route('cliente.generarFactura', $factura->id) }}" target="_blank" class="text-blue-500 hover:text-blue-700 transition-colors">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                             </svg>
                                         </a>
                                     </div>
