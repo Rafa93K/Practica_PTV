@@ -7,6 +7,7 @@ use App\Http\Controllers\TrabajadorController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\TarifaController;
+use App\Http\Controllers\TecnicoController;
 
 
 Route::get('/', function () { return view('inicio');})->name('inicio');
@@ -37,7 +38,10 @@ Route::delete('/cliente/cancelar-servicio/{contrato_id}/{tarifa_id}', [ClienteCo
 Route::get('/manager/inicio', function () { return view('manager.inicio');})->middleware(['checklogin','role:manager'])->name('manager.inicio');
 Route::get('/marketing/inicio', function () { return view('marketing.inicio');})->middleware(['checklogin','role:marketing'])->name('marketing.inicio');
 Route::get('/jefe_tecnico/inicio', function () {return view('jefe_tecnico.inicio');})->middleware(['checklogin','role:jefe_tecnico'])->name('jefe_tecnico.inicio');
-Route::get('/tecnico/inicio', function () { return view('tecnico.inicio');})->middleware(['checklogin','role:tecnico'])->name('tecnico.inicio'); 
+
+//RUTAS POR ROL DE TECNICO
+Route::get('/tecnico/inicio', [TecnicoController::class, 'index'])->middleware(['checklogin', 'role:tecnico'])->name('tecnico.inicio'); //Ruta para mostrar el panel del técnico
+Route::post('/tecnico/incidencia/actualizar/{id}', [TecnicoController::class, 'actualizarEstado'])->middleware(['checklogin', 'role:tecnico'])->name('tecnico.incidencia.actualizar'); //Ruta para actualizar el estado de una incidencia
 
 
 //RUTAS MANAGER

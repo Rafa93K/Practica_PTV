@@ -226,7 +226,7 @@ class ClienteController extends Controller {
             return redirect()->route('cliente.contratarTarifa', $request->tarifa_id)->withErrors(['email' => 'Error al contratar la tarifa']);
         }
 
-        return redirect()->route('cliente.inicio')->with('success', '¡Solicitud de contratación enviada correctamente! Un agente revisará los datos.');
+        return redirect()->route('cliente.inicio')->with('success', '¡Tarifa contratada correctamente!');
     }
 
     /**
