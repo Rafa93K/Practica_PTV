@@ -129,7 +129,7 @@
                                             class="text-xs font-bold bg-white border border-gray-200 rounded-lg px-3 py-2 flex ml-auto focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer">
                                             <option value="abierto" {{ $incidencia->estado == 'abierto' ? 'selected' : '' }}>Abierto</option>
                                             <option value="en_progreso" {{ $incidencia->estado == 'en_progreso' ? 'selected' : '' }}>En Proceso</option>
-                                            <option value="cerrado" {{ $incidencia->estado == 'cerrado' ? 'selected' : '' }}>Cerrar</option>
+                                            <option value="cerrado" {{ $incidencia->estado == 'cerrado' ? 'selected' : '' }}>Resuelto</option>
                                         </select>
                                     </form>
                                 </td>
