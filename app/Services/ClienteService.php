@@ -68,7 +68,7 @@ class ClienteService {
     }
 
     /**
-     * @param Request $request
+     * @param DynamicRequestValidator $request
      * @return \App\Models\Cliente
      * @throws \Illuminate\Validation\ValidationException
      * @author Alonso Coronado Alcalde
