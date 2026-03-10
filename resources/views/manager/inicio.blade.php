@@ -104,19 +104,20 @@
         <!-- FOOTER -->
         @include('layouts.footer')
         <script>
-    const datosFinanzas = {
-        producido: {{ $producido }},
-        invertido: {{ $invertido }},
-        beneficio: {{ $beneficio }}
-    };
+            const datosIncidencias = {
+                abierto: {{ $abierto }},
+                en_proceso: {{ $en_proceso }},
+                cerrado: {{ $cerrado }}
+            };
 
-    const datosTarifas = {
-        labels: @json($tarifasLabels),
-        data: @json($tarifasData)
-    };
-</script>
+            const datosFinanzas = {
+                producido: {{ $producido }},
+                invertido: {{ $invertido }},
+                beneficio: {{ $beneficio }}
+            };
+        </script>
 
-<script src="{{ asset('js/marketing.js') }}"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script><!--importar Grafico-->
+        <script src="{{ asset('js/managerDatos.js') }}"></script>
     </body>
 </html>
