@@ -3,10 +3,21 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Services\TecnicoService;
 
 class TecnicoController extends Controller
 {
+    private TecnicoService $tecnicoService;
+
+    /**
+     * @param TecnicoService $tecnicoService
+     * @author Alonso Coronado Alcalde
+     * @description Inyecta el servicio de cliente.
+     */
+    public function __construct(TecnicoService $tecnicoService) {
+        $this->tecnicoService = $tecnicoService;
+    }
+
     /**
      * @param Request $request
      * @return \Illuminate\View\View
@@ -17,49 +28,28 @@ class TecnicoController extends Controller
     {
         $tecnicoId = session('user_id');
 
-        // Estadísticas generales para el técnico (Tarjetas superiores - Siempre muestran el total)
-        $totalIncidencias = DB::table('incidencias')->where('trabajador_id', $tecnicoId)->count();
-        $abiertoTotal = DB::table('incidencias')->where('trabajador_id', $tecnicoId)->where('estado', 'abierto')->count();
-        $en_procesoTotal = DB::table('incidencias')->where('trabajador_id', $tecnicoId)->where('estado', 'en_progreso')->count();
-        $cerradoTotal = DB::table('incidencias')->where('trabajador_id', $tecnicoId)->where('estado', 'cerrado')->count();
+        //Estadisticas generales
+        $totalIncidencias = $this->tecnicoService->getTotalIncidencias($tecnicoId);
+        $abiertoTotal = $this->tecnicoService->getIncidenciasAbiertas($tecnicoId);
+        $en_procesoTotal = $this->tecnicoService->getIncidenciasEnProgreso($tecnicoId);
+        $cerradoTotal = $this->tecnicoService->getIncidenciasCerradas($tecnicoId);
 
-        // Total clientes atendidos
-        $totalClientes = DB::table('incidencias')
-            ->where('trabajador_id', $tecnicoId)
-            ->distinct('cliente_id')
-            ->count('cliente_id');
+        //Total clientes atendidos
+        $totalClientes = $this->tecnicoService->getTotalClientes($tecnicoId);
 
-        // Incidencias asignadas (no cerradas) - Estas siempre se muestran
-        $incidenciasAsignadas = DB::table('incidencias')
-            ->join('clientes', 'incidencias.cliente_id', '=', 'clientes.id')
-            ->select('incidencias.*', 'clientes.nombre as cliente_nombre', 'clientes.apellido as cliente_apellido')
-            ->where('incidencias.trabajador_id', $tecnicoId)
-            ->where('incidencias.estado', '!=', 'cerrado')
-            ->orderBy('incidencias.fecha', 'desc')
-            ->get();
+        //Incidencias asignadas (no cerradas) - Estas siempre se muestran
+        $incidenciasAsignadas = $this->tecnicoService->getIncidenciasAsignadas($tecnicoId);
 
-        // --- FILTRO POR INTERVALO (Para el Historial y el Gráfico Integrado) ---
+        //Filtro por intervalo
         $fechaInicio = $request->input('fecha_inicio');
         $fechaFin = $request->input('fecha_fin');
 
-        $queryResueltas = DB::table('incidencias')
-            ->join('clientes', 'incidencias.cliente_id', '=', 'clientes.id')
-            ->select('incidencias.*', 'clientes.nombre as cliente_nombre', 'clientes.apellido as cliente_apellido')
-            ->where('incidencias.trabajador_id', $tecnicoId)
-            ->where('incidencias.estado', 'cerrado');
+        $incidenciasResueltas = $this->tecnicoService->getIncidenciasResueltas($tecnicoId, $fechaInicio, $fechaFin);
 
-        // Si hay fechas, filtramos las resueltas por el intervalo
+        //Datos para el gráfico del historial
         if ($fechaInicio && $fechaFin) {
-            $queryResueltas->whereBetween('updated_at', [$fechaInicio . ' 00:00:00', $fechaFin . ' 23:59:59']);
-        }
-
-        $incidenciasResueltas = $queryResueltas->orderBy('updated_at', 'desc')->get();
-
-        // Datos para el gráfico del HISTORIAL (Representa lo que ha pasado en ese intervalo si se filtra, o el global si no)
-        // Decidimos que el gráfico en esta sección represente el éxito del técnico en el periodo
-        if ($fechaInicio && $fechaFin) {
-            $abierto = DB::table('incidencias')->where('trabajador_id', $tecnicoId)->where('estado', 'abierto')->whereBetween('created_at', [$fechaInicio, $fechaFin])->count();
-            $en_proceso = DB::table('incidencias')->where('trabajador_id', $tecnicoId)->where('estado', 'en_progreso')->whereBetween('updated_at', [$fechaInicio, $fechaFin])->count();
+            $abierto = $this->tecnicoService->getEstadisticasPeriodo($tecnicoId, $fechaInicio, $fechaFin)['abierto'];
+            $en_proceso = $this->tecnicoService->getEstadisticasPeriodo($tecnicoId, $fechaInicio, $fechaFin)['en_proceso'];
             $cerrado = count($incidenciasResueltas);
         } else {
             $abierto = $abiertoTotal;
@@ -67,6 +57,7 @@ class TecnicoController extends Controller
             $cerrado = $cerradoTotal;
         }
 
+        //Enviamos los datos al inicio
         return view('tecnico.inicio', compact(
             'totalIncidencias', 'abiertoTotal', 'en_procesoTotal', 'cerradoTotal', 'totalClientes',
             'abierto', 'en_proceso', 'cerrado', 
@@ -86,13 +77,11 @@ class TecnicoController extends Controller
         $tecnicoId = session('user_id');
         $estado = $request->input('estado');
 
-        DB::table('incidencias')
-            ->where('id', $id)
-            ->where('trabajador_id', $tecnicoId)
-            ->update([
-                'estado' => $estado,
-                'updated_at' => now()
-            ]);
+        //Comprueba que el usuario que intenta acceder es un técnico
+        $this->tecnicoService->comprobarTecnico();
+
+        //Actualiza el estado de la incidencia
+        $this->tecnicoService->actualizarEstado($tecnicoId, $id, $estado);
 
         return back()->with('success', 'Estado de la incidencia actualizado correctamente.');
     }

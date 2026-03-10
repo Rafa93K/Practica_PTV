@@ -61,7 +61,6 @@ class DynamicRequestValidator extends FormRequest
                 ];
             break;
 
-
             default:
                 return [];
         }
@@ -87,6 +86,20 @@ class DynamicRequestValidator extends FormRequest
             'dni.required' => 'El DNI es obligatorio.',
             'dni.unique' => 'El DNI ya está registrado.',
             'telefono.required' => 'El teléfono es obligatorio.',
+            'telefono.max' => 'El teléfono debe tener como máximo 9 dígitos.',
+            'password.required' => 'La contraseña es obligatoria.',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
+
+            //Cliente
+            'email.required' => 'El correo electrónico es obligatorio.',
+            'email.email' => 'Introduce un correo electrónico válido.',
+            'email.unique' => 'El correo electrónico ya está registrado.',
+            'telefono.required' => 'El teléfono es obligatorio.',
+            'telefono.max' => 'El teléfono debe tener como máximo 9 dígitos.',
+
+            //Incidencia
+            'descripcion.required' => 'La descripción es obligatoria.',
+            'descripcion.min' => 'La descripción debe tener al menos 10 caracteres.',
         ];
     }
 

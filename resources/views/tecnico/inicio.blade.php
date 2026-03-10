@@ -200,6 +200,7 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-50">
+                            {{-- Por cada incidencia resuelta, se muestra una fila --}}
                             @forelse($incidenciasResueltas as $incidencia)
                             <tr class="hover:bg-gray-50/50 transition">
                                 <td class="px-6 py-4 font-bold text-gray-800 text-sm">{{ $incidencia->cliente_nombre }} {{ $incidencia->cliente_apellido }}</td>
@@ -211,7 +212,7 @@
                                     </span>
                                 </td>
                             </tr>
-                            @empty
+                            @empty {{-- Si no hay incidencias resueltas, se muestra un mensaje --}}
                             <tr>
                                 <td colspan="4" class="px-6 py-12 text-center text-gray-400 italic">No hay incidencias resueltas en este periodo.</td>
                             </tr>
