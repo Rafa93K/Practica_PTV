@@ -5,8 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use App\Http\Requests\DynamicRequestValidator;
 
-class CheckLogin
-{
+class CheckLogin {
     public function handle(DynamicRequestValidator $request, Closure $next)
     {
         if (!session()->has('user_id')) {

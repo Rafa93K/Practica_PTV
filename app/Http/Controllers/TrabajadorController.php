@@ -9,32 +9,23 @@ use Illuminate\Support\Facades\Hash;
 class TrabajadorController extends Controller
 {
     /**
-        * @param DynamicRequestValidator $request
         * @return \Illuminate\View\View
         * @throws 
         * @author Rafael Osuna
         * @description  Muestra la vista para crear un nuevo trabajador, solo accesible para el manager.
-        */
-    public function crearTrabajador(DynamicRequestValidator $request)
-    {
+    */
+    public function crearTrabajador() {
         return view('manager.crearTrabajador');
     }
 
-    
     /**
         * @param  DynamicRequestValidator $request
         * @return \Illuminate\Http\RedirectResponse
         * @throws  
         * @author Rafael Osuna
         * @description Valida los datos del formulario y guarda un nuevo trabajador en la base de datos, luego redirige a la vista del manager con un mensaje de éxito.
-        */
-    public function trabajadorSubmit(DynamicRequestValidator $request)
-    {
-
-        // Crear trabajador mediante sql
-
-         
-
+    */
+    public function trabajadorSubmit(DynamicRequestValidator $request) {
         Trabajadore::create([
             'nombre' => $request->nombre,
             'apellido' => $request->apellido,
@@ -45,8 +36,6 @@ class TrabajadorController extends Controller
             'rol' => $request->rol,
         ]);
 
-        return redirect()->route('manager.inicio')
-            ->with('successTC', 'Trabajador creado correctamente');
+        return redirect()->route('manager.inicio')->with('successTC', 'Trabajador creado correctamente');
     }
-
 }

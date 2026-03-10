@@ -37,7 +37,6 @@ class AuthService {
             return redirect()->route('inicio');
         }
 
-
         //Si fallan las credenciales
         return back()->withErrors(['email' => 'El correo o la contraseña son incorrectos.'])->withInput();
     }

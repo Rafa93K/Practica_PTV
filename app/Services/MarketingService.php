@@ -4,17 +4,14 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\DB;
 
-class MarketingService
-{
+class MarketingService {
     /**
-     * @param 
      * @return array
      * @throws 
      * @author Rafael Osuna
      * @description Obtenemos los datos de las tablas para devolver la informacion al marketing.
      */
-    public function obtenerDatos()
-    {
+    public function obtenerDatos() {
         $totalContratos = DB::table('contratos')->count();
         
         $producido = DB::table('facturas')->sum('precio');

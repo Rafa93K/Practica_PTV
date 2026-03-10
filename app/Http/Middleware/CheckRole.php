@@ -5,8 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use App\Http\Requests\DynamicRequestValidator;
 
-class CheckRole
-{
+class CheckRole {
     public function handle(DynamicRequestValidator $request, Closure $next, $role)
     {
         if (session('user_role') !== $role) {
