@@ -9,17 +9,17 @@ use Illuminate\Support\Facades\Hash;
 class TrabajadorController extends Controller
 {
 
-    private array $rules=[
+    private array $rules = [
         'nombre' => 'required|string|max:255',
         'apellido' => 'required|string|max:255',
-        'dni' => 'required|string|max:9|unique:clientes,dni',
-        'email' => 'required|string|email|max:255|unique:clientes,email',
+        'dni' => 'required|string|max:9|unique:trabajadores,dni',
+        'email' => 'required|string|email|max:255|unique:trabajadores,email',
         'telefono' => 'required|string|max:9',
-        'password' => 'required|string|min:8',
+        'contraseña' => 'required|string|min:8',
         'rol' => 'required|in:manager,marketing,jefe_tecnico,tecnico',
     ];
 
-    private $errors=[
+    private $errors = [
         'nombre.required' => 'El nombre es obligatorio.',
         'apellido.required' => 'Los apellidos son obligatorios.',
         'dni.required' => 'El DNI es obligatorio.',
@@ -28,8 +28,8 @@ class TrabajadorController extends Controller
         'email.email' => 'El correo electrónico no es válido.',
         'email.unique' => 'El correo electrónico ya está registrado.',
         'telefono.required' => 'El teléfono es obligatorio.',
-        'password.required' => 'La contraseña es obligatoria.',
-        'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
+        'contraseña.required' => 'La contraseña es obligatoria.',
+        'contraseña.min' => 'La contraseña debe tener al menos 8 caracteres.',
         'rol.required' => 'El rol es obligatorio.',
     ];
 
@@ -56,11 +56,7 @@ class TrabajadorController extends Controller
     public function trabajadorSubmit(Request $request)
     {
         // Validar datos
-        $request->validate([$this->rules,$this->errors]);
-
-        // Crear trabajador mediante sql
-
-         
+        $request->validate($this->rules, $this->errors);
 
         Trabajadore::create([
             'nombre' => $request->nombre,
@@ -68,11 +64,11 @@ class TrabajadorController extends Controller
             'dni' => strtoupper($request->dni),
             'telefono' => $request->telefono,
             'email' => $request->email,
-            'contraseña' => Hash::make($request->password),
+            'contraseña' => Hash::make($request->contraseña),
             'rol' => $request->rol,
         ]);
 
-        return redirect()->route('manager.inicio')
+        return redirect()->route(session('user_role') . '.inicio')
             ->with('successTC', 'Trabajador creado correctamente');
     }
 

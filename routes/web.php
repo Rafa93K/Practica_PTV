@@ -66,3 +66,7 @@ Route::post('/manager/tarifas',[TarifaController::class,'guardarTarifa'])->middl
 
 //ruta para ver tarifas desde marketing
 Route::get('marketing/tarifas',[TarifaController::class,'mostrarTarifas'])->middleware(['checklogin','role:marketing'])->name('marketing.mostrarTarifas');
+
+
+//Ruta para crear trabajador desde jefe_tecnico
+Route::post('/jefe_tecnico/inicio',[TrabajadorController::class,'trabajadorSubmit'])->middleware(['checklogin','role:jefe_tecnico'])->name('jefe_tecnico.trabajadorSubmit');
