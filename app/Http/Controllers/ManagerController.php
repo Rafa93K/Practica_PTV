@@ -13,9 +13,12 @@ class ManagerController extends Controller
         * @author Rafael Osuna
         * @description Carga la vista del manager con las estadísticas obtenidas del servicio.
         */
-    public function index(ManagerService $managerService)
+    public function index(\Illuminate\Http\Request $request, ManagerService $managerService)
     {
-        $datos = $managerService->obtenerEstadisticas();
+        $fechaInicio = $request->input('fecha_inicio');
+        $fechaFin = $request->input('fecha_fin');
+
+        $datos = $managerService->obtenerEstadisticas($fechaInicio, $fechaFin);
 
         return view('manager.inicio', $datos);
     }

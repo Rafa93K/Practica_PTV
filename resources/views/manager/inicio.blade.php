@@ -40,6 +40,31 @@
                 }, 3000);
             </script>
         @endif
+
+        <!-- FILTROS POR FECHA -->
+        <section class="container mx-auto px-4 mb-8">
+            <div class="bg-white p-6 rounded-2xl shadow-md">
+                <form action="{{ route('manager.inicio') }}" method="GET" class="flex flex-wrap items-end gap-4">
+                    <div class="flex-1 min-w-[200px]">
+                        <label for="fecha_inicio" class="block text-sm font-medium text-gray-700 mb-1">Fecha Inicio</label>
+                        <input type="date" name="fecha_inicio" id="fecha_inicio" value="{{ $fechaInicio }}" 
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <div class="flex-1 min-w-[200px]">
+                        <label for="fecha_fin" class="block text-sm font-medium text-gray-700 mb-1">Fecha Fin</label>
+                        <input type="date" name="fecha_fin" id="fecha_fin" value="{{ $fechaFin }}" 
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <button type="submit" class="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition font-medium">
+                            Filtrar
+                        </button>
+                        <a href="{{ route('manager.inicio') }}" class="ml-2 text-gray-500 hover:text-indigo-600 text-sm">Limpiar</a>
+                    </div>
+                </form>
+            </div>
+        </section>
+
         <!-- CONTENIDO PRINCIPAL -->
         <main class="flex-1 container mx-auto px-4 py-8">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

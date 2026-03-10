@@ -6,6 +6,13 @@ use Illuminate\Support\Facades\DB;
 
 class MarketingService
 {
+    /**
+     * @param 
+     * @return array
+     * @throws 
+     * @author Rafael Osuna
+     * @description Obtenemos los datos de las tablas para devolver la informacion al marketing.
+     */
     public function obtenerDatos()
     {
         $totalContratos = DB::table('contratos')->count();
@@ -29,6 +36,9 @@ class MarketingService
         $tarifasLabels = $tarifasMasContratadas->pluck('nombre');
         $tarifasData = $tarifasMasContratadas->pluck('total');
 
+        // Obtener la tarifa más contratada
+        $topTarifa = $tarifasMasContratadas->first();
+
         return [
             'totalContratos' => $totalContratos,
             'producido' => $producido,
@@ -37,7 +47,8 @@ class MarketingService
 
             // datos del gráfico
             'tarifasLabels' => $tarifasLabels,
-            'tarifasData' => $tarifasData
+            'tarifasData' => $tarifasData,
+            'topTarifa' => $topTarifa
         ];
     }
 }
