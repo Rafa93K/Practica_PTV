@@ -8,6 +8,7 @@ use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\TarifaController;
 use App\Http\Controllers\TecnicoController;
+use App\Http\Controllers\MarketingController;
 
 
 Route::get('/', function () { return view('inicio');})->name('inicio');
@@ -36,7 +37,7 @@ Route::delete('/cliente/cancelar-servicio/{contrato_id}/{tarifa_id}', [ClienteCo
 
 //RUTAS POR ROL DE TRABAJADOR
 Route::get('/manager/inicio', function () { return view('manager.inicio');})->middleware(['checklogin','role:manager'])->name('manager.inicio');
-Route::get('/marketing/inicio', function () { return view('marketing.inicio');})->middleware(['checklogin','role:marketing'])->name('marketing.inicio');
+Route::get('/marketing/inicio', [MarketingController::class, 'index'])->middleware(['checklogin','role:marketing'])->name('marketing.inicio');
 Route::get('/jefe_tecnico/inicio', function () {return view('jefe_tecnico.inicio');})->middleware(['checklogin','role:jefe_tecnico'])->name('jefe_tecnico.inicio');
 
 //RUTAS POR ROL DE TECNICO

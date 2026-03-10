@@ -48,8 +48,22 @@
 
 </main>
 
-@include('layouts.footer')
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script><!--importar Grafico-->
+    @include('layouts.footer')
+
+    <script>
+        //Pasar datos de PHP a JS para los gráficos
+        const datosFinanzas = {
+            producido: {{ $producido }},
+            invertido: {{ $invertido }},
+            beneficio: {{ $beneficio }}
+        };
+
+        const datosTarifas = {
+            labels: {!! json_encode($tarifasLabels) !!},
+            data: {!! json_encode($tarifasData) !!}
+        };
+    </script>
+    <script src="{{ asset('js/marketingDatos.js') }}"></script>
 
 
 </body>
