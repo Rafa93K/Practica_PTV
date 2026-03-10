@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\DynamicRequestValidator;
 use App\Services\TecnicoService;
 
-class TecnicoController extends Controller
-{
+class TecnicoController extends Controller {
     private TecnicoService $tecnicoService;
 
     /**
@@ -19,13 +18,12 @@ class TecnicoController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param DynamicRequestValidator $request
      * @return \Illuminate\View\View
      * @author Alonso Coronado Alcalde
      * @description Muestra el panel del técnico con sus incidencias asignadas y estadísticas.
      */
-    public function index(Request $request)
-    {
+    public function index(DynamicRequestValidator $request) {
         $tecnicoId = session('user_id');
 
         //Estadisticas generales
@@ -66,19 +64,18 @@ class TecnicoController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param DynamicRequestValidator $request
      * @param int $id
      * @return \Illuminate\Http\RedirectResponse
      * @author Alonso Coronado Alcalde
      * @description Actualiza el estado de una incidencia.
      */
-    public function actualizarEstado(Request $request, $id)
-    {
+    public function actualizarEstado(DynamicRequestValidator $request, $id) {
         $tecnicoId = session('user_id');
         $estado = $request->input('estado');
 
         //Comprueba que el usuario que intenta acceder es un técnico
-        $this->tecnicoService->comprobarTecnico();
+        $this->tecnicoService->comprobarTecnico($request);
 
         //Actualiza el estado de la incidencia
         $this->tecnicoService->actualizarEstado($tecnicoId, $id, $estado);

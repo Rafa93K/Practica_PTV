@@ -4,17 +4,16 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\DB;
 
-class ManagerService
-{
+class ManagerService {
     /**
-     * @param none
+     * @param $fechaInicio
+     * @param $fechaFin
      * @return array  
      * @throws 
      * @author Rafael Osuna
      * @description Obtenemos los datos de las tablas para devolver la informacion al manager.
      */
-    public function obtenerEstadisticas($fechaInicio = null, $fechaFin = null)
-    {
+    public function obtenerEstadisticas($fechaInicio = null, $fechaFin = null) {
         $queryContratos = DB::table('contratos');
         $queryIncidencias = DB::table('incidencias');
         $queryFacturas = DB::table('facturas');
@@ -59,6 +58,3 @@ class ManagerService
         ];
     }
 }
-
-
-?>
