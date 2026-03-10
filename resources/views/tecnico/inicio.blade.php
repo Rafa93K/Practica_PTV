@@ -9,28 +9,6 @@
     <body class="bg-gray-50 flex flex-col min-h-screen">
         @include('layouts.header') <!-- Importacion del componente header -->
 
-        <!-- Mensajes flash -->
-        @if(session('success'))
-            <div id="flash-message" class="fixed top-20 right-4 z-50 p-4 bg-green-100 border border-green-500 text-green-800 rounded-lg shadow-xl ring-1 ring-green-600/20">
-                <div class="flex items-center">
-                    <i class="fas fa-check-circle mr-3 text-xl text-green-600"></i>
-                    <span class="font-bold">{{ session('success') }}</span>
-                </div>
-            </div>
-
-            {{-- Temporizador para que se oculte a los 3 segundos --}}
-            <script>
-                setTimeout(() => { 
-                    const msg = document.getElementById('flash-message');
-                    if(msg) {
-                        msg.style.opacity = '0';
-                        msg.style.transition = 'opacity 0.5s ease';
-                        setTimeout(() => msg.remove(), 500);
-                    }
-                }, 3000);
-            </script>
-        @endif
-
         <!-- CONTENIDO PRINCIPAL -->
         <main class="flex-1 container mx-auto px-4 py-8">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-10">
@@ -222,6 +200,7 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-50">
+                            {{-- Por cada incidencia resuelta, se muestra una fila --}}
                             @forelse($incidenciasResueltas as $incidencia)
                             <tr class="hover:bg-gray-50/50 transition">
                                 <td class="px-6 py-4 font-bold text-gray-800 text-sm">{{ $incidencia->cliente_nombre }} {{ $incidencia->cliente_apellido }}</td>
@@ -233,7 +212,7 @@
                                     </span>
                                 </td>
                             </tr>
-                            @empty
+                            @empty {{-- Si no hay incidencias resueltas, se muestra un mensaje --}}
                             <tr>
                                 <td colspan="4" class="px-6 py-12 text-center text-gray-400 italic">No hay incidencias resueltas en este periodo.</td>
                             </tr>
