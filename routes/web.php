@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Models\Tarifa;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\TrabajadorController;
@@ -10,7 +11,10 @@ use App\Http\Controllers\TarifaController;
 use App\Http\Controllers\TecnicoController;
 
 
-Route::get('/', function () { return view('inicio');})->name('inicio');
+Route::get('/', function () { 
+    $tarifas = Tarifa::all();
+    return view('inicio', compact('tarifas'));
+})->name('inicio');
 
 
 Route::get('/login/{tipo}', [AuthController::class, 'mostrarLogin'])->name('login'); //Ruta para mostrar login segun el tipo

@@ -11,50 +11,47 @@ class UsersSeeder extends Seeder
 {
     public function run()
     {
+        // Limpiar tablas para evitar duplicados si se corre sin refresh (aunque el usuario pidió el comando completo)
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('clientes')->truncate();
+        DB::table('trabajadores')->truncate();
+        DB::table('tarifas')->truncate();
+        DB::table('productos')->truncate();
+        DB::table('contratos')->truncate();
+        DB::table('contrato_tarifa')->truncate();
+        DB::table('facturas')->truncate();
+        DB::table('incidencias')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
         // -------------------------
-        // CLIENTES
+        // CLIENTES (15 clientes)
         // -------------------------
-        DB::table('clientes')->insert([
-            [
-                'nombre' => 'Juan',
-                'apellido' => 'Pérez',
-                'dni' => '12345678A',
-                'telefono' => '600111222',
-                'email' => 'cliente1@example.com',
+        $nombres = ['Juan', 'María', 'Pedro', 'Ana', 'Carlos', 'Laura', 'Diego', 'Elena', 'Sofía', 'Javier', 'Lucía', 'Marcos', 'Carmen', 'Raúl', 'Isabel'];
+        $apellidos = ['Pérez', 'García', 'López', 'Martínez', 'Sánchez', 'Gómez', 'Rodríguez', 'Fernández', 'Ruiz', 'Díaz', 'Morales', 'Ortega', 'Navarro', 'Torres', 'Ramírez'];
+
+        for ($i = 1; $i <= 15; $i++) {
+            DB::table('clientes')->insert([
+                'id' => $i,
+                'nombre' => $nombres[$i-1],
+                'apellido' => $apellidos[$i-1],
+                'dni' => str_pad($i, 8, '0', STR_PAD_LEFT) . chr(64 + ($i % 26)),
+                'telefono' => '600' . str_pad($i, 6, '0', STR_PAD_LEFT),
+                'email' => 'cliente' . $i . '@example.com',
                 'contraseña' => Hash::make('cliente123'),
-                'created_at' => now(),
+                'created_at' => now()->subDays(rand(1, 100)),
                 'updated_at' => now(),
-            ],
-            [
-                'nombre' => 'María',
-                'apellido' => 'García',
-                'dni' => '23456789B',
-                'telefono' => '600222333',
-                'email' => 'cliente2@example.com',
-                'contraseña' => Hash::make('cliente123'),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'nombre' => 'Pedro',
-                'apellido' => 'López',
-                'dni' => '34567890C',
-                'telefono' => '600333444',
-                'email' => 'cliente3@example.com',
-                'contraseña' => Hash::make('cliente123'),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-        ]);
+            ]);
+        }
 
         // -------------------------
         // TRABAJADORES
         // -------------------------
         $trabajadores = [
-            ['nombre' => 'Laura', 'apellido' => 'Gómez', 'dni' => '11111111B', 'telefono' => '600111111', 'email' => 'manager@example.com', 'contraseña' => 'manager123', 'rol' => 'manager'],
-            ['nombre' => 'Mario', 'apellido' => 'López', 'dni' => '22222222C', 'telefono' => '600222222', 'email' => 'marketing@example.com', 'contraseña' => 'marketing123', 'rol' => 'marketing'],
-            ['nombre' => 'Ana', 'apellido' => 'Martínez', 'dni' => '33333333D', 'telefono' => '600333333', 'email' => 'jefetecnico@example.com', 'contraseña' => 'jefetecnico123', 'rol' => 'jefe_tecnico'],
-            ['nombre' => 'Carlos', 'apellido' => 'Ruiz', 'dni' => '44444444E', 'telefono' => '600444444', 'email' => 'tecnico@example.com', 'contraseña' => 'tecnico123', 'rol' => 'tecnico'],
+            ['nombre' => 'Admin', 'apellido' => 'Manager', 'dni' => '11111111B', 'telefono' => '600111111', 'email' => 'manager@example.com', 'contraseña' => 'manager123', 'rol' => 'manager'],
+            ['nombre' => 'Marta', 'apellido' => 'Marketing', 'dni' => '22222222C', 'telefono' => '600222222', 'email' => 'marketing@example.com', 'contraseña' => 'marketing123', 'rol' => 'marketing'],
+            ['nombre' => 'Alberto', 'apellido' => 'Jefe', 'dni' => '33333333D', 'telefono' => '600333333', 'email' => 'jefetecnico@example.com', 'contraseña' => 'jefetecnico123', 'rol' => 'jefe_tecnico'],
+            ['nombre' => 'Carlos', 'apellido' => 'Técnico 1', 'dni' => '44444444E', 'telefono' => '600444444', 'email' => 'tecnico@example.com', 'contraseña' => 'tecnico123', 'rol' => 'tecnico'],
+            ['nombre' => 'Sofía', 'apellido' => 'Técnico 2', 'dni' => '55555555F', 'telefono' => '600555555', 'email' => 'tecnico2@example.com', 'contraseña' => 'tecnico123', 'rol' => 'tecnico'],
         ];
 
         foreach ($trabajadores as $trab) {
@@ -72,194 +69,138 @@ class UsersSeeder extends Seeder
         }
 
         // -------------------------
-        // TARIFAS
+        // TARIFAS (Más variedad)
         // -------------------------
-        DB::table('tarifas')->insert([
-            [
-                'nombre' => 'Internet 100Mb',
-                'tipo' => 'internet',
-                'precio' => 29.99,
-                'descripcion' => 'Conexión de alta velocidad 100Mb simétrica.',
+        $tarifasData = [
+            ['Internet 100Mb', 'internet', 29.99, 'Conexión de alta velocidad 100Mb simétrica.'],
+            ['Internet 600Mb', 'internet', 39.99, 'Fibra de alta velocidad ideal para gaming y streaming.'],
+            ['Internet 1Gb', 'internet', 49.99, 'La máxima velocidad disponible en el mercado.'],
+            ['Móvil Básico 10GB', 'movil', 9.99, '10GB de datos y llamadas ilimitadas.'],
+            ['Móvil Pro 50GB', 'movil', 19.99, '50GB de datos con velocidad 5G.'],
+            ['Móvil Ilimitado', 'movil', 24.99, 'Llamadas y datos ilimitados sin restricciones.'],
+            ['Televisión Esencial', 'tv', 10.00, 'Más de 50 canales temáticos en HD.'],
+            ['Televisión Premium', 'tv', 20.00, 'Cine, series y todo el deporte en 4K.'],
+        ];
+
+        foreach ($tarifasData as $t) {
+            DB::table('tarifas')->insert([
+                'nombre' => $t[0],
+                'tipo' => $t[1],
+                'precio' => $t[2],
+                'descripcion' => $t[3],
                 'created_at' => now(),
                 'updated_at' => now(),
-            ],
-            [
-                'nombre' => 'Movil Ilimitado',
-                'tipo' => 'movil',
-                'precio' => 19.99,
-                'descripcion' => 'Llamadas y datos ilimitados en toda España.',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'nombre' => 'Televisión HD',
-                'tipo' => 'tv',
-                'precio' => 15.99,
-                'descripcion' => 'Canales HD y grabador digital.',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-        ]);
+            ]);
+        }
 
         // -------------------------
-        // PRODUCTOS
+        // PRODUCTOS (Inventario)
         // -------------------------
-        DB::table('productos')->insert([
-            [
-                'nombre' => 'Router Wifi 6',
-                'cantidad' => 10,
-                'precio' => 5.99,
+        $productosData = [
+            ['Router Wifi 6', 50, 45.00],
+            ['Extensor de Red Mesh', 30, 60.00],
+            ['Cable Ethernet CAT7 10m', 100, 5.50],
+            ['Decodificador Android TV', 40, 35.00],
+            ['Tarjeta SIM 5G', 200, 1.00],
+        ];
+
+        foreach ($productosData as $p) {
+            DB::table('productos')->insert([
+                'nombre' => $p[0],
+                'cantidad' => $p[1],
+                'precio' => $p[2],
                 'created_at' => now(),
                 'updated_at' => now(),
-            ],
-            [
-                'nombre' => 'Extensor de Red',
-                'cantidad' => 15,
-                'precio' => 7.99,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'nombre' => 'Cable Ethernet',
-                'cantidad' => 50,
-                'precio' => 1.5,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-        ]);
+            ]);
+        }
 
         // -------------------------
-        // CONTRATOS
+        // CONTRATOS (Varios contratos por cliente)
         // -------------------------
-        DB::table('contratos')->insert([
-            [
-                'cliente_id' => 1,
-                'trabajadore_id' => 1,
-                'ciudad' => 'Madrid',
-                'provincia' => 'Madrid',
-                'calle' => 'Calle Mayor',
-                'numero' => 12,
-                'puerta' => '3A',
-                'codigo_postal' => '28013',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'cliente_id' => 2,
-                'trabajadore_id' => 2,
-                'ciudad' => 'Barcelona',
-                'provincia' => 'Barcelona',
-                'calle' => 'Passeig de Gràcia',
-                'numero' => 45,
-                'puerta' => '5B',
-                'codigo_postal' => '08007',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'cliente_id' => 3,
-                'trabajadore_id' => 3,
-                'ciudad' => 'Sevilla',
-                'provincia' => 'Sevilla',
-                'calle' => 'Calle Sierpes',
-                'numero' => 8,
-                'puerta' => null,
-                'codigo_postal' => '41004',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-        ]);
+        $ciudades = ['Madrid', 'Barcelona', 'Sevilla', 'Valencia', 'Málaga', 'Zaragoza', 'Bilbao', 'Alicante'];
+        $vias = ['Calle', 'Avenida', 'Paseo', 'Plaza'];
+        
+        for ($i = 1; $i <= 15; $i++) {
+            // Cada cliente tiene al menos 1 contrato, algunos 2
+            $numContratos = rand(1, 2);
+            for ($j = 0; $j < $numContratos; $j++) {
+                $contratoId = DB::table('contratos')->insertGetId([
+                    'cliente_id' => $i,
+                    'trabajadore_id' => rand(1, 2), // Asignado a manager o marketing
+                    'ciudad' => $ciudades[array_rand($ciudades)],
+                    'provincia' => 'Provincia Test',
+                    'calle' => $vias[array_rand($vias)] . ' de la Prueba ' . rand(1, 100),
+                    'numero' => rand(1, 50),
+                    'puerta' => rand(1, 9) . (rand(0, 1) ? 'A' : 'B'),
+                    'codigo_postal' => str_pad(rand(1000, 52000), 5, '0', STR_PAD_LEFT),
+                    'created_at' => now()->subMonths(rand(1, 6)),
+                    'updated_at' => now(),
+                ]);
+
+                // Asignar 1 o 2 tarifas al contrato
+                $numTarifas = rand(1, 2);
+                $tarifasIds = range(1, 8);
+                shuffle($tarifasIds);
+                $misTarifas = array_slice($tarifasIds, 0, $numTarifas);
+
+                foreach ($misTarifas as $tarifaId) {
+                    $precioTarifa = DB::table('tarifas')->where('id', $tarifaId)->value('precio');
+                    
+                    DB::table('contrato_tarifa')->insert([
+                        'contrato_id' => $contratoId,
+                        'tarifa_id' => $tarifaId,
+                        'fecha_inicio' => Carbon::now()->subMonths(rand(1, 5))->toDateString(),
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+
+                    // Generar algunas facturas para este contrato
+                    for ($m = 0; $m < rand(1, 3); $m++) {
+                        DB::table('facturas')->insert([
+                            'cliente_id' => $i,
+                            'contrato_id' => $contratoId,
+                            'precio' => $precioTarifa,
+                            'fecha_inicio' => Carbon::now()->subMonths($m)->startOfMonth()->toDateString(),
+                            'created_at' => now()->subMonths($m),
+                            'updated_at' => now(),
+                        ]);
+                    }
+                }
+            }
+        }
 
         // -------------------------
-        // CONTRATO-TARIFA
+        // INCIDENCIAS (Muchos datos para los técnicos)
         // -------------------------
-        DB::table('contrato_tarifa')->insert([
-            [
-                'contrato_id' => 1,
-                'tarifa_id' => 1,
-                'fecha_inicio' => Carbon::now()->subMonths(3)->toDateString(),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'contrato_id' => 2,
-                'tarifa_id' => 2,
-                'fecha_inicio' => Carbon::now()->subMonths(2)->toDateString(),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'contrato_id' => 3,
-                'tarifa_id' => 3,
-                'fecha_inicio' => Carbon::now()->subMonth()->toDateString(),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-        ]);
+        $descripciones = [
+            'No funciona el internet desde esta mañana.',
+            'El teléfono móvil no tiene cobertura en casa.',
+            'Fallo en el decodificador de TV, pantalla negra.',
+            'La velocidad de la fibra es muy baja.',
+            'Problema con el cobro de la última factura.',
+            'Duda sobre el roaming en mi tarifa móvil.',
+            'Necesito un extensor de red para la planta de arriba.',
+            'Mi router se reinicia solo cada 10 minutos.',
+            'No puedo enviar SMS desde mi terminal.',
+            'La conexión se corta cuando llueve.'
+        ];
 
-        // -------------------------
-        // FACTURAS
-        // -------------------------
-        DB::table('facturas')->insert([
-            [
-                'cliente_id' => 1,
-                'contrato_id' => 1,
-                'precio' => 29.99,
-                'fecha_inicio' => Carbon::now()->subMonths(3)->toDateString(),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'cliente_id' => 2,
-                'contrato_id' => 2,
-                'precio' => 19.99,
-                'fecha_inicio' => Carbon::now()->subMonths(2)->toDateString(),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'cliente_id' => 3,
-                'contrato_id' => 3,
-                'precio' => 15.99,
-                'fecha_inicio' => Carbon::now()->subMonth()->toDateString(),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-        ]);
+        $estados = ['abierto', 'en_progreso', 'cerrado'];
+        $tecnicosIds = [4, 5]; // Carlos y Sofía
 
-        // -------------------------
-        // INCIDENCIAS
-        // -------------------------
-        DB::table('incidencias')->insert([
-            [
-                'cliente_id' => 1,
-                'trabajador_id' => 4,
-                'descripcion' => 'Fallo de conexión',
-                'estado' => 'abierto',
-                'fecha' => Carbon::now()->subDays(5)->toDateString(),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'cliente_id' => 2,
-                'trabajador_id' => 4,
-                'descripcion' => 'Problema con factura',
-                'estado' => 'en_progreso',
-                'fecha' => Carbon::now()->subDays(3)->toDateString(),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'cliente_id' => 3,
-                'trabajador_id' => null,
-                'descripcion' => 'Consulta general',
-                'estado' => 'cerrado',
-                'fecha' => Carbon::now()->subDays(1)->toDateString(),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-        ]);
+        for ($i = 0; $i < 40; $i++) {
+            $estado = $estados[array_rand($estados)];
+            $tecnico = (rand(0, 10) > 2) ? $tecnicosIds[array_rand($tecnicosIds)] : null; // Algunas sin asignar
+            
+            DB::table('incidencias')->insert([
+                'cliente_id' => rand(1, 15),
+                'trabajador_id' => $tecnico,
+                'descripcion' => $descripciones[array_rand($descripciones)],
+                'estado' => $estado,
+                'fecha' => Carbon::now()->subDays(rand(1, 60))->toDateString(),
+                'created_at' => now()->subDays(rand(1, 60)),
+                'updated_at' => ($estado == 'cerrado' || $estado == 'en_progreso') ? now()->subDays(rand(0, 30)) : now(),
+            ]);
+        }
     }
 }
-//php artisan db:seed --class=UsersSeeder
-//php artisan migrate:fresh
