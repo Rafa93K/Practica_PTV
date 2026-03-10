@@ -5,7 +5,6 @@ use App\Http\Requests\DynamicRequestValidator;
 use App\Models\Cliente;
 use App\Models\Contrato;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\DB;
 
 class ClienteService {
     /**

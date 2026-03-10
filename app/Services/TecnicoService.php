@@ -2,15 +2,17 @@
 
 namespace App\Services;
 use Illuminate\Support\Facades\DB;
+use App\Http\Requests\DynamicRequestValidator;
 
 class TecnicoService {
     /**
+     * @param DynamicRequestValidator $request
      * @return int
      * @throws \Illuminate\Validation\ValidationException
      * @author Alonso Coronado Alcalde
      * @description Comprueba que el usuario que intenta acceder es un técnico.
      */
-    public function comprobarTecnico() {
+    public function comprobarTecnico(DynamicRequestValidator $request) {
         //Comprueba que el usuario que intenta acceder es un técnico
         $tecnicoId = session('user_id');
         $userType = session('user_type');

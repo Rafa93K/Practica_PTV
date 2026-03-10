@@ -4,10 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\AuthService;
 use App\Http\Requests\DynamicRequestValidator;
-use App\Models\Cliente;
-use App\Models\Trabajadore;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Http\Request;
 
 class AuthController extends Controller {
     private AuthService $authService;
