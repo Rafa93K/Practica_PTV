@@ -11,7 +11,10 @@
     @include('layouts.header')
 
     <main class="flex-1 container mx-auto px-4 py-8 flex flex-col gap-8">
-       <a href="{{ route('manager.inicio') }}" class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-blue-600 transition-colors mb-6 group">
+       @php
+        $rutaPanel = session('user_role') . '.inicio';    
+       @endphp
+       <a href="{{ route($rutaPanel) }}" class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-blue-600 transition-colors mb-6 group">
                     <svg class="w-4 h-4 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                     </svg>
