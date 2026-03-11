@@ -17,6 +17,7 @@ return new class extends Migration
             $table->enum('tipo', ['internet', 'movil', 'tv']); //Solo puede elegir uno de los 3 tipos
             $table->decimal('precio', 8, 2); //8 numeros de largo y 2 de decimas
             $table->text('descripcion');
+            $table->boolean('permanencia')->default(false);
             $table->timestamps();
         });
     }

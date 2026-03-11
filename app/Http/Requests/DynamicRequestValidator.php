@@ -77,6 +77,11 @@ class DynamicRequestValidator extends FormRequest {
                     'productos.*' => 'nullable|exists:productos,id',
                 ];
 
+            case 'tarifaFilter':
+                return [
+                    'tipo' => 'nullable|in:internet,movil,tv',
+                ];
+
             case 'productoSubmit':
                 return [
                     'nombre' => 'required|string|max:255',

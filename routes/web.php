@@ -64,14 +64,15 @@ Route::post('/manager/productos',[ProductoController::class,'guardarProducto'])-
 //muestra de datos estadísticos para el manager
 Route::get('/manager/inicio', [ManagerController::class,'index'])->middleware(['checklogin','role:manager'])->name('manager.inicio');
 
-//ruta para ver tarifas desde el manager
-Route::get('/manager/tarifas', [TarifaController::class,'mostrarTarifas'])->middleware(['checklogin','role:manager'])->name('mostrarTarifas');
-Route::post('/manager/tarifas',[TarifaController::class,'guardarTarifa'])->middleware(['checklogin','role:manager'])->name('tarifaSubmit');
-Route::delete('/manager/tarifas/{id}', [TarifaController::class, 'eliminarTarifa'])->middleware(['checklogin','role:manager'])->name('tarifaDelete');
+//Rutas compartidas para Gestión de Tarifas (Manager y Marketing)
+Route::group(['middleware' => ['checklogin', 'role:manager,marketing']], function() {
+    Route::get('/tarifas', [TarifaController::class, 'mostrarTarifas'])->name('mostrarTarifas');
+    Route::post('/tarifas/filtrar', [TarifaController::class, 'filtrarTarifas'])->name('tarifaFilter');
+    Route::post('/tarifas', [TarifaController::class, 'guardarTarifa'])->name('tarifaSubmit');
+    Route::delete('/tarifas/{id}', [TarifaController::class, 'eliminarTarifa'])->name('tarifaDelete');
+});
 
-//ruta para ver tarifas desde marketing
-Route::get('marketing/tarifas',[TarifaController::class,'mostrarTarifas'])->middleware(['checklogin','role:marketing'])->name('marketing.mostrarTarifas');
-
+Route::get('/marketing/inicio', [MarketingController::class,'index'])->middleware(['checklogin','role:marketing'])->name('marketing.inicio');
 
 //Ruta para crear trabajador desde jefe_tecnico
 Route::post('/jefe_tecnico/inicio',[TrabajadorController::class,'trabajadorSubmit'])->middleware(['checklogin','role:jefe_tecnico'])->name('jefe_tecnico.trabajadorSubmit');
