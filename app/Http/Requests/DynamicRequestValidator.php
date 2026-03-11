@@ -24,17 +24,16 @@ class DynamicRequestValidator extends FormRequest
      */
     public function rules(): array {
         $routeName = $this->route()->getName(); //Obtiene el nombre de la ruta
+        $userId = session('user_id');
 
         switch ($routeName) {
-            // Ruta: POST /login/{tipo} -> name('login.submit')
+            //Ruta: POST /login/{tipo} -> name('login.submit')
             case 'login.submit':
                 return [
                     'email' => 'required|string|email|max:255',
                     'password' => 'required|string|min:8',
                 ];
-            break;
 
-            // Ruta: POST /registro -> name('register.submit')
             case 'register.submit':
                 return [
                     'nombre' => 'required|string|max:255',
@@ -44,22 +43,64 @@ class DynamicRequestValidator extends FormRequest
                     'telefono' => 'required|string|max:9',
                     'password' => 'required|string|min:8',
                 ];
-            break;
 
+            //CLIENTE
             case 'cliente.update':
-                $clienteId = session('user_id');
                 return [
-                    'email' => 'required|string|email|max:255|unique:clientes,email,' . $clienteId,
+                    'email' => 'required|string|email|max:255|unique:clientes,email,' . ($userId ?? 'null'),
                     'telefono' => 'required|string|max:9',
                 ];
-            break;
 
-            // Ruta: POST /cliente/incidencia -> name('cliente.incidencia.store')
             case 'cliente.incidencia.store':
                 return [
                     'descripcion' => 'required|string|min:10',
                 ];
-            break;
+
+            //MANAGER / TRABAJADORES (Rutas reales)
+            case 'manager.trabajadorSubmit':
+                return [
+                    'nombre' => 'required|string|max:255',
+                    'apellido' => 'required|string|max:255',
+                    'dni' => 'required|string|max:9|unique:trabajadores,dni',
+                    'email' => 'required|string|email|max:255|unique:trabajadores,email',
+                    'telefono' => 'required|string|max:9',
+                    'password' => 'required|string|min:8',
+                    'rol' => 'required|in:manager,marketing,jefe_tecnico,tecnico',
+                ];
+
+            case 'tarifaSubmit':
+                return [
+                    'nombre' => 'required|string|max:255',
+                    'tipo' => 'required|in:internet,movil,tv',
+                    'precio' => 'required|numeric|min:0',
+                    'descripcion' => 'required|string|max:500',
+                ];
+
+            case 'productoSubmit':
+                return [
+                    'nombre' => 'required|string|max:255',
+                    'cantidad' => 'required|integer|min:0',
+                    'precio' => 'required|numeric|min:0',
+                ];
+
+            //TECNICO
+            case 'tecnico.incidencia.actualizar':
+                return [
+                    'estado' => 'required|in:abierto,en_progreso,cerrado',
+                ];
+
+            //ACCIONES GENÉRICAS (Por el usuario para futuro uso)
+            case 'manager.cliente.delete':
+            case 'marketing.cliente.delete':
+                return [
+                    'id' => 'required|exists:clientes,id',
+                ];
+
+            case 'manager.incidencia.asignar':
+                return [
+                    'id' => 'required|exists:incidencias,id',
+                    'tecnico_id' => 'required|exists:trabajadores,id',
+                ];
 
             default:
                 return [];
@@ -69,37 +110,52 @@ class DynamicRequestValidator extends FormRequest
     /**
      * @return array
      * @author Alonso Coronado Alcalde
-     * @description Define los mensajes de error para cada regla de validación.
+     * @description Define los mensajes de error para cada regla de validación de forma global.
      */
     public function messages(): array {
         return [
-            //Login
+            //Genéricos
+            'required' => 'El campo :attribute es obligatorio.',
+            'string' => 'El campo :attribute debe ser una cadena de texto.',
+            'max' => 'El campo :attribute no puede tener más de :max caracteres.',
+            'min' => 'El campo :attribute debe tener al menos :min caracteres.',
+            'email' => 'El campo :attribute debe ser un correo electrónico válido.',
+            'unique' => 'El :attribute ya se encuentra registrado.',
+            'numeric' => 'El campo :attribute debe ser un valor numérico.',
+            'integer' => 'El campo :attribute debe ser un número entero.',
+            'exists' => 'El :attribute seleccionado no es válido.',
+            'in' => 'El valor seleccionado para :attribute no es válido.',
+
+            //Personalizados (campos comunes)
             'email.required' => 'El correo electrónico es obligatorio.',
-            'email.email' => 'Introduce un correo electrónico válido.',
-            'email.unique' => 'El correo electrónico ya está registrado.',
+            'email.email' => 'Introduce un formato de correo electrónico válido.',
+            'email.unique' => 'Este correo electrónico ya está en uso.',
+            
             'password.required' => 'La contraseña es obligatoria.',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
             
-            //Registro
-            'nombre.required' => 'El nombre es obligatorio.',
-            'apellido.required' => 'Los apellidos son obligatorios.',
             'dni.required' => 'El DNI es obligatorio.',
-            'dni.unique' => 'El DNI ya está registrado.',
-            'telefono.required' => 'El teléfono es obligatorio.',
-            'telefono.max' => 'El teléfono debe tener como máximo 9 dígitos.',
-            'password.required' => 'La contraseña es obligatoria.',
-            'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
+            'dni.unique' => 'Este DNI ya está registrado en el sistema.',
+            'dni.max' => 'El DNI no puede exceder los 9 caracteres.',
+            
+            'telefono.required' => 'El número de teléfono es obligatorio.',
+            'telefono.max' => 'El teléfono no puede superar los 9 dígitos.',
 
-            //Cliente
-            'email.required' => 'El correo electrónico es obligatorio.',
-            'email.email' => 'Introduce un correo electrónico válido.',
-            'email.unique' => 'El correo electrónico ya está registrado.',
-            'telefono.required' => 'El teléfono es obligatorio.',
-            'telefono.max' => 'El teléfono debe tener como máximo 9 dígitos.',
+            'nombre.required' => 'El nombre es obligatorio.',
+            'apellido.required' => 'El apellido es obligatorio.',
+            
+            'descripcion.required' => 'Por favor, escribe una descripción.',
+            'descripcion.min' => 'La descripción debe tener al menos 10 caracteres para ser útil.',
 
-            //Incidencia
-            'descripcion.required' => 'La descripción es obligatoria.',
-            'descripcion.min' => 'La descripción debe tener al menos 10 caracteres.',
+            'precio.required' => 'El precio es obligatorio.',
+            'precio.min' => 'El precio no puede ser negativo.',
+            
+            'cantidad.required' => 'La cantidad es obligatoria.',
+            'cantidad.integer' => 'La cantidad debe ser un número entero.',
+            'cantidad.min' => 'La cantidad no puede ser menor a 0.',
+
+            'rol.required' => 'Debes asignar un rol al trabajador.',
+            'estado.required' => 'Debes seleccionar un nuevo estado para la incidencia.',
         ];
     }
 

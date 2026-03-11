@@ -3,11 +3,11 @@
 namespace App\Services;
 use App\Models\Cliente;
 use App\Models\Trabajadore;
-use Illuminate\Http\Request;
+use App\Http\Requests\DynamicRequestValidator;
 use Illuminate\Support\Facades\Hash;
 
 class AuthService {
-    public function login(Request $request, $tipo) {
+    public function login(DynamicRequestValidator $request, $tipo) {
         //Buscar el usuario segun el tipo
         if ($tipo === 'cliente') {
             $user = Cliente::where('email', $request->email)->first();
@@ -36,7 +36,6 @@ class AuthService {
 
             return redirect()->route('inicio');
         }
-
 
         //Si fallan las credenciales
         return back()->withErrors(['email' => 'El correo o la contraseña son incorrectos.'])->withInput();

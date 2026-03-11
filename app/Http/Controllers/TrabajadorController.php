@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\DynamicRequestValidator;
 use App\Models\Trabajadore;
 use Illuminate\Support\Facades\Hash;
 
 class TrabajadorController extends Controller
 {
+<<<<<<< HEAD
 
     private array $rules = [
         'nombre' => 'required|string|max:255',
@@ -33,31 +34,35 @@ class TrabajadorController extends Controller
         'rol.required' => 'El rol es obligatorio.',
     ];
 
+=======
+>>>>>>> 140af33094e6a8b7864e5b49ac47bce81fb7542b
     /**
-        * @param Request $request
         * @return \Illuminate\View\View
         * @throws 
         * @author Rafael Osuna
         * @description  Muestra la vista para crear un nuevo trabajador, solo accesible para el manager.
-        */
-    public function crearTrabajador()
-    {
+    */
+    public function crearTrabajador() {
         return view('manager.crearTrabajador');
     }
 
-    
     /**
-        * @param  Request $request
+        * @param  DynamicRequestValidator $request
         * @return \Illuminate\Http\RedirectResponse
         * @throws  
         * @author Rafael Osuna
         * @description Valida los datos del formulario y guarda un nuevo trabajador en la base de datos, luego redirige a la vista del manager con un mensaje de éxito.
+<<<<<<< HEAD
         */
     public function trabajadorSubmit(Request $request)
     {
         // Validar datos
         $request->validate($this->rules, $this->errors);
 
+=======
+    */
+    public function trabajadorSubmit(DynamicRequestValidator $request) {
+>>>>>>> 140af33094e6a8b7864e5b49ac47bce81fb7542b
         Trabajadore::create([
             'nombre' => $request->nombre,
             'apellido' => $request->apellido,
@@ -68,8 +73,11 @@ class TrabajadorController extends Controller
             'rol' => $request->rol,
         ]);
 
+<<<<<<< HEAD
         return redirect()->route(session('user_role') . '.inicio')
             ->with('successTC', 'Trabajador creado correctamente');
+=======
+        return redirect()->route('manager.inicio')->with('successTC', 'Trabajador creado correctamente');
+>>>>>>> 140af33094e6a8b7864e5b49ac47bce81fb7542b
     }
-
 }
