@@ -87,7 +87,7 @@ class TecnicoService {
             ->select('incidencias.*', 'clientes.nombre as cliente_nombre', 'clientes.apellido as cliente_apellido')
             ->where('incidencias.trabajador_id', $tecnicoId)
             ->where('incidencias.estado', '!=', 'cerrado')
-            ->orderBy('incidencias.fecha', 'desc')
+            ->orderBy('incidencias.fecha_inicio', 'desc')
             ->get();
     }
     
@@ -120,12 +120,12 @@ class TecnicoService {
      */
     public function getEstadisticasPeriodo($tecnicoId, $fechaInicio, $fechaFin): array {
         $pendiente = DB::table('incidencias')->where('trabajador_id', $tecnicoId)->where('estado', 'pendiente')->whereBetween('created_at', [$fechaInicio, $fechaFin])->count();
-        $en_proceso = DB::table('incidencias')->where('trabajador_id', $tecnicoId)->where('estado', 'en_progreso')->whereBetween('updated_at', [$fechaInicio, $fechaFin])->count();
+        $en_progreso = DB::table('incidencias')->where('trabajador_id', $tecnicoId)->where('estado', 'en_progreso')->whereBetween('updated_at', [$fechaInicio, $fechaFin])->count();
         $cerrado = DB::table('incidencias')->where('trabajador_id', $tecnicoId)->where('estado', 'cerrado')->whereBetween('updated_at', [$fechaInicio, $fechaFin])->count();
         
         return [
             'pendiente' => $pendiente,
-            'en_proceso' => $en_proceso,
+            'en_progreso' => $en_progreso,
             'cerrado' => $cerrado
         ];
     }
@@ -139,12 +139,27 @@ class TecnicoService {
      * @description Actualiza el estado de una incidencia.
      */
     public function actualizarEstado($tecnicoId, $incidenciaId, $estado): bool {
+        $data = [
+            'estado' => $estado,
+            'updated_at' => now()
+        ];
+
+        if ($estado === 'en_progreso') {
+            $data['fecha_inicio'] = now();
+        } elseif ($estado === 'cerrado') {
+            $data['fecha_fin'] = now();
+            
+            // Calcular intervalo_resolucion si existe fecha_inicio
+            $incidencia = DB::table('incidencias')->where('id', $incidenciaId)->first();
+            if ($incidencia && $incidencia->fecha_inicio) {
+                $inicio = \Carbon\Carbon::parse($incidencia->fecha_inicio);
+                $data['intervalo_resolucion'] = $inicio->diffInMinutes(now());
+            }
+        }
+
         return DB::table('incidencias')
             ->where('id', $incidenciaId)
             ->where('trabajador_id', $tecnicoId)
-            ->update([
-                'estado' => $estado,
-                'updated_at' => now()
-            ]);
+            ->update($data);
     }
 }

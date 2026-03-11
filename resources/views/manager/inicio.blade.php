@@ -135,7 +135,7 @@
     <script>
         const datosIncidencias = {
             pendiente: {{ $pendiente }},
-            en_proceso: {{ $en_proceso }},
+            en_progreso: {{ $en_progreso }},
             cerrado: {{ $cerrado }}
             };
 

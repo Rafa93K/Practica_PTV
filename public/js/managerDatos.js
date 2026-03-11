@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
             datasets: [{
                 data: [
                     datosIncidencias.pendiente,
-                    datosIncidencias.en_proceso,
+                    datosIncidencias.en_progreso,
                     datosIncidencias.cerrado
                 ],
                 backgroundColor: [

@@ -37,7 +37,7 @@ class JefeTecnico
     {
         $existe = DB::table('incidencias')
             ->where('trabajador_id', $trabajadorId)
-            ->whereDate('fecha', $fecha)
+            ->whereDate('fecha_inicio', $fecha)
             ->exists();
             
         return !$existe;
@@ -52,7 +52,7 @@ class JefeTecnico
             ->where('id', $incidenciaId)
             ->update([
                 'trabajador_id' => $trabajadorId, 
-                'fecha' => $fecha,
+                'fecha_inicio' => $fecha,
                 'estado' => 'pendiente'
             ]);
     }
