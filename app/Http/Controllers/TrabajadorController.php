@@ -6,8 +6,7 @@ use App\Http\Requests\DynamicRequestValidator;
 use App\Models\Trabajadore;
 use Illuminate\Support\Facades\Hash;
 
-class TrabajadorController extends Controller
-{
+class TrabajadorController extends Controller {
     /**
         * @return \Illuminate\View\View
         * @throws 
@@ -32,10 +31,12 @@ class TrabajadorController extends Controller
             'dni' => strtoupper($request->dni),
             'telefono' => $request->telefono,
             'email' => $request->email,
-            'contraseña' => Hash::make($request->password),
+            'contraseña' => Hash::make($request->contraseña),
             'rol' => $request->rol,
         ]);
 
+        return redirect()->route(session('user_role') . '.inicio')
+            ->with('successTC', 'Trabajador creado correctamente');
         return redirect()->route('manager.inicio')->with('successTC', 'Trabajador creado correctamente');
     }
 }
