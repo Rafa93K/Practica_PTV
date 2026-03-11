@@ -45,6 +45,28 @@
                 </script>
             @endif
 
+            <!-- Filtro de tarifas -->
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4">
+                <form action="{{ route('tarifaFilter') }}" method="POST" class="flex items-center gap-4 w-full">
+                    @csrf
+                    <div class="flex-1">
+                        <label for="tipo" class="block text-xs font-bold text-gray-500 uppercase mb-1">Filtrar por tipo</label>
+                        <select name="tipo" id="tipo" class="w-full border border-gray-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                            <option value="">Todas las categorías</option>
+                            <option value="internet">Internet</option>
+                            <option value="movil">Móvil</option>
+                            <option value="tv">Televisión</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="mt-5 bg-blue-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-blue-700 transition-all shadow-sm">
+                        Filtrar
+                    </button>
+                    <a href="{{ route('mostrarTarifas') }}" class="mt-5 bg-gray-100 text-gray-600 px-6 py-2 rounded-lg font-bold hover:bg-gray-200 transition-all">
+                        Limpiar
+                    </a>
+                </form>
+            </div>
+
             <!-- LISTADO DE TARIFAS -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {{-- Por cada tarifa vamos creando tarjetas --}}

@@ -67,6 +67,7 @@ Route::get('/manager/inicio', [ManagerController::class,'index'])->middleware(['
 //Rutas compartidas para Gestión de Tarifas (Manager y Marketing)
 Route::group(['middleware' => ['checklogin', 'role:manager,marketing']], function() {
     Route::get('/tarifas', [TarifaController::class, 'mostrarTarifas'])->name('mostrarTarifas');
+    Route::post('/tarifas/filtrar', [TarifaController::class, 'filtrarTarifas'])->name('tarifaFilter');
     Route::post('/tarifas', [TarifaController::class, 'guardarTarifa'])->name('tarifaSubmit');
     Route::delete('/tarifas/{id}', [TarifaController::class, 'eliminarTarifa'])->name('tarifaDelete');
 });

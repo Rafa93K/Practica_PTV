@@ -25,7 +25,6 @@ class TarifaController extends Controller {
     /**
         * @param  DynamicRequestValidator $request
         * @return \Illuminate\View\View
-        * @throws 
         * @author Rafael Osuna
         * @description  Muestra la vista de tarifas con la lista de tarifas obtenida de la base de datos.
     */
@@ -38,10 +37,26 @@ class TarifaController extends Controller {
         return view('tarifas.inicio', compact('tarifas', 'productos'));
     }
 
+    public function filtrarTarifas(DynamicRequestValidator $request) {
+        // Obtenemos el tipo de tarifa seleccionado
+        $tipo = $request->tipo;
+
+        // Si hay un tipo seleccionado, filtramos. Si no, traemos todas.
+        if ($tipo) {
+            $tarifas = Tarifa::with('productos')->where('tipo', $tipo)->get();
+        } else {
+            $tarifas = Tarifa::with('productos')->get();
+        }
+
+        // Obtenemos todos los productos para el select del formulario
+        $productos = Producto::all();
+
+        return view('tarifas.inicio', compact('tarifas', 'productos'));
+    }
+
     /**
         * @param  DynamicRequestValidator $request
         * @return \Illuminate\Http\RedirectResponse
-        * @throws  
         * @author Rafael Osuna
         * @description Valida los datos del formulario y guarda una nueva tarifa en la base de datos, luego redirige a la vista de tarifas con un mensaje de éxito.
     */

@@ -7,11 +7,11 @@ use App\Models\Tarifa;
 use App\Models\Contrato;
 
 class TarifaService {
-    public function comporbarDuplicado($request) {
-        // Convertimos el valor del checkbox a booleano para que coincida con la BD
+    public function comprobarDuplicado($request) {
+        //Convertimos el valor del checkbox a booleano para que coincida con la BD
         $permanencia = $request->has('permanencia') ? true : false;
 
-        // Comprobamos si la tarifa ya existe buscando todos los campos
+        //Comprobamos si la tarifa ya existe buscando todos los campos
         $tarifaExistente = Tarifa::where('nombre', $request->nombre)
             ->where('tipo', $request->tipo)
             ->where('precio', $request->precio)
@@ -25,14 +25,14 @@ class TarifaService {
     public function guardarTarifaBD($request) {
         DB::beginTransaction();
         try {
-            // Comprobamos si la tarifa ya existe
-            $tarifaExistente = $this->comporbarDuplicado($request);
+            //Comprobamos si la tarifa ya existe
+            $tarifaExistente = $this->comprobarDuplicado($request);
             if ($tarifaExistente) {
-                DB::rollBack(); // Cerramos la transacción si ya existe
+                DB::rollBack(); //Cerramos la transacción si ya existe
                 return false;
             }
 
-            // Creamos la nueva tarifa con los datos básicos del REQUEST
+            //Creamos la nueva tarifa con los datos básicos del REQUEST
             $nuevaTarifa = Tarifa::create([
                 'nombre'      => $request->nombre,
                 'tipo'        => $request->tipo,
@@ -41,7 +41,7 @@ class TarifaService {
                 'permanencia' => $request->has('permanencia') ? 1 : 0,
             ]);
 
-            // Si se han seleccionado productos en el formulario (REQUEST), los asociamos
+            //Si se han seleccionado productos en el formulario (REQUEST), los asociamos
             if ($request->has('productos')) {
                 $productosValidos = array_filter($request->productos);
                 if (!empty($productosValidos)) {
@@ -53,7 +53,7 @@ class TarifaService {
             return false;
         }
         DB::commit();
-        return true; // Devolvemos true para indicar que se creó correctamente
+        return true; //Devolvemos true para indicar que se creó correctamente
     }
 
     public function eliminarTarifaBD($tarifa) {
