@@ -11,6 +11,6 @@ class Producto extends Model
 
     //Un producto puede estar en muchas tarifas
     public function tarifas(): BelongsToMany {
-        return $this->belongsToMany(Tarifa::class);
+        return $this->belongsToMany(Tarifa::class, 'tarifa_producto');
     }
 }

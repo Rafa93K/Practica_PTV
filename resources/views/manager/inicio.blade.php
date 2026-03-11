@@ -82,7 +82,7 @@
                     <p class="text-gray-500 text-sm">Número Total de Incidencias</p>
                     <h2 class="text-3xl font-bold text-indigo-600 mt-2">
                         @if($totalIncidencias == 0)
-                            <p class="text-gray-400 font-medium">Sin incidencias</p>
+                            <p class="text-gray-400 font-medium">{{ $totalIncidencias }}</p>
                         @else
                             <p class="text-3xl font-bold text-indigo-600">{{ $totalIncidencias }}</p>
                         @endif
