@@ -41,7 +41,7 @@ class ClienteService {
             'dni' => $request->dni,
             'email' => $request->email,
             'telefono' => $request->telefono,
-            'contraseña' => Hash::make($request->password),
+            'contraseña' => Hash::make($request->contraseña),
         ]);
 
         return $cliente; //Devolvemos el cliente creado

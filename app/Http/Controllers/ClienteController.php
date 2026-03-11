@@ -212,6 +212,48 @@ class ClienteController extends Controller {
     }
 
     /**
+     * @param int $id
+     * @return \Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
+     * @author Rafael Osuna
+     * @description Muestra el formulario de contratación para un nuevo cliente (registro + contrato).
+     */
+    public function mostrarFormularioContratacionDirecta($id) {
+        $tarifa = Tarifa::find($id);
+        if (!$tarifa) {
+            return redirect()->route('inicio')->withErrors(['error' => 'Tarifa no encontrada']);
+        }
+        return view('cliente.contratacionDirecta', compact('tarifa'));
+    }
+
+    /**
+     * @param \App\Http\Requests\DynamicRequestValidator $request
+     * @return \Illuminate\Http\RedirectResponse
+     * @author Rafael Osuna
+     * @description Procesa el registro de un nuevo cliente y la creación de su primer contrato.
+     */
+    public function procesarContratacionDirecta(DynamicRequestValidator $request) {
+        $cliente = $this->clienteService->crearCliente($request);
+        
+        if (!$cliente) {
+            return redirect()->back()->withInput()->withErrors(['email' => 'Error al crear la cuenta de cliente']);
+        }
+
+        // Simular inicio de sesión para el nuevo cliente
+        session(['user_id' => $cliente->id, 'user_type' => 'cliente']);
+
+        // Crear el contrato usando el servicio existente
+        $resultado = $this->clienteService->contratarTarifa($request);
+
+        if (!$resultado) {
+            return redirect()->route('cliente.inicio')->with('warning', '¡Cuenta creada! Pero hubo un problema al procesar el contrato. Por favor, inténtalo desde tu panel.');
+        }
+
+        return redirect()->route('cliente.inicio')->with('success', '¡Bienvenido! Tu cuenta ha sido creada y tu servicio contratado correctamente.');
+    }
+
+    
+
+    /**
      * @param DynamicRequestValidator $request
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Validation\ValidationException
