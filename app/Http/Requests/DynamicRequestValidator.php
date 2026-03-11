@@ -73,6 +73,8 @@ class DynamicRequestValidator extends FormRequest {
                     'tipo' => 'required|in:internet,movil,tv',
                     'precio' => 'required|numeric|min:0',
                     'descripcion' => 'required|string|max:500',
+                    'productos' => 'nullable|array',
+                    'productos.*' => 'nullable|exists:productos,id',
                 ];
 
             case 'productoSubmit':

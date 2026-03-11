@@ -63,6 +63,7 @@ Route::get('/manager/inicio', [ManagerController::class,'index'])->middleware(['
 //ruta para ver tarifas desde el manager
 Route::get('/manager/tarifas', [TarifaController::class,'mostrarTarifas'])->middleware(['checklogin','role:manager'])->name('mostrarTarifas');
 Route::post('/manager/tarifas',[TarifaController::class,'guardarTarifa'])->middleware(['checklogin','role:manager'])->name('tarifaSubmit');
+Route::delete('/manager/tarifas/{id}', [TarifaController::class, 'eliminarTarifa'])->middleware(['checklogin','role:manager'])->name('tarifaDelete');
 
 //ruta para ver tarifas desde marketing
 Route::get('marketing/tarifas',[TarifaController::class,'mostrarTarifas'])->middleware(['checklogin','role:marketing'])->name('marketing.mostrarTarifas');

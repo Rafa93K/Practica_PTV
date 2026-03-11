@@ -11,7 +11,7 @@ class Tarifa extends Model
 
     //Una tarifa puede tener muchos productos
     public function productos(): BelongsToMany {
-        return $this->belongsToMany(Producto::class);
+        return $this->belongsToMany(Producto::class, 'tarifa_producto');
     }
 
     //Un plan puede tener muchos contratos
