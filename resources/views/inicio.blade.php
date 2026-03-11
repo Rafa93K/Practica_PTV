@@ -10,35 +10,7 @@
         @include('layouts.header') <!-- HEADER -->
 
         <main class="flex-1">
-            <!-- HERO SECTION -->
-            <section class="min-h-[60vh] flex items-center justify-center bg-gradient-to-b from-blue-50 to-gray-100 border-b border-gray-200">
-                <div class="text-center max-w-4xl px-6 py-20 animate-fade-in">
-                    <h1 class="text-5xl md:text-7xl font-black text-blue-900 mb-8 tracking-tighter leading-tight">
-                        Conectamos tu <span class="text-blue-600">mundo</span> con velocidad real
-                    </h1>
-
-                    <p class="text-gray-600 text-xl md:text-2xl mb-12 leading-relaxed max-w-2xl mx-auto">
-                        Gestiona todos tus servicios desde una sola plataforma. Fibra, móvil y TV con la máxima transparencia.
-                    </p>
-
-                    <!-- BOTONES -->
-                    <div class="flex flex-col sm:flex-row justify-center gap-6">
-                        <a href="{{ route('login', 'cliente') }}"
-                        class="group relative bg-blue-600 hover:bg-blue-700 text-white font-bold px-10 py-5 rounded-2xl shadow-2xl shadow-blue-200 transition-all hover:-translate-y-1">
-                            Acceso Clientes
-                            <span class="absolute top-0 right-0 -mr-2 -mt-2 flex h-5 w-5">
-                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                                <span class="relative inline-flex rounded-full h-5 w-5 bg-blue-500"></span>
-                            </span>
-                        </a>
-
-                        <a href="{{ route('login', 'trabajador') }}"
-                        class="bg-white hover:bg-gray-50 text-blue-900 font-bold px-10 py-5 rounded-2xl shadow-xl border border-gray-200 transition-all hover:-translate-y-1">
-                            Portal Empleados
-                        </a>
-                    </div>
-                </div>
-            </section>
+           
 
             <!-- SLIDESHOW DE TARIFAS -->
             <section class="max-w-7xl mx-auto px-4 py-24">
@@ -94,6 +66,36 @@
 
                     <!-- Indicadores (Dots) -->
                     <div id="slideshow-dots" class="flex justify-center gap-3 mt-12"></div>
+                </div>
+            </section>
+
+             <!-- HERO SECTION -->
+            <section class="min-h-[60vh] flex items-center justify-center bg-gradient-to-b from-blue-50 to-gray-100 border-b border-gray-200">
+                <div class="text-center max-w-4xl px-6 py-20 animate-fade-in">
+                    <h1 class="text-5xl md:text-7xl font-black text-blue-900 mb-8 tracking-tighter leading-tight">
+                        Conectamos tu <span class="text-blue-600">mundo</span> con velocidad real
+                    </h1>
+
+                    <p class="text-gray-600 text-xl md:text-2xl mb-12 leading-relaxed max-w-2xl mx-auto">
+                        Gestiona todos tus servicios desde una sola plataforma. Fibra, móvil y TV con la máxima transparencia.
+                    </p>
+
+                    <!-- BOTONES -->
+                    <div class="flex flex-col sm:flex-row justify-center gap-6">
+                        <a href="{{ route('login', 'cliente') }}"
+                        class="group relative bg-blue-600 hover:bg-blue-700 text-white font-bold px-10 py-5 rounded-2xl shadow-2xl shadow-blue-200 transition-all hover:-translate-y-1">
+                            Acceso Clientes
+                            <span class="absolute top-0 right-0 -mr-2 -mt-2 flex h-5 w-5">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-5 w-5 bg-blue-500"></span>
+                            </span>
+                        </a>
+
+                        <a href="{{ route('login', 'trabajador') }}"
+                        class="bg-white hover:bg-gray-50 text-blue-900 font-bold px-10 py-5 rounded-2xl shadow-xl border border-gray-200 transition-all hover:-translate-y-1">
+                            Portal Empleados
+                        </a>
+                    </div>
                 </div>
             </section>
         </main>
