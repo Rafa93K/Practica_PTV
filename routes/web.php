@@ -10,6 +10,8 @@ use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\TarifaController;
 use App\Http\Controllers\TecnicoController;
 use App\Http\Controllers\MarketingController;
+use App\Http\Controllers\JefeTecnicoController;
+
 
 
 Route::get('/', function () { 
@@ -42,7 +44,9 @@ Route::delete('/cliente/cancelar-servicio/{contrato_id}/{tarifa_id}', [ClienteCo
 //RUTAS POR ROL DE TRABAJADOR
 Route::get('/manager/inicio', function () { return view('manager.inicio');})->middleware(['checklogin','role:manager'])->name('manager.inicio');
 Route::get('/marketing/inicio', [MarketingController::class, 'index'])->middleware(['checklogin','role:marketing'])->name('marketing.inicio');
-Route::get('/jefe_tecnico/inicio', function () {return view('jefe_tecnico.inicio');})->middleware(['checklogin','role:jefe_tecnico'])->name('jefe_tecnico.inicio');
+Route::get('/jefe_tecnico/inicio', [JefeTecnicoController::class, 'index'])->middleware(['checklogin','role:jefe_tecnico'])->name('jefe_tecnico.inicio');
+Route::post('/jefe_tecnico/asignar', [JefeTecnicoController::class, 'asignarIncidencia'])->middleware(['checklogin','role:jefe_tecnico'])->name('jefe_tecnico.asignar');
+
 
 //RUTAS POR ROL DE TECNICO
 Route::get('/tecnico/inicio', [TecnicoController::class, 'index'])->middleware(['checklogin', 'role:tecnico'])->name('tecnico.inicio'); //Ruta para mostrar el panel del técnico

@@ -12,7 +12,7 @@ class Trabajadore extends Model
 
     public function incidencias()
     {
-        return $this->hasMany(Incidencia::class, 'trabajadore_id');
+        return $this->hasMany(Incidencia::class, 'trabajador_id');
     }
 
 
