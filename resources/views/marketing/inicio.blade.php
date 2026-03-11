@@ -51,7 +51,7 @@
                 Producción vs Inversión
             </h2>
 
-            <div class="h-72">
+        <div class="h-[400px] flex justify-center items-center">
                 <canvas id="graficoFinanzas"></canvas>
             </div>
         </div>
@@ -61,6 +61,22 @@
             <h2 class="text-lg font-bold mb-4 text-center">
                 Tarifas más contratadas
             </h2>
+
+            <!-- Filtro mes/año -->
+            <div class="flex items-center gap-2">
+                <span class="text-sm text-gray-500">Filtra por mes y año</span>
+
+                <select name="mes" id="mes" class="border border-gray-300 rounded-lg px-2 py-1">
+                    <option value="">Mes</option>
+                    
+                </select>
+                <select name="año" id="año" class="border border-gray-300 rounded-lg px-2 py-1">
+                    <option value="">Año</option>
+                    
+                </select>
+                <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-lg">Filtrar</button>
+            </div>
+            <br>
 
             @if($topTarifa)
                 <div class="mb-4 p-3 bg-indigo-50 border border-indigo-100 rounded-lg text-center">
