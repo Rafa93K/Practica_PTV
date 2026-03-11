@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Tarifa extends Model
 {
-    protected $fillable = ['nombre', 'tipo', 'precio', 'descripcion']; //Datos que se guardan en la bd
+    protected $fillable = ['nombre', 'tipo', 'precio', 'descripcion', 'permanencia']; //Datos que se guardan en la bd
 
     //Una tarifa puede tener muchos productos
     public function productos(): BelongsToMany {

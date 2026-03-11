@@ -17,7 +17,7 @@
 <nav class="w-full mb-6">
     <div class="bg-white shadow-sm border-b border-gray-100 p-4 px-8 flex items-center justify-between">
         <!-- Botón de acción -->
-        <a href="{{route('marketing.mostrarTarifas')}}" 
+        <a href="{{route('mostrarTarifas')}}" 
            class="inline-flex items-center gap-2 bg-indigo-600 text-white px-6 py-2.5 rounded-xl hover:bg-indigo-700 transform hover:-translate-y-0.5 transition-all duration-200 shadow-sm hover:shadow-md font-semibold text-sm">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>

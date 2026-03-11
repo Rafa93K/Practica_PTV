@@ -7,8 +7,20 @@ use App\Models\Producto;
 use App\Models\Contrato;
 use App\Http\Requests\DynamicRequestValidator;
 use Illuminate\Support\Facades\DB;
+use App\Services\TarifaService;
 
 class TarifaController extends Controller {
+    private $tarifaService;
+
+    /**
+        * @param TarifaService $tarifaService
+        * @return void
+        * @author Alonso Coronado Alcalde
+        * @description Inyecta el servicio de tarifas.
+    */
+    public function __construct(TarifaService $tarifaService) {
+        $this->tarifaService = $tarifaService;
+    }
     /**
         * @param  DynamicRequestValidator $request
         * @return \Illuminate\View\View
@@ -33,25 +45,11 @@ class TarifaController extends Controller {
         * @description Valida los datos del formulario y guarda una nueva tarifa en la base de datos, luego redirige a la vista de tarifas con un mensaje de éxito.
     */
     public function guardarTarifa(DynamicRequestValidator $request) {
-        // Iniciamos transacción para asegurar consistencia
-        DB::transaction(function() use ($request) {
-            // Creamos la tarifa con los datos básicos
-            $tarifa = Tarifa::create([
-                'nombre' => $request->nombre,
-                'tipo' => $request->tipo,
-                'precio' => $request->precio,
-                'descripcion' => $request->descripcion,
-            ]);
+        $tarifaCreada = $this->tarifaService->guardarTarifaBD($request);
 
-            // Si se han seleccionado productos, los asociamos en la tabla pivote
-            if ($request->has('productos')) {
-                // Filtramos nulos o vacíos por seguridad
-                $productosValidos = array_filter($request->productos);
-                if (!empty($productosValidos)) {
-                    $tarifa->productos()->attach($productosValidos);
-                }
-            }
-        });
+        if (!$tarifaCreada) {
+            return redirect()->route('mostrarTarifas')->with('errorTC', 'La tarifa ya existe.');
+        }
 
         return redirect()->route('mostrarTarifas')->with('successTC', 'Tarifa creada correctamente junto a sus productos.');
     }
@@ -66,19 +64,7 @@ class TarifaController extends Controller {
         //Buscamos la tarifa por su ID
         $tarifa = Tarifa::findOrFail($id);
 
-        //Hacemos una transaction ya que en caso de error, se revertiran todos los cambios
-        DB::transaction(function() use ($tarifa) {
-            //Buscamos los IDs de los contratos que tienen esta tarifa asignada
-            $contratosIds = $tarifa->contratos()->pluck('contratos.id');
-            
-            //Eliminamos la tarifa
-            $tarifa->delete();
-
-            //Eliminamos los contratos asociados, para los clientes que la tengan contratada
-            if ($contratosIds->isNotEmpty()) {
-                Contrato::whereIn('id', $contratosIds)->delete();
-            }
-        });
+        $this->tarifaService->eliminarTarifaBD($tarifa);
 
         //Retornamos con el mensaje de exito
         return redirect()->route('mostrarTarifas')->with('successTC', 'Tarifa eliminada y contratos cancelados correctamente.');

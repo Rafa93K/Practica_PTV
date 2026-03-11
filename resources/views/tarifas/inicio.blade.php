@@ -11,7 +11,7 @@
         @include('layouts.header')
 
         <main class="flex-1 container mx-auto px-4 py-8 flex flex-col gap-8">
-            @php
+            @php //Para redirigir al panel correspondiente
                 $rutaPanel = session('user_role') . '.inicio';    
             @endphp
             <a href="{{ route($rutaPanel) }}" class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-blue-600 transition-colors mb-6 group">
@@ -33,6 +33,17 @@
                     }, 3000);
                 </script>
             @endif
+            @if(session('errorTC'))
+                <div id="flash-message" class="mb-4 p-4 bg-red-100 border border-red-400 text-red-800 rounded-lg text-center">
+                    {{ session('errorTC') }}
+                </div>
+                <script>
+                    setTimeout(() => {
+                        const msg = document.getElementById('flash-message');
+                        if(msg) msg.style.display = 'none';
+                    }, 3000);
+                </script>
+            @endif
 
             <!-- LISTADO DE TARIFAS -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -46,7 +57,11 @@
                             <span class="text-xs font-bold uppercase tracking-widest text-blue-300">{{ $tarifa->tipo }}</span>
                             <h3 class="text-2xl font-bold mt-1 text-emerald-400">{{ $tarifa->nombre }}</h3>
                             
-                            {{-- Botón de opciones (solo manager) --}}
+                            @if($tarifa->permanencia) {{-- Si la tarifa es de permanencia --}}
+                                <span class="text-yellow-300 py-1 rounded-full font-bold text-xl">PERMANENCIA DE 1 AÑO</span>
+                            @endif
+                            
+                            {{-- Si el usuario es manager o marketing se muestra el boton de eliminar --}}
                             @if(session('user_role') === 'manager' || session('user_role') === 'marketing')
                                 <div class="absolute top-4 right-4">
                                     <form action="{{ route('tarifaDelete', $tarifa->id) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta tarifa? Los clientes asociados serán notificados.')">
@@ -81,9 +96,6 @@
                                 <ul class="space-y-1">
                                     @forelse($tarifa->productos as $producto)
                                         <li class="flex items-center gap-2 text-sm text-gray-700">
-                                            <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                            </svg>
                                             {{ $producto->nombre }}
                                         </li>
                                     @empty
@@ -131,6 +143,12 @@
                                 <input type="number" name="precio" required step="0.01" min="0" placeholder="0.00"
                                     class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none transition-all">
                             </div>
+                            {{-- Botón de permanencia --}}
+                            <div>
+                                <label class="text-sm font-bold text-gray-700 mb-1">Permanencia</label>
+                                <input type="checkbox" name="permanencia"
+                                        class="border border-gray-200 w-4 h-4 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+                            </div>
                         </div>
 
                         {{-- Grupo de descripción y productos --}}
@@ -141,7 +159,7 @@
                                         class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none transition-all"></textarea>
                             </div>
 
-                            {{-- ASIGNAR PRODUCTOS (Dinámico) --}}
+                            {{-- ASIGNAR PRODUCTOS --}}
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 mb-1">Asignar Productos</label>
                                 <div id="productos-container" class="space-y-2">
@@ -157,6 +175,8 @@
                                 <p class="text-xs text-gray-400 mt-1">Se habilitará un nuevo campo al seleccionar un producto.</p>
                             </div>
                         </div>
+
+                        
 
                         <div class="md:col-span-2 pt-4">
                             <button type="submit"

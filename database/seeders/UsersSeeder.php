@@ -72,14 +72,14 @@ class UsersSeeder extends Seeder
         // TARIFAS (Más variedad)
         // -------------------------
         $tarifasData = [
-            ['Internet 100Mb', 'internet', 29.99, 'Conexión de alta velocidad 100Mb simétrica.'],
-            ['Internet 600Mb', 'internet', 39.99, 'Fibra de alta velocidad ideal para gaming y streaming.'],
-            ['Internet 1Gb', 'internet', 49.99, 'La máxima velocidad disponible en el mercado.'],
-            ['Móvil Básico 10GB', 'movil', 9.99, '10GB de datos y llamadas ilimitadas.'],
-            ['Móvil Pro 50GB', 'movil', 19.99, '50GB de datos con velocidad 5G.'],
-            ['Móvil Ilimitado', 'movil', 24.99, 'Llamadas y datos ilimitados sin restricciones.'],
-            ['Televisión Esencial', 'tv', 10.00, 'Más de 50 canales temáticos en HD.'],
-            ['Televisión Premium', 'tv', 20.00, 'Cine, series y todo el deporte en 4K.'],
+            ['Internet 100Mb', 'internet', 29.99, 'Conexión de alta velocidad 100Mb simétrica.', false],
+            ['Internet 600Mb', 'internet', 39.99, 'Fibra de alta velocidad ideal para gaming y streaming.', false],
+            ['Internet 1Gb', 'internet', 49.99, 'La máxima velocidad disponible en el mercado.', false],
+            ['Móvil Básico 10GB', 'movil', 9.99, '10GB de datos y llamadas ilimitadas.', false],
+            ['Móvil Pro 50GB', 'movil', 19.99, '50GB de datos con velocidad 5G.', false],
+            ['Móvil Ilimitado', 'movil', 24.99, 'Llamadas y datos ilimitados sin restricciones.', false],
+            ['Televisión Esencial', 'tv', 10.00, 'Más de 50 canales temáticos en HD.', false],
+            ['Televisión Premium', 'tv', 20.00, 'Cine, series y todo el deporte en 4K.', false],
         ];
 
         foreach ($tarifasData as $t) {
@@ -88,6 +88,7 @@ class UsersSeeder extends Seeder
                 'tipo' => $t[1],
                 'precio' => $t[2],
                 'descripcion' => $t[3],
+                'permanencia' => $t[4],
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
@@ -126,7 +127,7 @@ class UsersSeeder extends Seeder
             for ($j = 0; $j < $numContratos; $j++) {
                 $contratoId = DB::table('contratos')->insertGetId([
                     'cliente_id' => $i,
-                    'trabajador_id' => rand(1, 2), // Asignado a manager o marketing
+                    'trabajadore_id' => rand(1, 2), // Asignado a manager o marketing
                     'ciudad' => $ciudades[array_rand($ciudades)],
                     'provincia' => 'Provincia Test',
                     'calle' => $vias[array_rand($vias)] . ' de la Prueba ' . rand(1, 100),
