@@ -53,7 +53,7 @@ class JefeTecnico
             ->update([
                 'trabajador_id' => $trabajadorId, 
                 'fecha' => $fecha,
-                'estado' => 'abierto'
+                'estado' => 'pendiente'
             ]);
     }
 

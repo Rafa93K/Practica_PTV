@@ -16,8 +16,10 @@ return new class extends Migration
             $table->foreignId('cliente_id')->constrained('clientes')->onDelete('cascade');
             $table->foreignId('trabajador_id')->nullable()->constrained('trabajadores')->onDelete('cascade');
             $table->text('descripcion');
-            $table->enum('estado', ['abierto', 'en_progreso', 'cerrado'])->default('abierto');
-            $table->date('fecha');
+            $table->enum('estado', ['pendiente', 'en_progreso', 'cerrado'])->default('pendiente');
+            $table->dateTime('fecha_inicio')->nullable();
+            $table->dateTime('fecha_fin')->nullable();
+            $table->integer('intervalo_resolucion')->nullable();
             $table->timestamps();
         });
     }

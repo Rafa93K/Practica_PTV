@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
             labels: ['Abiertas', 'En Proceso', 'Cerradas'],
             datasets: [{
                 data: [
-                    datosIncidencias.abierto,
+                    datosIncidencias.pendiente,
                     datosIncidencias.en_proceso,
                     datosIncidencias.cerrado
                 ],

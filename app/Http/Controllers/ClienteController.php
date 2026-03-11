@@ -161,7 +161,7 @@ class ClienteController extends Controller {
 
         $sql = "
             INSERT INTO incidencias (cliente_id, descripcion, estado, fecha)
-            VALUES ('$cliente->id', '$request->descripcion', 'abierto', NOW())
+            VALUES ('$cliente->id', '$request->descripcion', 'pendiente', NOW())
         ";
         DB::statement($sql);
 

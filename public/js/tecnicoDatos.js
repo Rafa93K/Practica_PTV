@@ -1,16 +1,16 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     //Configuracion del grafico de Incidencias
     const ctxIncidencias = document.getElementById('graficoIncidencias').getContext('2d');
 
     new Chart(ctxIncidencias, {
         type: 'pie',
         data: {
-            labels: ['Abierto', 'En Proceso', 'Cerrado'],
+            labels: ['pendiente', 'En Proceso', 'Cerrado'],
             datasets: [{
-                data: [ 
-                    window.datosIncidencias.abierto, 
-                    window.datosIncidencias.en_proceso, 
-                    window.datosIncidencias.cerrado 
+                data: [
+                    window.datosIncidencias.pendiente,
+                    window.datosIncidencias.en_proceso,
+                    window.datosIncidencias.cerrado
                 ],
                 backgroundColor: [
                     '#ef4444',

@@ -185,7 +185,7 @@ class UsersSeeder extends Seeder
             'La conexión se corta cuando llueve.'
         ];
 
-        $estados = ['abierto', 'en_progreso', 'cerrado'];
+        $estados = ['pendiente', 'en_progreso', 'cerrado'];
         $tecnicosIds = [4, 5]; // Carlos y Sofía
 
         for ($i = 0; $i < 40; $i++) {
@@ -197,7 +197,9 @@ class UsersSeeder extends Seeder
                 'trabajador_id' => $tecnico,
                 'descripcion' => $descripciones[array_rand($descripciones)],
                 'estado' => $estado,
-                'fecha' => Carbon::now()->subDays(rand(1, 60))->toDateString(),
+                'fecha_inicio' => Carbon::now()->subDays(rand(1, 60))->toDateString(),
+                'fecha_fin' => Carbon::now()->subDays(rand(0, 60))->toDateString(),
+                'intervalo_resolucion' => rand(1, 60),
                 'created_at' => now()->subDays(rand(1, 60)),
                 'updated_at' => ($estado == 'cerrado' || $estado == 'en_progreso') ? now()->subDays(rand(0, 30)) : now(),
             ]);

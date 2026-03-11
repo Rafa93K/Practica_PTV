@@ -28,7 +28,7 @@ class TecnicoController extends Controller {
 
         //Estadisticas generales
         $totalIncidencias = $this->tecnicoService->getTotalIncidencias($tecnicoId);
-        $abiertoTotal = $this->tecnicoService->getIncidenciasAbiertas($tecnicoId);
+        $pendienteTotal = $this->tecnicoService->getIncidenciasAbiertas($tecnicoId);
         $en_procesoTotal = $this->tecnicoService->getIncidenciasEnProgreso($tecnicoId);
         $cerradoTotal = $this->tecnicoService->getIncidenciasCerradas($tecnicoId);
 
@@ -46,19 +46,19 @@ class TecnicoController extends Controller {
 
         //Datos para el gráfico del historial
         if ($fechaInicio && $fechaFin) {
-            $abierto = $this->tecnicoService->getEstadisticasPeriodo($tecnicoId, $fechaInicio, $fechaFin)['abierto'];
+            $pendiente = $this->tecnicoService->getEstadisticasPeriodo($tecnicoId, $fechaInicio, $fechaFin)['pendiente'];
             $en_proceso = $this->tecnicoService->getEstadisticasPeriodo($tecnicoId, $fechaInicio, $fechaFin)['en_proceso'];
             $cerrado = count($incidenciasResueltas);
         } else {
-            $abierto = $abiertoTotal;
+            $pendiente = $pendienteTotal;
             $en_proceso = $en_procesoTotal;
             $cerrado = $cerradoTotal;
         }
 
         //Enviamos los datos al inicio
         return view('tecnico.inicio', compact(
-            'totalIncidencias', 'abiertoTotal', 'en_procesoTotal', 'cerradoTotal', 'totalClientes',
-            'abierto', 'en_proceso', 'cerrado', 
+            'totalIncidencias', 'pendienteTotal', 'en_procesoTotal', 'cerradoTotal', 'totalClientes',
+            'pendiente', 'en_progreso', 'cerrado', 
             'incidenciasAsignadas', 'incidenciasResueltas', 'fechaInicio', 'fechaFin'
         ));
     }

@@ -25,7 +25,7 @@
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition">
                     <div>
                         <p class="text-gray-500 text-sm font-medium">Abiertas</p>
-                        <h2 class="text-3xl font-bold text-red-500 mt-2">{{ $abiertoTotal }}</h2>
+                        <h2 class="text-3xl font-bold text-red-500 mt-2">{{ $pendienteTotal }}</h2>
                     </div>
                 </div>
 
@@ -91,8 +91,8 @@
 
                                 <td class="px-6 py-4">
                                 {{-- Estado de la incidencia --}}
-                                    @if($incidencia->estado == 'abierto')
-                                        <span class="bg-red-100 text-red-600 text-[10px] font-bold px-2 py-1 rounded-md uppercase">Abierto</span>
+                                    @if($incidencia->estado == 'pendiente')
+                                        <span class="bg-red-100 text-red-600 text-[10px] font-bold px-2 py-1 rounded-md uppercase">pendiente</span>
                                     @else
                                         <span class="bg-amber-100 text-amber-600 text-[10px] font-bold px-2 py-1 rounded-md uppercase">En Proceso</span>
                                     @endif
@@ -105,7 +105,7 @@
                                         @csrf
                                         <select name="estado" onchange="this.form.submit()" 
                                             class="text-xs font-bold bg-white border border-gray-200 rounded-lg px-3 py-2 flex ml-auto focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer">
-                                            <option value="abierto" {{ $incidencia->estado == 'abierto' ? 'selected' : '' }}>Abierto</option>
+                                            <option value="pendiente" {{ $incidencia->estado == 'pendiente' ? 'selected' : '' }}>pendiente</option>
                                             <option value="en_progreso" {{ $incidencia->estado == 'en_progreso' ? 'selected' : '' }}>En Proceso</option>
                                             <option value="cerrado" {{ $incidencia->estado == 'cerrado' ? 'selected' : '' }}>Resuelto</option>
                                         </select>
@@ -163,7 +163,7 @@
                         <div class="grid grid-cols-2 lg:grid-cols-3 gap-4">
                             <div class="bg-gray-50 p-5 rounded-3xl border border-gray-100 text-center">
                                 <p class="text-gray-400 text-[10px] font-bold uppercase mb-2">Abiertas</p>
-                                <p class="text-3xl font-bold text-red-500">{{ $abierto }}</p>
+                                <p class="text-3xl font-bold text-red-500">{{ $pendiente }}</p>
                             </div>
                             <div class="bg-gray-50 p-5 rounded-3xl border border-gray-100 text-center">
                                 <p class="text-gray-400 text-[10px] font-bold uppercase mb-2">En proceso</p>
@@ -179,7 +179,7 @@
                             <h3 class="text-indigo-900 font-bold text-sm mb-1 uppercase tracking-wider">Resumen Informativo</h3>
                             <p class="text-indigo-700/80 text-sm leading-relaxed">
                                 @if($fechaInicio && $fechaFin) {{-- En caso de que no se muestren datos, es porque no hay incidencias en el periodo seleccionado --}}
-                                    En el periodo seleccionado ({{ date('d/m/Y', strtotime($fechaInicio)) }} - {{ date('d/m/Y', strtotime($fechaFin)) }}), has gestionado un total de <strong>{{ $abierto + $en_proceso + $cerrado }}</strong> incidencias.
+                                    En el periodo seleccionado ({{ date('d/m/Y', strtotime($fechaInicio)) }} - {{ date('d/m/Y', strtotime($fechaFin)) }}), has gestionado un total de <strong>{{ $pendiente + $en_proceso + $cerrado }}</strong> incidencias.
                                 @else
                                     Estas viendo el historial acumulado de tu actividad técnica. Usa el filtro para segmentar por fechas.
                                 @endif
@@ -229,7 +229,7 @@
         <script>
             //Pasamos los datos de PHP a variables de JavaScript
             window.datosIncidencias = {
-                abierto: {{ $abierto }},
+                pendiente: {{ $pendiente }},
                 en_proceso: {{ $en_proceso }},
                 cerrado: {{ $cerrado }}
             };

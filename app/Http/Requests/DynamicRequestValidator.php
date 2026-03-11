@@ -87,7 +87,7 @@ class DynamicRequestValidator extends FormRequest {
             //TECNICO
             case 'tecnico.incidencia.actualizar':
                 return [
-                    'estado' => 'required|in:abierto,en_progreso,cerrado',
+                    'estado' => 'required|in:pendiente,en_progreso,cerrado',
                 ];
 
             //ACCIONES GENÉRICAS
