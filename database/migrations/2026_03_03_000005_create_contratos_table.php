@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('cliente_id')->constrained()->cascadeOnDelete();
             
             //Si el trabajador se elimina, todos los contratos tienen de valor null
-            $table->foreignId('trabajadore_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('trabajador_id')->nullable()->constrained()->nullOnDelete();
 
             $table->string('ciudad');
             $table->string('provincia');

@@ -126,7 +126,7 @@ class UsersSeeder extends Seeder
             for ($j = 0; $j < $numContratos; $j++) {
                 $contratoId = DB::table('contratos')->insertGetId([
                     'cliente_id' => $i,
-                    'trabajadore_id' => rand(1, 2), // Asignado a manager o marketing
+                    'trabajador_id' => rand(1, 2), // Asignado a manager o marketing
                     'ciudad' => $ciudades[array_rand($ciudades)],
                     'provincia' => 'Provincia Test',
                     'calle' => $vias[array_rand($vias)] . ' de la Prueba ' . rand(1, 100),

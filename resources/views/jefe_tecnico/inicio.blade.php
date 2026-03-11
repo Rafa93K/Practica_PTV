@@ -9,6 +9,18 @@
     @include('layouts.header')  
 
     <!-- Notificación temporal -->
+        @if($errors->has('fecha'))
+            <div id="error-message" class="mb-6 p-4 bg-red-100 border border-red-400 text-red-800 rounded-lg text-center font-bold">
+                {{ $errors->first('fecha') }}
+            </div>
+
+            <script>
+                setTimeout(() => {
+                    const msg = document.getElementById('error-message');
+                    if(msg) msg.style.display = 'none';
+                }, 4000);
+            </script>
+        @endif
         @if(session('successTC'))
             <div id="flash-message" class="mb-6 p-4 bg-green-100 border border-green-400 text-green-800 rounded-lg text-center">
                 {{ session('successTC') }}
@@ -26,8 +38,44 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
             <!-- Columna Izquierda: Formulario (Aside) -->
-            <aside class="lg:col-span-1">
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 h-full">
+            <aside class="lg:col-span-1 space-y-8">
+                <!-- Estadísticas de Intervalo -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 ">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="p-2 bg-blue-100 rounded-lg text-blue-600">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800">Estadísticas</h3>
+                    </div>
+
+                    <form action="{{ route('jefe_tecnico.inicio') }}" method="GET" class="space-y-4 mb-6">
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="text-xs text-gray-400 uppercase font-bold">Inicio</label>
+                                <input type="date" name="fecha_inicio" value="{{ $fechaInicio }}" 
+                                       class="w-full px-3 py-2 bg-gray-50 border border-gray-100 rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="text-xs text-gray-400 uppercase font-bold">Fin</label>
+                                <input type="date" name="fecha_fin" value="{{ $fechaFin }}"
+                                       class="w-full px-3 py-2 bg-gray-50 border border-gray-100 rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full py-2 bg-blue-600 text-white rounded-lg text-sm font-bold hover:bg-blue-700 transition-colors">
+                            Filtrar
+                        </button>
+                    </form>
+
+                    <div class="p-4 bg-gray-50 rounded-xl border border-gray-100">
+                        <div class="text-sm text-gray-500 mb-1">Incidencias creadas</div>
+                        <div class="text-3xl font-black text-gray-800">{{ $totalIncidenciasIntervalo }}</div>
+                    </div>
+                </div>
+
+                <!-- Formulario Nuevo Técnico -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 h-130">
                     <div class="flex items-center gap-3 mb-6">
                         <div class="p-2 bg-indigo-100 rounded-lg text-indigo-600">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -91,19 +139,84 @@
 
             <!-- Columna Derecha: Contenido Principal (Section) -->
             <section class="lg:col-span-2">
-                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 min-h-[500px] flex flex-col items-center justify-center text-center space-y-4">
-                    <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center text-gray-300">
-                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                        </svg>
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 min-h-[500px]">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="p-2 bg-amber-100 rounded-lg text-amber-600">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                            </svg>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-800">Incidencias Sin Asignar</h2>
                     </div>
-                    <div>
-                        <h2 class="text-2xl font-bold text-gray-800">Asignación de Incidencias</h2>
-                    
-                    </div>
-                   
+
+                    @if($incidenciasSinAsignar->isEmpty())
+                        <div class="flex flex-col items-center justify-center py-12 text-center">
+                            <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center text-gray-300 mb-4">
+                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                            </div>
+                            <p class="text-gray-500 font-medium">No hay incidencias pendientes de asignación</p>
+                        </div>
+                    @else
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="text-gray-400 text-sm uppercase tracking-wider border-b border-gray-100">
+                                        <th class="pb-4 font-semibold">Incidencia</th>
+                                        <th class="pb-4 font-semibold">Descripción</th>
+                                        <th class="pb-4 font-semibold">Asignar Técnico</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-50">
+                                    @foreach($incidenciasSinAsignar as $incidencia)
+                                        <tr class="group hover:bg-gray-50/50 transition-colors">
+                                            <td class="py-4  pr-4">
+                                                <div class="font-bold text-gray-700">#{{ $incidencia->id }}</div>
+                                                <div class="text-xs text-gray-400">{{ $incidencia->created_at }}</div>
+                                            </td>
+                                            <td class="py-4 pr-4">
+                                                <p class="text-sm text-gray-600 line-clamp-2">{{ $incidencia->descripcion }}</p>
+                                            </td>
+                                            <td class="py-4">
+                                                <form action="{{ route('jefe_tecnico.asignar') }}" method="POST" class="flex items-center gap-2">
+                                                    @csrf
+                                                    <input type="hidden" name="incidencia_id" value="{{ $incidencia->id }}">
+                                                    
+                                                    <div class="flex flex-col gap-1">
+                                                        <select name="trabajador_id" required 
+                                                                class="min-w-[150px] px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all">
+                                                            <option value="" disabled selected>Selecciona Técnico</option>
+                                                            @foreach($tecnicos as $tecnico)
+                                                                <option value="{{ $tecnico->id }}">{{ $tecnico->nombre }} {{ $tecnico->apellido }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="flex flex-col gap-1">
+                                                        <input type="date" name="fecha" required
+                                                               class="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                                                               value="{{ date('Y-m-d') }}">
+                                                    </div>
+
+                                                    <button type="submit" 
+                                                            class="p-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm"
+                                                            title="Asignar técnico y fecha">
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                                        </svg>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @endif
                 </div>
             </section>
+
 
         </div>
     </main>
