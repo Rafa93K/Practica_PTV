@@ -9,8 +9,7 @@
     <body class="bg-gray-100 flex flex-col min-h-screen">
         @include('layouts.header') <!-- HEADER -->
 
-        <main class="flex-1">
-           
+        <main class="flex-1">   
 
             <!-- SLIDESHOW DE TARIFAS -->
             <section class="max-w-7xl mx-auto px-4 py-24">
@@ -50,7 +49,7 @@
                                         <p class="text-gray-500 text-sm leading-relaxed mb-10 flex-1 line-clamp-3">{{ $tarifa->descripcion }}</p>
                                         
                                         <!-- Boton que lleva al login del panel cliente -->
-                                        <a href="{{ route('login', 'cliente') }}" class="w-full inline-flex items-center justify-center px-8 py-5 font-bold text-white transition-all duration-300 bg-gray-900 rounded-2xl hover:bg-blue-600 hover:shadow-xl hover:shadow-blue-200">
+                                        <a href="{{ route('cliente.contratarDirecta.show', $tarifa->id) }}" class="w-full inline-flex items-center justify-center px-8 py-5 font-bold text-white transition-all duration-300 bg-gray-900 rounded-2xl hover:bg-blue-600 hover:shadow-xl hover:shadow-blue-200">
                                             Empezar ahora
                                             <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5-5 5M6 12h12"/></svg>
                                         </a>
@@ -68,8 +67,7 @@
                     <div id="slideshow-dots" class="flex justify-center gap-3 mt-12"></div>
                 </div>
             </section>
-
-             <!-- HERO SECTION -->
+            <!-- HERO SECTION -->
             <section class="min-h-[60vh] flex items-center justify-center bg-gradient-to-b from-blue-50 to-gray-100 border-b border-gray-200">
                 <div class="text-center max-w-4xl px-6 py-20 animate-fade-in">
                     <h1 class="text-5xl md:text-7xl font-black text-blue-900 mb-8 tracking-tighter leading-tight">

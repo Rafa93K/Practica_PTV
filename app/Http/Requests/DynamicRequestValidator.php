@@ -34,13 +34,21 @@ class DynamicRequestValidator extends FormRequest {
                 ];
 
             case 'register.submit':
+            case 'cliente.contratarDirecta.store':
                 return [
                     'nombre' => 'required|string|max:255',
                     'apellido' => 'required|string|max:255',
                     'dni' => 'required|string|max:9|unique:clientes,dni',
                     'email' => 'required|string|email|max:255|unique:clientes,email',
                     'telefono' => 'required|string|max:9',
-                    'password' => 'required|string|min:8',
+                    'contraseña' => 'required|string|min:8',
+                    'provincia' => 'required|string|max:255',
+                    'ciudad' => 'required|string|max:255',
+                    'calle' => 'required|string|max:255',
+                    'numero' => 'required|string|max:10',
+                    'puerta' => 'nullable|string|max:10',
+                    'codigo_postal' => 'required|string|size:5',
+                    'tarifa_id' => 'required|exists:tarifas,id',
                 ];
 
             //CLIENTE

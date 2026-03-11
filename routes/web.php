@@ -40,6 +40,10 @@ Route::get('/cliente/cambiar-servicio/{tarifa_id}/{contrato_id}', [ClienteContro
 Route::post('/cliente/procesar-cambio', [ClienteController::class, 'procesarCambioServicio'])->name('cliente.procesarCambio'); //Ruta para procesar el cambio de tarifa
 Route::delete('/cliente/cancelar-servicio/{contrato_id}/{tarifa_id}', [ClienteController::class, 'cancelarServicio'])->name('cliente.cancelarServicio'); //Ruta para cancelar un servicio
 
+// Rutas para contratación directa (Nuevo cliente + Tarifa)
+Route::get('/contratar/{id}', [ClienteController::class, 'mostrarFormularioContratacionDirecta'])->name('cliente.contratarDirecta.show');
+Route::post('/contratar', [ClienteController::class, 'procesarContratacionDirecta'])->name('cliente.contratarDirecta.store');
+
 
 //RUTAS POR ROL DE TRABAJADOR
 Route::get('/manager/inicio', function () { return view('manager.inicio');})->middleware(['checklogin','role:manager'])->name('manager.inicio');
