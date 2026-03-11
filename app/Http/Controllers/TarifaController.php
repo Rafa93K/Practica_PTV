@@ -6,6 +6,7 @@ use App\Models\Tarifa;
 use App\Models\Producto;
 use App\Models\Contrato;
 use App\Http\Requests\DynamicRequestValidator;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Services\TarifaService;
 
@@ -47,6 +48,14 @@ class TarifaController extends Controller {
     public function guardarTarifa(DynamicRequestValidator $request) {
         $tarifaCreada = $this->tarifaService->guardarTarifaBD($request);
 
+        // Si la petición es AJAX, respondemos con JSON
+        if ($request->ajax()) {
+            if (!$tarifaCreada) {
+                return response()->json(['success' => false, 'message' => 'La tarifa ya existe.'], 422);
+            }
+            return response()->json(['success' => true, 'message' => 'Tarifa creada correctamente.']);
+        }
+
         if (!$tarifaCreada) {
             return redirect()->route('mostrarTarifas')->with('errorTC', 'La tarifa ya existe.');
         }
@@ -60,13 +69,16 @@ class TarifaController extends Controller {
         * @author Alonso Coronado Alcalde
         * @description Elimina una tarifa, sus contratos asociados e informa a los usuarios afectados.
     */
-    public function eliminarTarifa($id) {
-        //Buscamos la tarifa por su ID
+    public function eliminarTarifa(Request $request, $id) {
         $tarifa = Tarifa::findOrFail($id);
 
         $this->tarifaService->eliminarTarifaBD($tarifa);
 
-        //Retornamos con el mensaje de exito
+        // Si es AJAX, respondemos con éxito
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Tarifa eliminada con éxito.']);
+        }
+
         return redirect()->route('mostrarTarifas')->with('successTC', 'Tarifa eliminada y contratos cancelados correctamente.');
     }
 }

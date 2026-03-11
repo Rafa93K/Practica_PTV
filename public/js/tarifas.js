@@ -3,11 +3,8 @@
  * @description Muestra o oculta la lista de productos de una tarifa al hacer clic.
  */
 function toggleTarifaDetalles(tarifaId) {
-    //Buscamos el div que contiene los productos de esa tarifa
     let detalles = document.getElementById('detalles-' + tarifaId);
-    
     if (detalles) {
-        //Si el div está oculto, lo mostramos. Si está a la vista, lo ocultamos.
         if (detalles.classList.contains('hidden')) {
             detalles.classList.remove('hidden');
         } else {
@@ -18,27 +15,73 @@ function toggleTarifaDetalles(tarifaId) {
 
 /**
  * @author Alonso Coronado Alcalde
+ * @description Envía el formulario de creación por AJAX.
+ */
+function guardarTarifaAjax(formulario) {
+    let formData = new FormData(formulario);
+
+    fetch('/tarifas', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest', //Indica a Laravel que es AJAX
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.reload(); //Recargamos la pagina para que se muestre la nueva tarifa
+        } else {
+            alert("Error: " + data.message);
+        }
+    })
+    .catch(error => alert("La tarifa ya existe o hay un error en los datos."));
+}
+
+/**
+ * @author Alonso Coronado Alcalde
+ * @description Elimina la tarifa mediante AJAX y la borra visualmente sin recargar.
+ */
+function eliminarTarifaAjax(id, url) {
+    if (!confirm('¿Estás seguro de eliminar esta tarifa?')) return;
+
+    fetch(url, {
+        method: 'DELETE',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            //Borramos la tarjeta del HTML con un efecto suave
+            let tarjeta = document.getElementById('tarifa-' + id);
+            if (tarjeta) {
+                tarjeta.style.transition = "all 0.5s";
+                tarjeta.style.opacity = "0";
+                tarjeta.style.transform = "scale(0.9)";
+                setTimeout(() => tarjeta.remove(), 500);
+            }
+        }
+    })
+    .catch(error => alert("No se pudo eliminar la tarifa."));
+}
+
+/**
+ * @author Alonso Coronado Alcalde
  * @description Añade un nuevo desplegable de productos cuando seleccionas uno en el anterior.
  */
 function verificarNuevosSelects(selectActual) {
     let contenedor = document.getElementById('productos-container');
     let listaSelects = document.getElementsByClassName('producto-select');
-    
-    //Cogemos el ultimo desplegable que hay en la lista
     let ultimoSelect = listaSelects[listaSelects.length - 1];
 
-    //Si el desplegable que acabamos de cambiar es el ultimo y no esta vacio
     if (selectActual == ultimoSelect && selectActual.value != "") {
-        //Creamos una copia del desplegable
         let nuevoSelect = ultimoSelect.cloneNode(true);
-        //Lo ponemos en blanco para que el usuario elija otro producto
         nuevoSelect.value = ""; 
-        
-        //Lo añadimos al formulario
         contenedor.appendChild(nuevoSelect);
     }
-    
-    //Llamamos a la funcion para que no se puedan repetir productos
     bloquearProductosRepetidos();
 }
 
@@ -49,7 +92,6 @@ function verificarNuevosSelects(selectActual) {
 function bloquearProductosRepetidos() {
     let todosLosSelects = document.getElementsByClassName('producto-select');
     
-    //Primero activamos todas las opciones en todos los desplegables para limpiar
     for (let i = 0; i < todosLosSelects.length; i++) {
         let opciones = todosLosSelects[i].options;
         for (let j = 0; j < opciones.length; j++) {
@@ -57,15 +99,10 @@ function bloquearProductosRepetidos() {
         }
     }
 
-    //Miramos que producto hay elegido en cada desplegable
     for (let i = 0; i < todosLosSelects.length; i++) {
         let valorElegido = todosLosSelects[i].value;
-        
-        //Si hay un producto seleccionado
         if (valorElegido != "") {
-            //Buscamos ese producto en los demas desplegables para desactivarlo
             for (let k = 0; k < todosLosSelects.length; k++) {
-                //No lo desactivamos en el desplegable donde lo acabamos de elegir
                 if (i != k) {
                     let opcionesADesactivar = todosLosSelects[k].options;
                     for (let m = 0; m < opcionesADesactivar.length; m++) {

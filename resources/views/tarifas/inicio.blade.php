@@ -49,7 +49,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {{-- Por cada tarifa vamos creando tarjetas --}}
                 @forelse($tarifas as $tarifa)
-                    <div class="bg-emerald-50 rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col transition-all hover:shadow-xl hover:-translate-y-1 cursor-pointer" 
+                    <div id="tarifa-{{ $tarifa->id }}" class="bg-emerald-50 rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col transition-all hover:shadow-xl hover:-translate-y-1 cursor-pointer" 
                          onclick="toggleTarifaDetalles({{ $tarifa->id }})">
                         <!-- Header de la Tarifa -->
                         <div class="p-6 bg-blue-900 text-white relative">
@@ -64,15 +64,13 @@
                             {{-- Si el usuario es manager o marketing se muestra el boton de eliminar --}}
                             @if(session('user_role') === 'manager' || session('user_role') === 'marketing')
                                 <div class="absolute top-4 right-4">
-                                    <form action="{{ route('tarifaDelete', $tarifa->id) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta tarifa? Los clientes asociados serán notificados.')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-400 hover:text-red-200 p-2" title="Eliminar tarifa">
-                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                            </svg>
-                                        </button>
-                                    </form>
+                                    <button type="button" 
+                                            onclick="event.stopPropagation(); eliminarTarifaAjax({{ $tarifa->id }}, '{{ route('tarifaDelete', $tarifa->id) }}')" 
+                                            class="text-red-400 hover:text-red-200 p-2" title="Eliminar tarifa">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                        </svg>
+                                    </button>
                                 </div>
                             @endif
                         </div>
@@ -119,7 +117,7 @@
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
                         Crear nueva Tarifa
                     </h2>
-                    <form method="POST" action="{{ route('tarifaSubmit') }}" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <form id="form-crear-tarifa" onsubmit="event.preventDefault(); guardarTarifaAjax(this)" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         @csrf
                         {{-- Grupo de datos básicos --}}
                         <div class="space-y-4">
