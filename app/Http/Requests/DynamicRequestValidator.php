@@ -6,8 +6,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\ValidationException;
 
-class DynamicRequestValidator extends FormRequest
-{
+class DynamicRequestValidator extends FormRequest {
     /**
      * @return bool
      * @author Alonso Coronado Alcalde
@@ -56,7 +55,7 @@ class DynamicRequestValidator extends FormRequest
                     'descripcion' => 'required|string|min:10',
                 ];
 
-            //MANAGER / TRABAJADORES (Rutas reales)
+            //MANAGER
             case 'manager.trabajadorSubmit':
                 return [
                     'nombre' => 'required|string|max:255',
@@ -89,7 +88,7 @@ class DynamicRequestValidator extends FormRequest
                     'estado' => 'required|in:abierto,en_progreso,cerrado',
                 ];
 
-            //ACCIONES GENÉRICAS (Por el usuario para futuro uso)
+            //ACCIONES GENÉRICAS
             case 'manager.cliente.delete':
             case 'marketing.cliente.delete':
                 return [
@@ -126,7 +125,7 @@ class DynamicRequestValidator extends FormRequest
             'exists' => 'El :attribute seleccionado no es válido.',
             'in' => 'El valor seleccionado para :attribute no es válido.',
 
-            //Personalizados (campos comunes)
+            //Personalizados
             'email.required' => 'El correo electrónico es obligatorio.',
             'email.email' => 'Introduce un formato de correo electrónico válido.',
             'email.unique' => 'Este correo electrónico ya está en uso.',
