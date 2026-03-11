@@ -35,8 +35,6 @@ class TrabajadorController extends Controller {
             'rol' => $request->rol,
         ]);
 
-        return redirect()->route(session('user_role') . '.inicio')
-            ->with('successTC', 'Trabajador creado correctamente');
-        return redirect()->route('manager.inicio')->with('successTC', 'Trabajador creado correctamente');
+        return redirect()->route(session('user_role') . '.inicio')->with('successTC', 'Trabajador creado correctamente');
     }
 }
