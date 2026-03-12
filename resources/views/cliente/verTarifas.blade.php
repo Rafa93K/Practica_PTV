@@ -34,6 +34,10 @@
                             {{-- Tipo y nombre de la tarifa --}}
                             <span class="text-xs font-bold uppercase tracking-widest text-blue-300">{{ $tarifa->tipo }}</span>
                             <h3 class="text-2xl font-bold mt-1">{{ $tarifa->nombre }}</h3>
+
+                            @if($tarifa->permanencia) {{-- Si la tarifa es de permanencia --}}
+                                <span class="text-yellow-300 py-1 rounded-full font-bold text-xl">PERMANENCIA DE 1 AÑO</span>
+                            @endif
                         </div>
 
                         <!-- Cuerpo de la Tarifa -->

@@ -24,15 +24,22 @@ class MarketingController extends Controller {
     }
 
     public function filtrar(Request $request, MarketingService $marketingService) {
-        $mes = $request->input('mes'); //Obtengo el mes seleccionado
-        $año = $request->input('año'); //Obtengo el año seleccionado
+        $periodo = $request->input('periodo'); // Recibimos "YYYY-MM"
+        $mes = null;
+        $año = null;
 
-        $datos = $marketingService->obtenerDatos($mes, $año); //Obtengo los datos filtrados
-        $datos['meses'] = $marketingService->obtenerMeses(); //Obtengo los meses
-        $datos['años'] = $marketingService->obtenerAños(); //Obtengo los años
-        $datos['mesSeleccionado'] = $mes; //Selecciono el mes
-        $datos['añoSeleccionado'] = $año; //Selecciono el año
+        if ($periodo) {
+            $partes = explode('-', $periodo);
+            $año = $partes[0];
+            $mes = $partes[1];
+        }
 
-        return view('marketing.inicio', $datos); //Devuelvo la vista con los datos filtrados
+        $datos = $marketingService->obtenerDatos($mes, $año);
+        $datos['meses'] = $marketingService->obtenerMeses();
+        $datos['años'] = $marketingService->obtenerAños();
+        $datos['mesSeleccionado'] = (int)$mes;
+        $datos['añoSeleccionado'] = (int)$año;
+
+        return view('marketing.inicio', $datos);
     }
 }

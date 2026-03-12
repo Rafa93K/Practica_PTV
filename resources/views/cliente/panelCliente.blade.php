@@ -80,6 +80,7 @@
                                         >
                                             <div>
                                                 <h4 class="font-bold text-green-900 text-sm">{{ $tarifa->nombre }}</h4>
+                                                <p class="{{ $tarifa->permanencia == 1 ? "text-yellow-500" : "" }}">{{ $tarifa->permanencia == 1 ? "PERMANENCIA DE 1 AÑO" : "" }}</p>
                                                 <p class="text-xs text-green-700 italic">{{ $tarifa->tipo }}</p>
                                             </div>
                                             <div class="text-right flex items-center gap-3">
