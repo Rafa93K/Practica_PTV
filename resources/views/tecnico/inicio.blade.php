@@ -42,7 +42,7 @@
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition">
                 <div>
                     <p class="text-gray-500 text-sm font-medium">En Proceso</p>
-                    <h2 class="text-3xl font-bold text-amber-500 mt-2">{{ $en_progresoTotal }}</h2>
+                    <h2 class="text-3xl font-bold text-amber-500 mt-2">{{ $en_procesoTotal }}</h2>
                 </div>
             </div>
 
@@ -84,7 +84,9 @@
                             </th>
                             <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Estado</th>
                             <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Fecha</th>
-                            <th colspan="2" class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider text-center">Acción</th>
+                            <th colspan="2"
+                                class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider text-center">
+                                Acción</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-50">
@@ -93,7 +95,8 @@
                                 {{-- Nombre y apellidos del cliente --}}
                                 <td class="px-6 py-4">
                                     <div class="font-bold text-gray-800">{{ $incidencia->cliente_nombre }}
-                                        {{ $incidencia->cliente_apellido }}</div>
+                                        {{ $incidencia->cliente_apellido }}
+                                    </div>
                                 </td>
 
                                 {{-- Descripcion de la incidencia --}}
@@ -107,26 +110,32 @@
                                         <span
                                             class="bg-red-100 text-red-600 text-[10px] font-bold px-2 py-1 rounded-md uppercase">pendiente</span>
                                     @else
-                                        <span class="bg-amber-100 text-amber-600 text-[10px] font-bold px-2 py-1 rounded-md uppercase">En Proceso</span>
+                                        <span
+                                            class="bg-amber-100 text-amber-600 text-[10px] font-bold px-2 py-1 rounded-md uppercase">En
+                                            Proceso</span>
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-500">
                                     {{ $incidencia->fecha_inicio ? date('d/m/Y H:i', strtotime($incidencia->fecha_inicio)) : 'Sin comenzar' }}
-                                </td>                               
+                                </td>
                                 <td colspan="2" class="px-6 py-4 text-center">
                                     @if($incidencia->estado == 'pendiente')
-                                        <form action="{{ route('tecnico.incidencia.actualizar', $incidencia->id) }}" method="POST">
+                                        <form action="{{ route('tecnico.incidencia.actualizar', $incidencia->id) }}"
+                                            method="POST">
                                             @csrf
-                                            <input type="hidden" name="estado" value="en_progreso">
-                                            <button type="submit" class="bg-indigo-600 text-white text-xs font-bold px-6 py-2 rounded-xl hover:bg-indigo-700 transition shadow-lg shadow-indigo-100">
+                                            <input type="hidden" name="estado" value="en_proceso">
+                                            <button type="submit"
+                                                class="bg-indigo-600 text-white text-xs font-bold px-6 py-2 rounded-xl hover:bg-indigo-700 transition shadow-lg shadow-indigo-100">
                                                 Comenzar Incidencia
                                             </button>
                                         </form>
-                                    @elseif($incidencia->estado == 'en_progreso')
-                                        <form action="{{ route('tecnico.incidencia.actualizar', $incidencia->id) }}" method="POST">
+                                    @elseif($incidencia->estado == 'en_proceso')
+                                        <form action="{{ route('tecnico.incidencia.actualizar', $incidencia->id) }}"
+                                            method="POST">
                                             @csrf
                                             <input type="hidden" name="estado" value="cerrado">
-                                            <button type="submit" class="bg-green-600 text-white text-xs font-bold px-6 py-2 rounded-xl hover:bg-green-700 transition shadow-lg shadow-green-100">
+                                            <button type="submit"
+                                                class="bg-green-600 text-white text-xs font-bold px-6 py-2 rounded-xl hover:bg-green-700 transition shadow-lg shadow-green-100">
                                                 Finalizar Incidencia
                                             </button>
                                         </form>
@@ -135,7 +144,8 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="px-6 py-10 text-center text-gray-400">No tienes incidencias pendientes.</td>
+                                <td colspan="5" class="px-6 py-10 text-center text-gray-400">No tienes incidencias
+                                    pendientes.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -194,7 +204,7 @@
                         </div>
                         <div class="bg-gray-50 p-5 rounded-3xl border border-gray-100 text-center">
                             <p class="text-gray-400 text-[10px] font-bold uppercase mb-2">En proceso</p>
-                            <p class="text-3xl font-bold text-amber-500">{{ $en_progreso }}</p>
+                            <p class="text-3xl font-bold text-amber-500">{{ $en_proceso }}</p>
                         </div>
                         <div class="bg-gray-50 p-5 rounded-3xl border border-gray-100 text-center">
                             <p class="text-gray-400 text-[10px] font-bold uppercase mb-2">Resueltas</p>
@@ -210,7 +220,7 @@
                                 incidencias en el periodo seleccionado --}}
                                 En el periodo seleccionado ({{ date('d/m/Y', strtotime($fechaInicio)) }} -
                                 {{ date('d/m/Y', strtotime($fechaFin)) }}), has gestionado un total de
-                                <strong>{{ $pendiente + $en_progreso + $cerrado }}</strong> incidencias.
+                                <strong>{{ $pendiente + $en_proceso + $cerrado }}</strong> incidencias.
                             @else
                                 Estas viendo el historial acumulado de tu actividad técnica. Usa el filtro para segmentar
                                 por fechas.
@@ -241,11 +251,14 @@
                         @forelse($incidenciasResueltas as $incidencia)
                             <tr class="hover:bg-gray-50/50 transition">
                                 <td class="px-6 py-4 font-bold text-gray-800 text-sm">{{ $incidencia->cliente_nombre }}
-                                    {{ $incidencia->cliente_apellido }}</td>
+                                    {{ $incidencia->cliente_apellido }}
+                                </td>
                                 <td class="px-6 py-4 text-sm text-gray-600 line-clamp-1 truncate max-w-xs">
-                                    {{ $incidencia->descripcion }}</td>
+                                    {{ $incidencia->descripcion }}
+                                </td>
                                 <td class="px-6 py-4 text-sm text-gray-500">
-                                    {{ date('d/m/Y H:i', strtotime($incidencia->updated_at)) }}</td>
+                                    {{ date('d/m/Y H:i', strtotime($incidencia->updated_at)) }}
+                                </td>
                                 <td class="px-6 py-4 text-right">
                                     <span
                                         class="inline-flex items-center text-green-600 font-bold text-[10px] uppercase bg-green-50 px-2 py-1 rounded">
@@ -275,7 +288,7 @@
         //Pasamos los datos de PHP a variables de JavaScript
         window.datosIncidencias = {
             pendiente: {{ $pendiente }},
-            en_progreso: {{ $en_progreso }},
+            en_proceso: {{ $en_proceso }},
             cerrado: {{ $cerrado }}
         };
 

@@ -2,7 +2,7 @@
 <html lang="es">
     <head>
         <meta charset="utf-8">
-        <title>Factura</title>
+        <title>Factura {{ date('d/m/Y', strtotime($factura->fecha_inicio)) }}</title>
         <style>
             body{
                 font-family: Arial, sans-serif;
@@ -88,7 +88,7 @@
                 <div class="factura-info">
                     <h2>FACTURA</h2>
                     <p><strong>Nº:</strong> {{ $factura->id }}</p>
-                    <p><strong>Fecha:</strong> {{ $factura->fecha_inicio }}</p>
+                    <p><strong>Fecha:</strong> {{ date('d/m/Y', strtotime($factura->fecha_inicio)) }}</p>
                 </div>
 
                 <div class="clear"></div>
@@ -114,7 +114,7 @@
                 <tbody>
                     <tr>
                         <td>Servicio de telecomunicaciones</td>
-                        <td>{{ $factura->fecha_inicio }}</td>
+                        <td>{{ date('d/m/Y', strtotime($factura->fecha_inicio)) }}</td>
                         <td>{{ number_format($factura->precio, 2) }} €</td>
                     </tr>
                 </tbody>

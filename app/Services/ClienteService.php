@@ -4,6 +4,8 @@ namespace App\Services;
 use App\Http\Requests\DynamicRequestValidator;
 use App\Models\Cliente;
 use App\Models\Contrato;
+use App\Models\Factura;
+use App\Models\Tarifa;
 use Illuminate\Support\Facades\Hash;
 
 class ClienteService {
@@ -76,6 +78,9 @@ class ClienteService {
     public function contratarTarifa(DynamicRequestValidator $request) {
         $clienteId = $this->comprobarUsuario();
         $cliente = Cliente::find($clienteId);
+        $tarifa = Tarifa::find($request->tarifa_id);
+
+        if (!$tarifa) return false;
 
         $contrato = Contrato::create([
             'cliente_id' => $clienteId,
@@ -89,6 +94,14 @@ class ClienteService {
         
         //Contratar la tarifa
         $contrato->tarifas()->attach($request->tarifa_id, [
+            'fecha_inicio' => now()
+        ]);
+
+        //Crear la factura de la contratación
+        Factura::create([
+            'cliente_id' => $clienteId,
+            'contrato_id' => $contrato->id,
+            'precio' => $tarifa->precio,
             'fecha_inicio' => now()
         ]);
 
