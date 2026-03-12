@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <title>Panel Jefe Técnico</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Flatpickr -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 <body class="bg-gray-50 flex flex-col min-h-screen">
     @include('layouts.header')  
@@ -54,12 +58,12 @@
                         <div class="grid grid-cols-2 gap-2">
                             <div>
                                 <label class="text-xs text-gray-400 uppercase font-bold">Inicio</label>
-                                <input type="date" name="fecha_inicio" value="{{ $fechaInicio }}" 
+                                <input type="text" name="fecha_inicio" id="fecha_inicio" value="{{ $fechaInicio }}" 
                                        class="w-full px-3 py-2 bg-gray-50 border border-gray-100 rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-500">
                             </div>
                             <div>
                                 <label class="text-xs text-gray-400 uppercase font-bold">Fin</label>
-                                <input type="date" name="fecha_fin" value="{{ $fechaFin }}"
+                                <input type="text" name="fecha_fin" id="fecha_fin" value="{{ $fechaFin }}"
                                        class="w-full px-3 py-2 bg-gray-50 border border-gray-100 rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-500">
                             </div>
                         </div>
@@ -194,7 +198,7 @@
                                                     </div>
 
                                                     <div class="flex flex-col gap-1">
-                                                        <input type="date" name="fecha" required
+                                                        <input type="text" name="fecha" id="fechaTecnico" required
                                                                class="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
                                                                value="{{ date('Y-m-d') }}">
                                                     </div>
@@ -221,6 +225,20 @@
         </div>
     </main>
     @include('layouts.footer')
+    <script>
+        //Configuración de Flatpickr
+        const configFlatpickr = {
+            locale: "es", //Idioma español
+            dateFormat: "Y-m-d", //Formato de fecha interno
+            altInput: true, //Para mostrar una fecha distinta
+            altFormat: "d-m-Y", //Formato de fecha externo
+            allowInput: true, //Permite escribir la fecha
+        };
+
+        //Configuro las fechas
+        flatpickr("#fechaTecnico", configFlatpickr);
+        flatpickr("#fecha_inicio", configFlatpickr);
+        flatpickr("#fecha_fin", configFlatpickr);
+    </script>
 </body>
 </html>
-

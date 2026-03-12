@@ -41,11 +41,40 @@
         </div>
 
         <script>
+<<<<<<< HEAD
             // Desaparece después de 3 segundos
             setTimeout(() => {
                 const msg = document.getElementById('flash-message');
                 if (msg) msg.style.display = 'none';
             }, 3000);
+=======
+            //Configuración de Flatpickr
+            const configFlatpickr = {
+                locale: "es", //Idioma español
+                dateFormat: "Y-m-d", //Formato de fecha interno
+                altInput: true, //Para mostrar una fecha distinta
+                altFormat: "d-m-Y", //Formato de fecha externo
+                allowInput: true, //Permite escribir la fecha
+                maxDate: "today", //No permite fechas futuras
+            };
+
+            //Configuro las fechas
+            flatpickr("#fecha_inicio", configFlatpickr);
+            flatpickr("#fecha_fin", configFlatpickr);
+
+            //Datos para los gráficos
+            const datosIncidencias = {
+                pendiente: {{ $pendiente }},
+                en_progreso: {{ $en_progreso }},
+                cerrado: {{ $cerrado }}
+            };
+
+            const datosFinanzas = {
+                producido: {{ $producido }},
+                invertido: {{ $invertido }},
+                beneficio: {{ $beneficio }}
+            };
+>>>>>>> f84ca0a03607507cdfdedd0bf914af027e65d374
         </script>
     @endif
 
