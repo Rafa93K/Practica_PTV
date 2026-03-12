@@ -76,7 +76,9 @@ Route::group(['middleware' => ['checklogin', 'role:manager,marketing']], functio
     Route::delete('/tarifas/{id}', [TarifaController::class, 'eliminarTarifa'])->name('tarifaDelete');
 });
 
-Route::get('/marketing/inicio', [MarketingController::class,'index'])->middleware(['checklogin','role:marketing'])->name('marketing.inicio');
+Route::get('/marketing/inicio', [MarketingController::class,'index'])->middleware(['checklogin','role:marketing'])->name('marketing.inicio'); //Panel marketing
+Route::get('/marketing/filtrar', [MarketingController::class, 'filtrar'])->name('marketing.filtrar')->middleware(['checklogin', 'role:marketing']); //Para filtrar por mes y año
+
 
 //Ruta para crear trabajador desde jefe_tecnico
 Route::post('/jefe_tecnico/inicio',[TrabajadorController::class,'trabajadorSubmit'])->middleware(['checklogin','role:jefe_tecnico'])->name('jefe_tecnico.trabajadorSubmit');
