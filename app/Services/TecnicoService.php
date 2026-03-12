@@ -139,21 +139,22 @@ class TecnicoService {
      * @description Actualiza el estado de una incidencia.
      */
     public function actualizarEstado($tecnicoId, $incidenciaId, $estado): bool {
+        $ahora = now();
         $data = [
             'estado' => $estado,
-            'updated_at' => now()
+            'updated_at' => $ahora
         ];
 
         if ($estado === 'en_progreso') {
-            $data['fecha_inicio'] = now();
+            $data['fecha_inicio'] = $ahora;
         } elseif ($estado === 'cerrado') {
-            $data['fecha_fin'] = now();
+            $data['fecha_fin'] = $ahora;
             
             // Calcular intervalo_resolucion si existe fecha_inicio
             $incidencia = DB::table('incidencias')->where('id', $incidenciaId)->first();
             if ($incidencia && $incidencia->fecha_inicio) {
                 $inicio = \Carbon\Carbon::parse($incidencia->fecha_inicio);
-                $data['intervalo_resolucion'] = $inicio->diffInMinutes(now());
+                $data['intervalo_resolucion'] = $inicio->diffInMinutes($ahora);
             }
         }
 

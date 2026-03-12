@@ -40,11 +40,11 @@
                         <div class="space-y-4">
                             <div class="flex flex-col">
                                 <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Nombre Completo</span>
-                                <span class="text-gray-700 font-medium">{{ $cliente->nombre }} {{ $cliente->apellido }}</span>
+                                <span class="text-gray-700 font-medium">{{ strtoupper($cliente->nombre) }} {{ strtoupper($cliente->apellido) }}</span>
                             </div>
                             <div class="flex flex-col">
                                 <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">DNI</span>
-                                <span class="text-gray-700 font-medium">{{ $cliente->dni }}</span>
+                                <span class="text-gray-700 font-medium">{{ strtoupper($cliente->dni) }}</span>
                             </div>
                             <div class="flex flex-col">
                                 <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Correo Electrónico</span>

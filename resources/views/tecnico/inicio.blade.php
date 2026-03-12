@@ -77,8 +77,7 @@
                             </th>
                             <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Estado</th>
                             <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Fecha</th>
-                            <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">
-                                Acción</th>
+                            <th colspan="2" class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider text-center">Acción</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-50">
@@ -101,32 +100,35 @@
                                         <span
                                             class="bg-red-100 text-red-600 text-[10px] font-bold px-2 py-1 rounded-md uppercase">pendiente</span>
                                     @else
-                                        <span
-                                            class="bg-amber-100 text-amber-600 text-[10px] font-bold px-2 py-1 rounded-md uppercase">En
-                                            Proceso</span>
+                                        <span class="bg-amber-100 text-amber-600 text-[10px] font-bold px-2 py-1 rounded-md uppercase">En Proceso</span>
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-500">
-                                    {{ date('d/m/Y', strtotime($incidencia->fecha_inicio)) }}
-                                </td>
-                                <td class="px-6 py-4 text-right">
-                                    <form action="{{ route('tecnico.incidencia.actualizar', $incidencia->id) }}"
-                                        method="POST" class="inline-block">
-                                        @csrf
-                                        <select name="estado" onchange="this.form.submit()"
-                                            class="text-xs font-bold bg-white border border-gray-200 rounded-lg px-3 py-2 flex ml-auto focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer">
-                                            <option value="pendiente" {{ $incidencia->estado == 'pendiente' ? 'selected' : '' }}>pendiente</option>
-                                            <option value="en_progreso" {{ $incidencia->estado == 'en_progreso' ? 'selected' : '' }}>En Proceso</option>
-                                            <option value="cerrado" {{ $incidencia->estado == 'cerrado' ? 'selected' : '' }}>
-                                                Resuelto</option>
-                                        </select>
-                                    </form>
+                                    {{ $incidencia->fecha_inicio ? date('d/m/Y H:i', strtotime($incidencia->fecha_inicio)) : 'Sin comenzar' }}
+                                </td>                               
+                                <td colspan="2" class="px-6 py-4 text-center">
+                                    @if($incidencia->estado == 'pendiente')
+                                        <form action="{{ route('tecnico.incidencia.actualizar', $incidencia->id) }}" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="estado" value="en_progreso">
+                                            <button type="submit" class="bg-indigo-600 text-white text-xs font-bold px-6 py-2 rounded-xl hover:bg-indigo-700 transition shadow-lg shadow-indigo-100">
+                                                Comenzar Incidencia
+                                            </button>
+                                        </form>
+                                    @elseif($incidencia->estado == 'en_progreso')
+                                        <form action="{{ route('tecnico.incidencia.actualizar', $incidencia->id) }}" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="estado" value="cerrado">
+                                            <button type="submit" class="bg-green-600 text-white text-xs font-bold px-6 py-2 rounded-xl hover:bg-green-700 transition shadow-lg shadow-green-100">
+                                                Finalizar Incidencia
+                                            </button>
+                                        </form>
+                                    @endif
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="px-6 py-10 text-center text-gray-400">No tienes incidencias
-                                    pendientes.</td>
+                                <td colspan="5" class="px-6 py-10 text-center text-gray-400">No tienes incidencias pendientes.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -223,6 +225,8 @@
                             </th>
                             <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">
                                 Estado</th>
+                            <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">
+                                Tiempo Invertido</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-50">
@@ -240,6 +244,9 @@
                                         class="inline-flex items-center text-green-600 font-bold text-[10px] uppercase bg-green-50 px-2 py-1 rounded">
                                         <i class="fas fa-check-circle mr-1"></i> Resuelta
                                     </span>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-600 line-clamp-1 truncate max-w-xs text-center">
+                                    {{ $incidencia->intervalo_resolucion }}min
                                 </td>
                             </tr>
                         @empty {{-- Si no hay incidencias resueltas, se muestra un mensaje --}}
