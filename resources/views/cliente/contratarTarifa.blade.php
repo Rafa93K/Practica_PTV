@@ -53,6 +53,7 @@
                             <div>
                                 {{-- Nombre y tipo de la tarifa seleccionada --}}
                                 <h3 class="text-xl font-bold text-gray-800">{{ $tarifa->nombre }}</h3>
+                                <p class="{{ $tarifa->permanencia == 1 ? "text-yellow-500" : "" }}">{{ $tarifa->permanencia == 1 ? "PERMANENCIA DE 1 AÑO" : "" }}</p>
                                 <p class="text-sm text-gray-500">{{ $tarifa->tipo }}</p>
                             </div>
                         </div>
@@ -63,7 +64,6 @@
                     </div>
 
                     {{-- Formulario --}}
-                    {{-- Nota: El action debe apuntar a la ruta de guardar contrato, la crearé si no existe o dejaré el placeholder --}}
                     <form action="{{ route('cliente.contratarTarifa.store') }}" method="POST">
                         @csrf
                         {{-- ID del cliente --}}

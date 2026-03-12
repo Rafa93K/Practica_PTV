@@ -145,6 +145,9 @@
                             <div class="flex justify-between items-start mb-4">
                                 <div>
                                     <div class="text-xl font-bold">{{ $tarifa->nombre }}</div>
+
+                                    {{-- En caso de que tenga permanencia aparece un texto indicandolo --}}
+                                    <p class="text-yellow-600 font-bold italic">{{ $tarifa->permanencia == 1 ? "PERMANENCIA DE 1 AÑO" : "" }}</p>
                                     <div class="text-blue-400 text-sm italic">{{ $tarifa->tipo }}</div>
                                 </div>
                                 <div class="text-2xl font-black">{{ number_format($tarifa->precio, 2) }}€</div>

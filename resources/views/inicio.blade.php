@@ -46,6 +46,9 @@
                                         
                                         <!-- Nombre y descripcion de la tarifa -->
                                         <h4 class="text-2xl font-black text-gray-800 mb-4 line-clamp-1 group-hover/card:text-blue-600 transition-colors">{{ $tarifa->nombre }}</h4>
+                                        
+                                        {{-- En caso de que tenga permanencia aparece un texto indicandolo --}}
+                                        <span class="text-yellow-600 font-bold text-xl">{{ $tarifa->permanencia == 1 ? "PERMANENCIA DE 1 AÑO" : "" }}</span>
                                         <p class="text-gray-500 text-sm leading-relaxed mb-10 flex-1 line-clamp-3">{{ $tarifa->descripcion }}</p>
                                         
                                         <!-- Boton que lleva al login del panel cliente -->
