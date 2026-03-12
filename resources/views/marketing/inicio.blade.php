@@ -63,19 +63,36 @@
             </h2>
 
             <!-- Filtro mes/año -->
-            <div class="flex items-center gap-2">
+            <form action="{{ route('marketing.filtrar') }}" method="GET" class="flex items-center gap-2">
                 <span class="text-sm text-gray-500">Filtra por mes y año</span>
 
                 <select name="mes" id="mes" class="border border-gray-300 rounded-lg px-2 py-1">
                     <option value="">Mes</option>
-                    
+
+                    <!-- Por cada mes, se crea un option con el id y el nombre -->
+                    @foreach($meses as $mes)
+                        <option value="{{ $mes->id }}" {{ $mesSeleccionado == $mes->id ? 'selected' : '' }}>
+                            {{ $mes->nombre }}
+                        </option>
+                    @endforeach
                 </select>
+
                 <select name="año" id="año" class="border border-gray-300 rounded-lg px-2 py-1">
                     <option value="">Año</option>
-                    
+
+                    <!-- Por cada año, se crea un option con el id y el nombre -->
+                    @foreach($años as $año)
+                        <option value="{{ $año->id }}" {{ $añoSeleccionado == $año->id ? 'selected' : '' }}>
+                            {{ $año->nombre }}
+                        </option>
+                    @endforeach
                 </select>
-                <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-lg">Filtrar</button>
-            </div>
+
+                <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+                    Filtrar
+                </button>
+            </form>
+
             <br>
 
             @if($topTarifa)
