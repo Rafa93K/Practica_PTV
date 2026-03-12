@@ -148,6 +148,7 @@
                 altInput: true, //Para mostrar una fecha distinta
                 altFormat: "d-m-Y", //Formato de fecha externo
                 allowInput: true, //Permite escribir la fecha
+                maxDate: "today", //No permite fechas futuras
             };
 
             //Configuro las fechas

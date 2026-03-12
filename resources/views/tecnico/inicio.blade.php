@@ -6,6 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Técnico</title>
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Importacion de flatpickr -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"> 
+
+    <!-- Flatpickr -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
 </head>
 
 <body class="bg-gray-50 flex flex-col min-h-screen">
@@ -150,12 +157,12 @@
                     class="flex flex-wrap items-center gap-3 bg-gray-50 p-3 rounded-2xl border border-gray-100">
                     <div class="flex items-center gap-2">
                         <label class="text-[10px] font-bold text-gray-400 uppercase">Desde</label>
-                        <input type="date" name="fecha_inicio" value="{{ $fechaInicio }}"
+                        <input type="text" id="fecha_inicio" name="fecha_inicio" value="{{ $fechaInicio }}"
                             class="text-xs font-semibold bg-white border border-gray-200 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-500">
                     </div>
                     <div class="flex items-center gap-2">
                         <label class="text-[10px] font-bold text-gray-400 uppercase">Hasta</label>
-                        <input type="date" name="fecha_fin" value="{{ $fechaFin }}"
+                        <input type="text" id="fecha_fin" name="fecha_fin" value="{{ $fechaFin }}"
                             class="text-xs font-semibold bg-white border border-gray-200 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-500">
                     </div>
                     <button type="submit"
@@ -270,7 +277,20 @@
             pendiente: {{ $pendiente }},
             en_progreso: {{ $en_progreso }},
             cerrado: {{ $cerrado }}
-            };
+        };
+
+        //Configuración de Flatpickr
+        const configFlatpickr = {
+            locale: "es", //Idioma español
+            dateFormat: "Y-m-d", //Formato de fecha interno
+            altInput: true, //Para mostrar una fecha distinta
+            altFormat: "d-m-Y", //Formato de fecha externo
+            allowInput: true, //Permite escribir la fecha
+        };
+
+        //Configuro las fechas
+        flatpickr("#fecha_inicio", configFlatpickr);
+        flatpickr("#fecha_fin", configFlatpickr);
     </script>
     <script src="{{ asset('js/tecnicoDatos.js') }}"></script> {{-- Llamamos al archivo de grafico --}}
 </body>
