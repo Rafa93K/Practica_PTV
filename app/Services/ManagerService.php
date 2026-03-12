@@ -41,7 +41,7 @@ class ManagerService {
 
         // Obtener el estado de las incidencias (usando una copia de la query de incidencias para mantener los filtros)
         $pendiente = (clone $queryIncidencias)->where('estado', 'pendiente')->count();
-        $en_progreso = (clone $queryIncidencias)->where('estado', 'en_progreso')->count();
+        $en_proceso = (clone $queryIncidencias)->where('estado', 'en_proceso')->count();
         $cerrado = (clone $queryIncidencias)->where('estado', 'cerrado')->count();
 
         return [
@@ -51,7 +51,7 @@ class ManagerService {
             'invertido' => $invertido,
             'beneficio' => $beneficio,
             'pendiente' => $pendiente,
-            'en_progreso' => $en_progreso,
+            'en_proceso' => $en_proceso,
             'cerrado' => $cerrado,
             'fechaInicio' => $fechaInicio,
             'fechaFin' => $fechaFin

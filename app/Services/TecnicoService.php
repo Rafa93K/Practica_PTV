@@ -52,7 +52,7 @@ class TecnicoService {
      * @description Obtiene el número de incidencias en progreso asignadas al técnico.
      */
     public function getIncidenciasEnProgreso($tecnicoId): int {
-        return DB::table('incidencias')->where('trabajador_id', $tecnicoId)->where('estado', 'en_progreso')->count();
+        return DB::table('incidencias')->where('trabajador_id', $tecnicoId)->where('estado', 'en_proceso')->count();
     }
     
     /**
@@ -120,12 +120,12 @@ class TecnicoService {
      */
     public function getEstadisticasPeriodo($tecnicoId, $fechaInicio, $fechaFin): array {
         $pendiente = DB::table('incidencias')->where('trabajador_id', $tecnicoId)->where('estado', 'pendiente')->whereBetween('created_at', [$fechaInicio, $fechaFin])->count();
-        $en_progreso = DB::table('incidencias')->where('trabajador_id', $tecnicoId)->where('estado', 'en_progreso')->whereBetween('updated_at', [$fechaInicio, $fechaFin])->count();
+        $en_proceso = DB::table('incidencias')->where('trabajador_id', $tecnicoId)->where('estado', 'en_proceso')->whereBetween('updated_at', [$fechaInicio, $fechaFin])->count();
         $cerrado = DB::table('incidencias')->where('trabajador_id', $tecnicoId)->where('estado', 'cerrado')->whereBetween('updated_at', [$fechaInicio, $fechaFin])->count();
         
         return [
             'pendiente' => $pendiente,
-            'en_progreso' => $en_progreso,
+            'en_proceso' => $en_proceso,
             'cerrado' => $cerrado
         ];
     }
@@ -145,7 +145,7 @@ class TecnicoService {
             'updated_at' => $ahora
         ];
 
-        if ($estado === 'en_progreso') {
+        if ($estado === 'en_proceso') {
             $data['fecha_inicio'] = $ahora;
         } elseif ($estado === 'cerrado') {
             $data['fecha_fin'] = $ahora;
