@@ -203,6 +203,12 @@
                                                                value="{{ date('Y-m-d') }}">
                                                     </div>
 
+                                                    <div class="flex flex-col gap-1">
+                                                        <input type="text" name="hora" id="horaTecnico" required
+                                                               class="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                                                               value="{{ date('H:i') }}">
+                                                    </div>
+
                                                     <button type="submit" 
                                                             class="p-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm"
                                                             title="Asignar técnico y fecha">
@@ -239,6 +245,18 @@
         flatpickr("#fechaTecnico", configFlatpickr);
         flatpickr("#fecha_inicio", configFlatpickr);
         flatpickr("#fecha_fin", configFlatpickr);
+
+        flatpickr("#horaTecnico", {
+            locale: "es",
+            enableTime: true, //Tiene tiempo
+            noCalendar: true, //Desactivamos el calendario
+            dateFormat: "H:i", //Formato de hora interno
+            altInput: true, //Para mostrar una fecha distinta
+            altFormat: "H:i", //Formato de hora externo
+            allowInput: true, //Permite escribir la fecha
+            time_24hr: true, //Formato de 24 horas
+            minuteIncrement: 60, //Incremento de minutos
+        })
     </script>
 </body>
 </html>
