@@ -192,16 +192,34 @@ class UsersSeeder extends Seeder
             $estado = $estados[array_rand($estados)];
             $tecnico = (rand(0, 10) > 2) ? $tecnicosIds[array_rand($tecnicosIds)] : null; // Algunas sin asignar
             
+            // Si está cerrada, obligatoriamente tiene técnico
+            if ($estado == 'cerrado' && is_null($tecnico)) {
+                $tecnico = $tecnicosIds[array_rand($tecnicosIds)];
+            }
+
+            $fechaInicioStr = Carbon::now()->subDays(rand(1, 60))->toDateString() . ' ' . str_pad(rand(8, 18), 2, '0', STR_PAD_LEFT) . ':00:00';
+            
+            $fechaFinStr = null;
+            $intervalo = null;
+            
+            if ($estado == 'cerrado') {
+                //Generar una fecha fin posterior a la fecha de inicio
+                $minutosAñadidos = rand(30, 2880); //Entre 30 mins y 48 horas (2 días)
+                $fechaFinCarbon = Carbon::parse($fechaInicioStr)->addMinutes($minutosAñadidos);
+                $fechaFinStr = $fechaFinCarbon->toDateTimeString();
+                $intervalo = $minutosAñadidos;
+            }
+
             DB::table('incidencias')->insert([
                 'cliente_id' => rand(1, 15),
                 'trabajador_id' => $tecnico,
                 'descripcion' => $descripciones[array_rand($descripciones)],
                 'estado' => $estado,
-                'fecha_inicio' => Carbon::now()->subDays(rand(1, 60))->toDateString(),
-                'fecha_fin' => null,
-                'intervalo_resolucion' => null,
-                'created_at' => now()->subDays(rand(1, 60)),
-                'updated_at' => ($estado == 'cerrado' || $estado == 'en_proceso') ? now()->subDays(rand(0, 30)) : now(),
+                'fecha_inicio' => $fechaInicioStr,
+                'fecha_fin' => $fechaFinStr,
+                'intervalo_resolucion' => $intervalo,
+                'created_at' => Carbon::parse($fechaInicioStr)->subDays(rand(1, 5)),
+                'updated_at' => ($estado == 'cerrado') ? $fechaFinStr : (($estado == 'en_proceso') ? now()->subDays(rand(0, 30)) : now()),
             ]);
         }
     }

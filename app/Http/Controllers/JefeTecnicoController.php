@@ -24,13 +24,15 @@ class JefeTecnicoController extends Controller
         $fechaFin = $request->input('fecha_fin', date('Y-m-d'));
         
         $totalIncidenciasIntervalo = $this->jefeTecnicoService->contarIncidenciasEntreFechas($fechaInicio, $fechaFin);
+        $mediasTecnicos = $this->jefeTecnicoService->obtenerMediaResolucionPorTecnico();
 
         return view('jefe_tecnico.inicio', compact(
             'incidenciasSinAsignar', 
             'tecnicos', 
             'totalIncidenciasIntervalo', 
             'fechaInicio', 
-            'fechaFin'
+            'fechaFin',
+            'mediasTecnicos'
         ));
     }
 
