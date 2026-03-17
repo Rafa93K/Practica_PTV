@@ -103,6 +103,15 @@ class DynamicRequestValidator extends FormRequest {
                     'estado' => 'required|in:pendiente,en_proceso,cerrado',
                 ];
 
+            //JEFE TÉCNICO
+            case 'jefe_tecnico.asignar':
+                return [
+                    'incidencia_id' => 'required|exists:incidencias,id',
+                    'trabajador_id' => 'required|exists:trabajadores,id',
+                    'fecha' => 'required|date',
+                ];
+
+
             //ACCIONES GENÉRICAS
             case 'manager.cliente.delete':
             case 'marketing.cliente.delete':
@@ -170,6 +179,11 @@ class DynamicRequestValidator extends FormRequest {
 
             'rol.required' => 'Debes asignar un rol al trabajador.',
             'estado.required' => 'Debes seleccionar un nuevo estado para la incidencia.',
+
+            'trabajador_id.required' => 'Debes seleccionar un trabajador.',
+            'fecha.required' => 'Debes seleccionar una fecha.',
+            'fecha.date' => 'La fecha ingresada no tiene un formato válido.',
+
         ];
     }
 

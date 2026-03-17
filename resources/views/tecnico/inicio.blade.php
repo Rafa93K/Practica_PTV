@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- Importacion de flatpickr -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"> 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
     <!-- Flatpickr -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -74,8 +74,59 @@
                 </span>
             </div>
 
-            {{-- Tabla de incidencias asignadas --}}
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-12">
+            {{-- Vista de tarjetas para móviles (se oculta en ordenadores) --}}
+            <div class="grid grid-cols-1 gap-4 md:hidden">
+                @forelse($incidenciasAsignadas as $incidencia)
+                    <div class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+                        <div class="flex justify-between items-start mb-2">
+                            <div class="font-bold text-gray-800">
+                                {{ $incidencia->cliente_nombre }} {{ $incidencia->cliente_apellido }}
+                            </div>
+                            @if($incidencia->estado == 'pendiente')
+                                <span
+                                    class="bg-red-100 text-red-600 text-[10px] font-bold px-2 py-1 rounded-md uppercase">pendiente</span>
+                            @else
+                                <span
+                                    class="bg-amber-100 text-amber-600 text-[10px] font-bold px-2 py-1 rounded-md uppercase">En
+                                    Proceso</span>
+                            @endif
+                        </div>
+                        <p class="text-gray-600 text-sm mb-3">{{ $incidencia->descripcion }}</p>
+                        <div class="text-xs text-gray-400 mb-4">
+                            {{ $incidencia->fecha_inicio ? date('d/m/Y H:i', strtotime($incidencia->fecha_inicio)) : 'Sin comenzar' }}
+                        </div>
+
+                        <div class="flex justify-center">
+                            @if($incidencia->estado == 'pendiente')
+                                <form action="{{ route('tecnico.incidencia.actualizar', $incidencia->id) }}" method="POST"
+                                    class="w-full">
+                                    @csrf
+                                    <input type="hidden" name="estado" value="en_proceso">
+                                    <button type="submit"
+                                        class="w-full bg-indigo-600 text-white text-xs font-bold py-3 rounded-xl">
+                                        Comenzar Incidencia
+                                    </button>
+                                </form>
+                            @elseif($incidencia->estado == 'en_proceso')
+                                <form action="{{ route('tecnico.incidencia.actualizar', $incidencia->id) }}" method="POST"
+                                    class="w-full">
+                                    @csrf
+                                    <input type="hidden" name="estado" value="cerrado">
+                                    <button type="submit"
+                                        class="w-full bg-green-600 text-white text-xs font-bold py-3 rounded-xl">
+                                        Finalizar Incidencia
+                                    </button>
+                                </form>
+                            @endif
+                        </div>
+                    </div>
+                @empty
+                    <p class="text-center text-gray-400 py-4">No tienes incidencias pendientes.</p>
+                @endforelse
+            </div>
+
+            {{-- Tabla original optimizada (se oculta en móviles) --}}
+            <div class="hidden md:block bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-12">
                 <table class="w-full text-left">
                     <thead class="bg-gray-50 border-b border-gray-100">
                         <tr>
@@ -90,22 +141,17 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-50">
-                        @forelse($incidenciasAsignadas as $incidencia)
+                        @foreach($incidenciasAsignadas as $incidencia)
                             <tr class="hover:bg-gray-50 transition">
-                                {{-- Nombre y apellidos del cliente --}}
                                 <td class="px-6 py-4">
                                     <div class="font-bold text-gray-800">{{ $incidencia->cliente_nombre }}
                                         {{ $incidencia->cliente_apellido }}
                                     </div>
                                 </td>
-
-                                {{-- Descripcion de la incidencia --}}
                                 <td class="px-6 py-4">
                                     <p class="text-gray-600 text-sm line-clamp-1">{{ $incidencia->descripcion }}</p>
                                 </td>
-
                                 <td class="px-6 py-4">
-                                    {{-- Estado de la incidencia --}}
                                     @if($incidencia->estado == 'pendiente')
                                         <span
                                             class="bg-red-100 text-red-600 text-[10px] font-bold px-2 py-1 rounded-md uppercase">pendiente</span>
@@ -125,9 +171,7 @@
                                             @csrf
                                             <input type="hidden" name="estado" value="en_proceso">
                                             <button type="submit"
-                                                class="bg-indigo-600 text-white text-xs font-bold px-6 py-2 rounded-xl hover:bg-indigo-700 transition shadow-lg shadow-indigo-100">
-                                                Comenzar Incidencia
-                                            </button>
+                                                class="bg-indigo-600 text-white text-xs font-bold px-6 py-2 rounded-xl">Comenzar</button>
                                         </form>
                                     @elseif($incidencia->estado == 'en_proceso')
                                         <form action="{{ route('tecnico.incidencia.actualizar', $incidencia->id) }}"
@@ -135,19 +179,12 @@
                                             @csrf
                                             <input type="hidden" name="estado" value="cerrado">
                                             <button type="submit"
-                                                class="bg-green-600 text-white text-xs font-bold px-6 py-2 rounded-xl hover:bg-green-700 transition shadow-lg shadow-green-100">
-                                                Finalizar Incidencia
-                                            </button>
+                                                class="bg-green-600 text-white text-xs font-bold px-6 py-2 rounded-xl">Finalizar</button>
                                         </form>
                                     @endif
                                 </td>
                             </tr>
-                        @empty
-                            <tr>
-                                <td colspan="5" class="px-6 py-10 text-center text-gray-400">No tienes incidencias
-                                    pendientes.</td>
-                            </tr>
-                        @endforelse
+                        @endforeach
                     </tbody>
                 </table>
             </div>
@@ -197,7 +234,7 @@
 
                 {{-- Resumen de datos del periodo --}}
                 <div class="lg:col-span-2 flex flex-col justify-center gap-6">
-                    <div class="grid grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div class="bg-gray-50 p-5 rounded-3xl border border-gray-100 text-center">
                             <p class="text-gray-400 text-[10px] font-bold uppercase mb-2">Abiertas</p>
                             <p class="text-3xl font-bold text-red-500">{{ $pendiente }}</p>
@@ -230,8 +267,32 @@
                 </div>
             </div>
 
-            {{-- Tabla de historial detallado --}}
-            <div class="overflow-hidden border border-gray-100 rounded-3xl">
+            {{-- Vista de tarjetas para el historial en móviles --}}
+            <div class="grid grid-cols-1 gap-4 md:hidden">
+                @forelse($incidenciasResueltas as $incidencia)
+                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-100 shadow-sm">
+                        <div class="flex justify-between items-start mb-2">
+                            <div class="font-bold text-gray-800 text-sm">
+                                {{ $incidencia->cliente_nombre }} {{ $incidencia->cliente_apellido }}
+                            </div>
+                            <span
+                                class="inline-flex items-center text-green-600 font-bold text-[9px] uppercase bg-green-50 px-2 py-1 rounded">
+                                Resuelta
+                            </span>
+                        </div>
+                        <p class="text-gray-600 text-xs mb-3 line-clamp-2">{{ $incidencia->descripcion }}</p>
+                        <div class="flex justify-between items-center text-[10px] text-gray-400">
+                            <span>{{ date('d/m/Y H:i', strtotime($incidencia->updated_at)) }}</span>
+                            <span class="font-bold text-gray-600">Tiempo: {{ $incidencia->intervalo_resolucion }}min</span>
+                        </div>
+                    </div>
+                @empty
+                    <p class="text-center text-gray-400 py-4 text-sm italic">No hay incidencias resueltas.</p>
+                @endforelse
+            </div>
+
+            {{-- Tabla de historial original (se oculta en móviles) --}}
+            <div class="hidden md:block overflow-hidden border border-gray-100 rounded-3xl">
                 <table class="w-full text-left">
                     <thead class="bg-gray-50 border-b border-gray-100">
                         <tr>
@@ -247,34 +308,25 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-50">
-                        {{-- Por cada incidencia resuelta, se muestra una fila --}}
-                        @forelse($incidenciasResueltas as $incidencia)
+                        @foreach($incidenciasResueltas as $incidencia)
                             <tr class="hover:bg-gray-50/50 transition">
                                 <td class="px-6 py-4 font-bold text-gray-800 text-sm">{{ $incidencia->cliente_nombre }}
                                     {{ $incidencia->cliente_apellido }}
                                 </td>
-                                <td class="px-6 py-4 text-sm text-gray-600 line-clamp-1 truncate max-w-xs">
-                                    {{ $incidencia->descripcion }}
+                                <td class="px-6 py-4 text-sm text-gray-600 truncate max-w-xs">{{ $incidencia->descripcion }}
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-500">
                                     {{ date('d/m/Y H:i', strtotime($incidencia->updated_at)) }}
                                 </td>
                                 <td class="px-6 py-4 text-right">
                                     <span
-                                        class="inline-flex items-center text-green-600 font-bold text-[10px] uppercase bg-green-50 px-2 py-1 rounded">
-                                        <i class="fas fa-check-circle mr-1"></i> Resuelta
-                                    </span>
+                                        class="inline-flex items-center text-green-600 font-bold text-[10px] uppercase bg-green-50 px-2 py-1 rounded">Resuelta</span>
                                 </td>
-                                <td class="px-6 py-4 text-sm text-gray-600 line-clamp-1 truncate max-w-xs text-center">
+                                <td class="px-6 py-4 text-sm text-gray-600 text-center">
                                     {{ $incidencia->intervalo_resolucion }}min
                                 </td>
                             </tr>
-                        @empty {{-- Si no hay incidencias resueltas, se muestra un mensaje --}}
-                            <tr>
-                                <td colspan="4" class="px-6 py-12 text-center text-gray-400 italic">No hay incidencias
-                                    resueltas en este periodo.</td>
-                            </tr>
-                        @endforelse
+                        @endforeach
                     </tbody>
                 </table>
             </div>
