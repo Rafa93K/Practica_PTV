@@ -1,7 +1,84 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Models\Tarifa;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\TrabajadorController;
+use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\ManagerController;
+use App\Http\Controllers\TarifaController;
+use App\Http\Controllers\TecnicoController;
+use App\Http\Controllers\MarketingController;
+use App\Http\Controllers\JefeTecnicoController;
 
-Route::get('/', function () {
-    return view('welcome');
+
+
+Route::get('/', function () { 
+    $tarifas = Tarifa::all();
+    return view('inicio', compact('tarifas'));
+})->name('inicio');
+
+
+Route::get('/login/{tipo}', [AuthController::class, 'mostrarLogin'])->name('login'); //Ruta para mostrar login segun el tipo
+Route::post('/login/{tipo}', [AuthController::class, 'iniciarSesion'])->name('login.submit'); //Ruta para realizar el login segun el tipo
+
+Route::get('/registro', [AuthController::class, 'mostrarRegistro'])->name('registro'); //Ruta para mostrar el registro (solo clientes)
+Route::post('/registro', [ClienteController::class, 'guardarClienteBD'])->name('register.submit'); //Ruta para procesar el formulario de registro
+
+//Rutas una vez logueado del cliente
+Route::get('/cliente/inicio', [ClienteController::class, 'cargarPanelCliente'])->name('cliente.inicio');
+Route::get('/cliente/editar', [ClienteController::class, 'mostrarFormularioEditar'])->name('cliente.editar'); //Ruta para mostrar el formulario de editar perfil
+Route::put('/cliente/editar', [ClienteController::class, 'actualizarClienteBD'])->name('cliente.update'); //Ruta para procesar la actualizacion del perfil
+Route::get('/cliente/generarFactura/{id}', [ClienteController::class, 'generarFactura'])->name('cliente.generarFactura'); //Ruta para generar la factura
+Route::get('/cliente/incidencia', [ClienteController::class, 'mostrarFormularioIncidencia'])->name('cliente.incidencia.create'); //Ruta para mostrar el formulario de incidencia
+Route::post('/cliente/incidencia', [ClienteController::class, 'guardarIncidenciaBD'])->name('cliente.incidencia.store'); //Ruta para procesar la incidencia
+Route::get('/cliente/tarifas', [ClienteController::class, 'verTarifas'])->name('cliente.tarifas'); //Ruta para ver las tarifas disponibles
+Route::get('/cliente/contratarTarifa/{id}', [ClienteController::class, 'contratarTarifa'])->name('cliente.contratarTarifa'); //Ruta para contratar tarifa
+Route::post('/cliente/contratarTarifa', [ClienteController::class, 'guardarContratoBD'])->name('cliente.contratarTarifa.store'); //Ruta para procesar la contratacion
+Route::get('/cliente/cambiar-servicio/{tarifa_id}/{contrato_id}', [ClienteController::class, 'mostrarCambioServicio'])->name('cliente.cambiarServicio'); //Ruta para mostrar tarifas del mismo tipo
+Route::post('/cliente/procesar-cambio', [ClienteController::class, 'procesarCambioServicio'])->name('cliente.procesarCambio'); //Ruta para procesar el cambio de tarifa
+Route::delete('/cliente/cancelar-servicio/{contrato_id}/{tarifa_id}', [ClienteController::class, 'cancelarServicio'])->name('cliente.cancelarServicio'); //Ruta para cancelar un servicio
+
+// Rutas para contratación directa (Nuevo cliente + Tarifa)
+Route::get('/contratar/{id}', [ClienteController::class, 'mostrarFormularioContratacionDirecta'])->name('cliente.contratarDirecta.show');
+Route::post('/contratar', [ClienteController::class, 'procesarContratacionDirecta'])->name('cliente.contratarDirecta.store');
+
+
+//RUTAS POR ROL DE TRABAJADOR
+Route::get('/manager/inicio', function () { return view('manager.inicio');})->middleware(['checklogin','role:manager'])->name('manager.inicio');
+Route::get('/marketing/inicio', [MarketingController::class, 'index'])->middleware(['checklogin','role:marketing'])->name('marketing.inicio');
+Route::get('/jefe_tecnico/inicio', [JefeTecnicoController::class, 'index'])->middleware(['checklogin','role:jefe_tecnico'])->name('jefe_tecnico.inicio');
+Route::post('/jefe_tecnico/asignar', [JefeTecnicoController::class, 'asignarIncidencia'])->middleware(['checklogin','role:jefe_tecnico'])->name('jefe_tecnico.asignar');
+
+
+//RUTAS POR ROL DE TECNICO
+Route::get('/tecnico/inicio', [TecnicoController::class, 'index'])->middleware(['checklogin', 'role:tecnico'])->name('tecnico.inicio'); //Ruta para mostrar el panel del técnico
+Route::post('/tecnico/incidencia/actualizar/{id}', [TecnicoController::class, 'actualizarEstado'])->middleware(['checklogin', 'role:tecnico'])->name('tecnico.incidencia.actualizar'); //Ruta para actualizar el estado de una incidencia
+
+
+//RUTAS MANAGER
+//creacion de trabajador desde manager vista
+Route::get('/manager/crear-trabajador',[TrabajadorController::class,'crearTrabajador'])->middleware(['checklogin','role:manager'])->name('manager.crearTrabajador');
+Route::post('/manager/crear-trabajador', [TrabajadorController::class, 'trabajadorSubmit'])->middleware(['checklogin','role:manager'])->name('manager.trabajadorSubmit');
+//Creación de producto desde manager vista
+Route::get('/manager/productos',[ProductoController::class,'mostrarProducto'])->middleware(['checklogin','role:manager'])->name('mostrarProducto');
+Route::post('/manager/productos',[ProductoController::class,'guardarProducto'])->middleware(['checklogin','role:manager'])->name('productoSubmit');
+
+//muestra de datos estadísticos para el manager
+Route::get('/manager/inicio', [ManagerController::class,'index'])->middleware(['checklogin','role:manager'])->name('manager.inicio');
+
+//Rutas compartidas para Gestión de Tarifas (Manager y Marketing)
+Route::group(['middleware' => ['checklogin', 'role:manager,marketing']], function() {
+    Route::get('/tarifas', [TarifaController::class, 'mostrarTarifas'])->name('mostrarTarifas');
+    Route::post('/tarifas/filtrar', [TarifaController::class, 'filtrarTarifas'])->name('tarifaFilter');
+    Route::post('/tarifas', [TarifaController::class, 'guardarTarifa'])->name('tarifaSubmit');
+    Route::delete('/tarifas/{id}', [TarifaController::class, 'eliminarTarifa'])->name('tarifaDelete');
 });
+
+Route::get('/marketing/inicio', [MarketingController::class,'index'])->middleware(['checklogin','role:marketing'])->name('marketing.inicio'); //Panel marketing
+Route::get('/marketing/filtrar', [MarketingController::class, 'filtrar'])->name('marketing.filtrar')->middleware(['checklogin', 'role:marketing']); //Para filtrar por mes y año
+
+
+//Ruta para crear trabajador desde jefe_tecnico
+Route::post('/jefe_tecnico/inicio',[TrabajadorController::class,'trabajadorSubmit'])->middleware(['checklogin','role:jefe_tecnico'])->name('jefe_tecnico.trabajadorSubmit');
