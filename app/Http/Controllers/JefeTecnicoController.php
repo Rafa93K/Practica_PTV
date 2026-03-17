@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DynamicRequestValidator;
 use Illuminate\Http\Request;
 use App\Services\JefeTecnico as JefeTecnicoService;
 
@@ -39,13 +40,8 @@ class JefeTecnicoController extends Controller
         ));
     }
 
-    public function asignarIncidencia(Request $request)
+    public function asignarIncidencia(DynamicRequestValidator $request)
     {
-        $request->validate([
-            'incidencia_id' => 'required|exists:incidencias,id',
-            'trabajador_id' => 'required|exists:trabajadores,id',
-            'fecha' => 'required|date',
-        ]);
 
         // Comprobar disponibilidad
         if (!$this->jefeTecnicoService->estaDisponible($request->trabajador_id, $request->fecha)) {
