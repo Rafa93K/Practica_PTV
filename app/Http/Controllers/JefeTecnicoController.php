@@ -24,7 +24,9 @@ class JefeTecnicoController extends Controller
         $fechaFin = $request->input('fecha_fin', date('Y-m-d'));
         
         $totalIncidenciasIntervalo = $this->jefeTecnicoService->contarIncidenciasEntreFechas($fechaInicio, $fechaFin);
-        $mediasTecnicos = $this->jefeTecnicoService->obtenerMediaResolucionPorTecnico();
+        
+        $ordenMedia = $request->input('orden_media', 'desc'); //Por defecto de mayor a menor
+        $mediasTecnicos = $this->jefeTecnicoService->obtenerMediaResolucionPorTecnico($ordenMedia);
 
         return view('jefe_tecnico.inicio', compact(
             'incidenciasSinAsignar', 
@@ -32,7 +34,8 @@ class JefeTecnicoController extends Controller
             'totalIncidenciasIntervalo', 
             'fechaInicio', 
             'fechaFin',
-            'mediasTecnicos'
+            'mediasTecnicos',
+            'ordenMedia'
         ));
     }
 

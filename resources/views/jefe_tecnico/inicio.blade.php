@@ -55,6 +55,7 @@
                         </div>
 
                         <form action="{{ route('jefe_tecnico.inicio') }}" method="GET" class="space-y-4 mb-6">
+                            <input type="hidden" name="orden_media" value="{{ request('orden_media', 'desc') }}">
                             <div class="grid grid-cols-2 gap-2">
                                 <div>
                                     <label class="text-xs text-gray-400 uppercase font-bold">Inicio</label>
@@ -227,16 +228,29 @@
                     </div>
                 </section>
 
-                <!--Media de incidencias por tecnico-->
+                <!-- Media de incidencias por tecnico -->
                 <section class="lg:col-span-3 mb-8">
                     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                        <div class="flex items-center gap-3 mb-6">
-                            <div class="p-2 bg-emerald-100 rounded-lg text-emerald-600">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                            <div class="flex items-center gap-3">
+                                <div class="p-2 bg-emerald-100 rounded-lg text-emerald-600">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                                <h2 class="text-xl font-bold text-gray-800">Media de duración de incidencias por técnico</h2>
                             </div>
-                            <h2 class="text-xl font-bold text-gray-800">Media de duración de incidencias por técnico</h2>
+                            
+                            <form action="{{ route('jefe_tecnico.inicio') }}" method="GET" class="flex items-center gap-2">
+                                <input type="hidden" name="fecha_inicio" value="{{ $fechaInicio }}">
+                                <input type="hidden" name="fecha_fin" value="{{ $fechaFin }}">
+                                <label for="orden_media" class="text-sm text-gray-500 font-medium">Ordenar por:</label>
+                                <select name="orden_media" id="orden_media" onchange="this.form.submit()" 
+                                        class="px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-700 font-medium focus:ring-2 focus:ring-emerald-500 outline-none transition-all cursor-pointer">
+                                    <option value="asc" {{ request('orden_media') == 'asc' ? 'selected' : '' }}>Menor a mayor tiempo</option>
+                                    <option value="desc" {{ request('orden_media', 'desc') == 'desc' ? 'selected' : '' }}>Mayor a menor tiempo</option>
+                                </select>
+                            </form>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse">

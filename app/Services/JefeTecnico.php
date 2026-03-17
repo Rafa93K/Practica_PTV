@@ -72,8 +72,8 @@ class JefeTecnico
         * @author Alonso Coronado Alcalde
         * @description  Obtener la media de resolución (duración) de incidencias por técnico
     */
-    public function obtenerMediaResolucionPorTecnico() {
-        return DB::table('trabajadores')
+    public function obtenerMediaResolucionPorTecnico($orden = 'asc') {
+        $query = DB::table('trabajadores')
             ->leftJoin('incidencias', function($join) {
                 $join->on('trabajadores.id', '=', 'incidencias.trabajador_id')
                      ->whereNotNull('incidencias.intervalo_resolucion');
@@ -86,7 +86,12 @@ class JefeTecnico
                 DB::raw('COUNT(incidencias.id) as incidencias_resueltas')
             )
             ->where('trabajadores.rol', 'tecnico')
-            ->groupBy('trabajadores.id', 'trabajadores.nombre', 'trabajadores.apellido')
-            ->get();
+            ->groupBy('trabajadores.id', 'trabajadores.nombre', 'trabajadores.apellido');
+
+        if ($orden === 'asc' || $orden === 'desc') {
+            $query->orderBy('media_resolucion', $orden);
+        }
+
+        return $query->get();
     }
 }
